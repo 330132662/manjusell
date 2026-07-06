@@ -1,0 +1,52 @@
+{
+	"pages": [
+		{
+			"path": "pages/home/index",
+			"style": {
+				"navigationBarTitleText": "AI短剧学院",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/course-detail/index",
+			"style": {
+				"navigationBarTitleText": "课程详情",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/payment/index",
+			"style": {
+				"navigationBarTitleText": "安全结账"
+			}
+		},
+		{
+			"path": "pages/dashboard/index",
+			"style": {
+				"navigationBarTitleText": "学习仪表盘",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/resource/index",
+			"style": {
+				"navigationBarTitleText": "资源库",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/resource-detail/index",
+			"style": {
+				"navigationBarTitleText": "资源详情",
+				"navigationStyle": "custom"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "AI短剧学院",
+		"navigationBarBackgroundColor": "#1A535C",
+		"backgroundColor": "#F7FFF7"
+	},
+	"uniIdRouter": {}
+}
