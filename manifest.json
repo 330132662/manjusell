@@ -70,7 +70,7 @@
         "title" : "鼎耀文化传媒",
         "router" : {
             "mode" : "hash",
-            "base" : "/manjusell/"
+            "base" : "./"
         },
         "optimization" : {
             "treeShaking" : {
