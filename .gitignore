@@ -1,4 +1,5 @@
-unpackage/
 .DS_Store
 .hbuilderx/
 .idea
+unpackage/dist/cache
+/unpackage/dist/build/.sourcemap/

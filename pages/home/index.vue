@@ -3,7 +3,7 @@
 		<!-- 顶部导航栏 -->
 		<view class="navbar">
 			<view class="navbar-inner">
-				<text class="logo-text">AI短剧学院</text>
+				<TopTitle />
 				<view class="nav-links">
 					<text class="nav-link" @click="scrollToSection('features')">课程体系</text>
 					<text class="nav-link" @click="scrollToSection('cases')">学员案例</text>
@@ -197,6 +197,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import TopTitle from '@/components/TopTitle.vue'
 
 const scrollToSection = (sectionId) => {
 	// 使用uni-app的scrollIntoView功能

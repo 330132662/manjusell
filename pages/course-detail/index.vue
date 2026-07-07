@@ -3,7 +3,7 @@
 		<!-- 顶部导航栏 -->
 		<view class="navbar">
 			<view class="navbar-inner">
-				<text class="logo-text">AI短剧学院</text>
+				<TopTitle />
 				<view class="nav-links">
 					<text class="nav-link">课程体系</text>
 					<text class="nav-link">AI工具</text>
@@ -293,6 +293,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import TopTitle from '@/components/TopTitle.vue'
 
 const courseProgress = ref(35)
 const expandedChapters = ref([])

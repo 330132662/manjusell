@@ -4,7 +4,7 @@
     <view class="nav-bar">
       <view class="nav-content">
         <view class="logo">
-          <text class="gradient-text">AI短剧学院</text>
+          <TopTitle />
         </view>
         <scroll-view class="nav-links" scroll-x v-if="!isMobile">
           <view class="nav-link">课程体系</view>
@@ -260,6 +260,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import TopTitle from '@/components/TopTitle.vue'
 
 // 响应式数据
 const activeTab = ref('content')

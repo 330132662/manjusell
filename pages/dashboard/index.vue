@@ -3,7 +3,7 @@
     <!-- 顶部导航栏 - 手机端显示 -->
     <view class="top-nav-mobile" v-if="isMobile">
       <view class="logo">
-        <text class="gradient-text">AI短剧</text>
+        <TopTitle title="AI短剧" />
       </view>
       <uni-icons type="bars" size="24" color="#1A535C" @click="toggleSidebar"></uni-icons>
     </view>
@@ -12,7 +12,7 @@
     <view class="sidebar" :class="{ 'sidebar-open': sidebarOpen }">
       <!-- Logo -->
       <view class="sidebar-logo">
-        <text class="gradient-text">AI短剧</text>
+        <TopTitle title="AI短剧" />
       </view>
 
       <!-- 导航项 -->
@@ -268,6 +268,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import TopTitle from '@/components/TopTitle.vue'
 
 // 响应式数据
 const scrollTop = ref(0)
