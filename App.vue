@@ -1,7 +1,7 @@
 <script>
 	export default {
 		onLaunch: function() {
-			console.log('AI短剧学院启动成功')
+			console.log('AI短剧影院启动成功')
 		},
 		onShow: function() {
 			console.log('应用显示')

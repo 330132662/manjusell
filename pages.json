@@ -3,7 +3,7 @@
 		{
 			"path": "pages/home/index",
 			"style": {
-				"navigationBarTitleText": "AI短剧学院",
+				"navigationBarTitleText": "AI短剧影院",
 				"navigationStyle": "custom"
 			}
 		},
@@ -40,11 +40,17 @@
 				"navigationBarTitleText": "资源详情",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": "个人中心"
+			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "AI短剧学院",
+		"navigationBarTitleText": "AI短剧影院",
 		"navigationBarBackgroundColor": "#1A535C",
 		"backgroundColor": "#F7FFF7"
 	},

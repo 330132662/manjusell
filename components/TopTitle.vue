@@ -6,7 +6,7 @@
 defineProps({
   title: {
     type: String,
-    default: 'AI短剧学院'
+    default: 'AI短剧影院'
   }
 })
 

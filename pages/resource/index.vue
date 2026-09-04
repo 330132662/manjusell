@@ -232,7 +232,7 @@
     <view class="footer">
       <view class="footer-content">
         <view class="footer-brand">
-          <text class="gradient-text footer-logo">AI短剧学院</text>
+          <text class="gradient-text footer-logo">AI短剧影院</text>
           <text class="footer-desc">让每个人都能成为短剧创作者</text>
         </view>
         <view class="footer-links">
@@ -254,7 +254,7 @@
         </view>
       </view>
       <view class="footer-copyright">
-        <text class="copyright-text">© 2026 AI短剧学院. 保留所有权利.</text>
+        <text class="copyright-text">© 2026 AI短剧影院. 保留所有权利.</text>
       </view>
     </view>
 
