@@ -23,6 +23,14 @@ export function getWxLoginUrl(back) {
   return url
 }
 
+// H5 OAuth 回调后：用 URL 上的一次性 ticket 换完整登录态
+// 后端流程: wxcallback 把登录态存 Redis(60秒) 生成 32 位 ticket 302 回前端 ->
+// 前端拿 ticket 调本接口换取 { token, uid, openid, union_id, nickname, avatar }
+// ticket 一次性, 取后即焚, 防重放; token 不直接拼 URL, 避免特殊字符被 hash 路由破坏
+export function wxLoginTicket(ticket) {
+  return post('/wxapp/wxLoginTicket', { ticket })
+}
+
 // 微信小程序登录：code 换 token/openid
 export function miniappLogin(code) {
   if (USE_MOCK) {
