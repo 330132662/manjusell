@@ -174,7 +174,7 @@ async function handleLogin() {
       return
     }
     // 跳后端 /wxapp/wxlogin, 后端再跳微信授权页, 授权完跳回本页带 token
-    window.location.href = getWxLoginUrl()
+    window.location.href = getWxLoginUrl("https://movie.dingyaoai.com")
     // #endif
   } catch (e) {
     error.value = (e && e.message) || '登录失败，请重试'

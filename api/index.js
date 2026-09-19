@@ -13,11 +13,10 @@ import { aesDecrypt } from '@/utils/aes'
  */
 
 // H5 微信网页授权入口地址
-// back = 授权完成后最终跳回的页面地址(myurl), 后端会把它 base64 编码进 state,
-// 由 oauth_redirect_base_url 指向的回调路由解码并跳转
-export function getWxLoginUrl(back) {
-  const redirect = back || (typeof window !== 'undefined' ? window.location.href : '')
-  return BASE_URL + '/wxapp/wxlogin?back=' + encodeURIComponent(redirect)
+// 最终跳转地址(myurl)由后端 wxchannel.yaml 的 oauth_back_url 配置决定(也可传 back 参数覆盖)
+// uni 端无需处理 state, 后端会把 myurl 编码进 state, 由回调路由解码跳转
+export function getWxLoginUrl() {
+  return BASE_URL + '/wxapp/wxlogin'
 }
 
 // 微信小程序登录：code 换 token/openid
