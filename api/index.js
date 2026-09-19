@@ -1,46 +1,82 @@
 // 业务接口层
 import { post, get } from '@/utils/request'
-import { USE_MOCK, USE_LIVE_API_MOCK } from '@/utils/config'
+import { BASE_URL, USE_MOCK, USE_LIVE_API_MOCK } from '@/utils/config'
 import { md5 } from '@/utils/md5'
 import { aesDecrypt } from '@/utils/aes'
 
 /**
- * 微信登录：用 wx.login 拿到的 code 换取 openid / token
- * 后端约定:
- *   POST /auth/wechat-login  { code }
- *   返回 { openid, token?, nickname?, avatar? }
+ * 微信登录（双端）
+ *  - H5：走服务号网页授权 OAuth，返回授权入口地址，由页面跳转过去；
+ *        后端 /wxapp/wxlogin 把 back(myurl) 编码进 state -> 微信授权页 ->
+ *        oauth_redirect_base_url 指向的回调路由解码 state 拿到 myurl 并跳转
+ *  - 微信小程序：uni.login 拿到 code 后调后端 /wxapp/miniappLogin 换 openid/token
  */
-export function wechatLogin(code) {
+
+// H5 微信网页授权入口地址
+// back = 授权完成后最终跳回的页面地址(myurl), 后端会把它 base64 编码进 state,
+// 由 oauth_redirect_base_url 指向的回调路由解码并跳转
+export function getWxLoginUrl(back) {
+  const redirect = back || (typeof window !== 'undefined' ? window.location.href : '')
+  return BASE_URL + '/wxapp/wxlogin?back=' + encodeURIComponent(redirect)
+}
+
+// 微信小程序登录：code 换 token/openid
+export function miniappLogin(code) {
   if (USE_MOCK) {
     return Promise.resolve({
       openid: 'mock_openid_' + Date.now(),
+      union_id: 'mock_unionid_' + Date.now(),
       token: 'mock_token_' + Math.random().toString(36).slice(2),
       nickname: '微信用户',
       avatar: ''
     })
   }
-  return post('/auth/wechat-login', { code })
+  return post('/wxapp/miniappLogin', { code })
+}
+
+/**
+ * 获取当前登录用户信息
+ * 后端约定:
+ *   GET /wxapp/myProfile  (header 自动带动态token)
+ *   返回 { uid, nickname, avatar, sex, mobile, score, union_id, order_total, order_match }
+ */
+export function getMyProfile() {
+  if (USE_MOCK) {
+    return Promise.resolve({
+      uid: 1,
+      nickname: '微信用户',
+      avatar: '',
+      sex: 0,
+      mobile: '',
+      score: 0,
+      union_id: 'mock_unionid',
+      order_total: 0,
+      order_match: true
+    })
+  }
+  return get('/wxapp/myProfile')
 }
 
 /**
  * 获取当前用户的订单列表
  * 后端约定:
- *   GET /order/list  (header 自动带 Authorization: Bearer <token>)
- *   返回 { list: Order[] }
- *   Order: { order_no, title, amount, status, create_time, cover? }
+ *   GET /wxapp/myOrders  (header 自动带动态token)
+ *   返回 { total, list, page, page_size, union_id }
+ *   订单字段: order_id, product_info, status, status_desc, real_fee, created_at ...
  */
 export function getOrderList() {
   if (USE_MOCK) {
     return Promise.resolve({
+      total: 4,
       list: [
-        { order_no: 'NO20260904001', title: 'AI剧本创作 · 年度会员', amount: 299.0, status: 'paid', create_time: '2026-09-04 18:20' },
-        { order_no: 'NO20260821002', title: '数字人表演 · 单课', amount: 99.0, status: 'completed', create_time: '2026-08-21 10:05' },
-        { order_no: 'NO20260815003', title: '自动化剪辑 · 训练营', amount: 199.0, status: 'unpaid', create_time: '2026-08-15 21:42' },
-        { order_no: 'NO20260730004', title: '短剧运营与分发 · 会员', amount: 159.0, status: 'cancelled', create_time: '2026-07-30 09:11' }
+        { order_id: 'NO20260904001', product_info: 'AI剧本创作 · 年度会员', real_fee: 29900, status: '20', status_desc: '待发货', created_at: '2026-09-04 18:20' },
+        { order_id: 'NO20260821002', product_info: '数字人表演 · 单课', real_fee: 9900, status: '100', status_desc: '已完成', created_at: '2026-08-21 10:05' },
+        { order_id: 'NO20260815003', product_info: '自动化剪辑 · 训练营', real_fee: 19900, status: '10', status_desc: '待付款', created_at: '2026-08-15 21:42' },
+        { order_id: 'NO20260730004', product_info: '短剧运营与分发 · 会员', real_fee: 15900, status: '250', status_desc: '已取消', created_at: '2026-07-30 09:11' }
       ]
     })
   }
-  return get('/order/list')
+  return get('/wxapp/myOrders')
 }
 
 // ===================== 主播 开播/下播 签到签退 =====================

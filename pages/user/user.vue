@@ -33,7 +33,7 @@
         </view>
         <view class="profile-meta">
           <text class="profile-name">{{ userInfo.nickname || '微信用户' }}</text>
-          <text class="profile-openid">openid: {{ userInfo.openid }}</text>
+          <text class="profile-openid">uid: {{ userInfo.uid }} · {{ userInfo.order_match ? '订单已匹配' : '未匹配订单' }}</text>
         </view>
         <view class="logout-btn" @click="handleLogout">退出</view>
       </view>
@@ -80,8 +80,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { wechatLogin, getOrderList } from '@/api'
+import { ref, computed } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+import { getWxLoginUrl, miniappLogin, getMyProfile, getOrderList } from '@/api'
 
 const logging = ref(false)
 const loadingOrders = ref(false)
@@ -94,14 +95,58 @@ const avatarChar = computed(() => {
   return name ? name.charAt(0) : '微'
 })
 
-onMounted(() => {
+onLoad((options) => {
+  // H5 OAuth 回调: 后端 302 回来时把 token/uid 放在 URL 参数里
+  // #ifdef H5
+  if (options && options.token) {
+    uni.setStorageSync('token', decodeURIComponent(options.token))
+    if (options.uid) uni.setStorageSync('uid', options.uid)
+    cleanUrlParams()
+    loadProfile()
+    return
+  }
+  // #endif
+
   // 已登录过则直接复用本地凭证并拉订单
   const cached = uni.getStorageSync('userInfo')
-  if (cached && cached.openid) {
+  if (cached && cached.uid) {
     userInfo.value = cached
     fetchOrders()
   }
 })
+
+// H5: 清理 URL 上的 token/uid 参数, 避免刷新重复登录
+function cleanUrlParams() {
+  // #ifdef H5
+  try {
+    const url = new URL(window.location.href)
+    // hash 路由模式下, 查询参数在 # 后面
+    const hash = url.hash
+    if (hash.indexOf('?') !== -1) {
+      const [path, query] = hash.split('?')
+      const params = new URLSearchParams(query)
+      params.delete('token')
+      params.delete('uid')
+      url.hash = path + (params.toString() ? '?' + params.toString() : '')
+      window.history.replaceState({}, '', url.toString())
+    }
+  } catch (e) {
+    // ignore
+  }
+  // #endif
+}
+
+// 拉取当前登录用户信息(小程序登录后/H5回调后调用)
+async function loadProfile() {
+  try {
+    const res = await getMyProfile()
+    userInfo.value = res
+    uni.setStorageSync('userInfo', res)
+    fetchOrders()
+  } catch (e) {
+    error.value = '获取用户信息失败，请重新登录'
+  }
+}
 
 // 微信授权登录主流程
 async function handleLogin() {
@@ -110,31 +155,27 @@ async function handleLogin() {
   error.value = ''
   try {
     // #ifdef MP-WEIXIN
-    // 微信小程序：uni.login 静默拿到 code（新版需先完成隐私授权，见下方说明）
+    // 微信小程序: uni.login 静默拿 code, 再调后端 code2session 换 token
     const loginRes = await uni.login({ provider: 'weixin' })
-    const code = loginRes.code
-    // #endif
-
-    // #ifndef MP-WEIXIN
-    // H5 / App 等非小程序环境：微信网页授权需先重定向拿到 code 再回来
-    // 例: location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?...`
-    const code = '' // TODO: 替换为你在该环境获取到的 code
-    // #endif
-
-    if (!code) {
-      // 非小程序且无 code 时，仅 MOCK 模式可继续预览
-      if (process.env.UNI_MOCK === 'true') {
-        // noop
-      }
-    }
-
-    const res = await wechatLogin(code)
-    userInfo.value = res
-    uni.setStorageSync('userInfo', res)
-    if (res.token) uni.setStorageSync('token', res.token)
-
+    const code = loginRes && loginRes.code
+    if (!code) throw new Error('获取微信凭证失败，请重试')
+    const res = await miniappLogin(code)
+    if (res && res.token) uni.setStorageSync('token', res.token)
+    if (res && res.uid) uni.setStorageSync('uid', res.uid)
+    // 小程序登录只返回 openid/unionid, 昵称头像通过 myProfile 取
+    await loadProfile()
     uni.showToast({ title: '登录成功', icon: 'success' })
-    fetchOrders()
+    // #endif
+
+    // #ifdef H5
+    // 服务号网页授权必须在微信内置浏览器中完成
+    if (!isWechatBrowser()) {
+      error.value = '请在微信中打开此页面进行授权登录'
+      return
+    }
+    // 跳后端 /wxapp/wxlogin, 后端再跳微信授权页, 授权完跳回本页带 token
+    window.location.href = getWxLoginUrl()
+    // #endif
   } catch (e) {
     error.value = (e && e.message) || '登录失败，请重试'
   } finally {
@@ -147,7 +188,8 @@ async function fetchOrders() {
   loadingOrders.value = true
   try {
     const res = await getOrderList()
-    orders.value = (res && res.list) || []
+    const list = (res && res.list) || []
+    orders.value = list.map(normalizeOrder)
   } catch (e) {
     orders.value = []
   } finally {
@@ -155,9 +197,22 @@ async function fetchOrders() {
   }
 }
 
+// 后端字段映射成页面展示字段
+function normalizeOrder(o) {
+  return {
+    order_no: o.order_id || o.out_order_no || '',
+    title: o.product_info || '',
+    amount: Number(o.real_fee || 0) / 100,
+    status: o.status || '',
+    status_desc: o.status_desc || '',
+    create_time: o.created_at || o.create_time || ''
+  }
+}
+
 function handleLogout() {
   uni.removeStorageSync('userInfo')
   uni.removeStorageSync('token')
+  uni.removeStorageSync('uid')
   userInfo.value = null
   orders.value = []
 }
@@ -166,13 +221,26 @@ function onOrderClick(order) {
   uni.showToast({ title: '订单 ' + order.order_no, icon: 'none' })
 }
 
+// 判断是否在微信内置浏览器中(H5)
+function isWechatBrowser() {
+  // #ifdef H5
+  const ua = (navigator && navigator.userAgent) || ''
+  return /MicroMessenger/i.test(ua)
+  // #endif
+  // #ifndef H5
+  return false
+  // #endif
+}
+
+// 后端订单状态码 -> 文案
 function statusText(status) {
   const map = {
-    unpaid: '待支付',
-    paid: '已支付',
-    shipped: '已发货',
-    completed: '已完成',
-    cancelled: '已取消'
+    '10': '待付款',
+    '20': '待发货',
+    '21': '部分发货',
+    '30': '待收货',
+    '100': '已完成',
+    '250': '已取消'
   }
   return map[status] || '未知'
 }
@@ -410,11 +478,11 @@ function formatAmount(n) {
   padding: 4rpx 16rpx;
   border-radius: 999rpx;
 
-  &.st-unpaid { background: rgba(255, 230, 109, 0.18); color: #B58900; }
-  &.st-paid { background: rgba(78, 205, 196, 0.15); color: #1A9C8C; }
-  &.st-shipped { background: rgba(78, 205, 196, 0.15); color: #1A9C8C; }
-  &.st-completed { background: rgba(26, 83, 92, 0.1); color: #1A535C; }
-  &.st-cancelled { background: rgba(26, 83, 92, 0.06); color: rgba(26, 83, 92, 0.45); }
+  &.st-10 { background: rgba(255, 230, 109, 0.18); color: #B58900; }
+  &.st-20, &.st-21 { background: rgba(78, 205, 196, 0.15); color: #1A9C8C; }
+  &.st-30 { background: rgba(78, 205, 196, 0.15); color: #1A9C8C; }
+  &.st-100 { background: rgba(26, 83, 92, 0.1); color: #1A535C; }
+  &.st-250 { background: rgba(26, 83, 92, 0.06); color: rgba(26, 83, 92, 0.45); }
 }
 
 .order-title {
