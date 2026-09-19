@@ -15,8 +15,12 @@ import { aesDecrypt } from '@/utils/aes'
 // H5 微信网页授权入口地址
 // 最终跳转地址(myurl)由后端 wxchannel.yaml 的 oauth_back_url 配置决定(也可传 back 参数覆盖)
 // uni 端无需处理 state, 后端会把 myurl 编码进 state, 由回调路由解码跳转
-export function getWxLoginUrl() {
-  return BASE_URL + '/wxapp/wxlogin'
+export function getWxLoginUrl(back) {
+  let url = BASE_URL + '/wxapp/wxlogin'
+  if (back) {
+    url += (url.indexOf('?') === -1 ? '?' : '&') + 'back=' + encodeURIComponent(back)
+  }
+  return url
 }
 
 // 微信小程序登录：code 换 token/openid

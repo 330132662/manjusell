@@ -4,7 +4,7 @@ export const BASE_URL = 'http://localhost:8600'
 
 // 后端未就绪时设为 true，接口直接返回本地假数据，方便先看 UI；
 // 接入真实后端后改为 false 即可走真实网络请求。
-export const USE_MOCK = true
+export const USE_MOCK = false
 
 // 主播模块(直播间/办公室下拉、开播签到、下播签退、主播登录)单独开关：
 // 后台已在 localhost:8600 跑起来时置为 false，让这几个接口走真实后端。

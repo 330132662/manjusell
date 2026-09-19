@@ -107,7 +107,18 @@ onLoad((options) => {
   }
   // #endif
 
-  // 已登录过则直接复用本地凭证并拉订单
+  // 已有登录态: 有 token 就拉一次最新 profile(顺带拉订单)
+  const token = uni.getStorageSync('token')
+  if (token) {
+    const cached = uni.getStorageSync('userInfo')
+    if (cached && cached.uid) {
+      userInfo.value = cached
+    }
+    loadProfile()
+    return
+  }
+
+  // 无 token: 留在登录态
   const cached = uni.getStorageSync('userInfo')
   if (cached && cached.uid) {
     userInfo.value = cached
