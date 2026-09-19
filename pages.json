@@ -46,6 +46,20 @@
 			"style": {
 				"navigationBarTitleText": "个人中心"
 			}
+		},
+		{
+			"path": "pages/anchor-checkin/index",
+			"style": {
+				"navigationBarTitleText": "主播签到",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-login/index",
+			"style": {
+				"navigationBarTitleText": "主播登录",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

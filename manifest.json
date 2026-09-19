@@ -72,6 +72,8 @@
             "mode" : "hash",
             "base" : "/manjusell/"
         },
+        /* rpx 在 H5 宽屏的缩放上限：超过 750px 的屏幕 rpx 按 750 计算(=1rpx:1px)，避免桌面端内容被放大，比例回归常规 */
+        "rpxCalcMaxDeviceWidth" : 960,
         "optimization" : {
             "treeShaking" : {
                 "enable" : true
