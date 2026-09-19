@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="fxJBREMVvIUrQPKBRxjt9O">
+<head data-page-node-id="nmsRttj0j8wG0l4OunaLg8">
+  <meta charset="UTF-8" data-page-node-id="1m15FxTwcgVc7iPFSuzZPa" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" data-page-node-id="jDxOc5wJILkvrSv6xy0gpz" />
+  <meta name="format-detection" content="telephone=no" data-page-node-id="E5A5NrchJwdqDKKBYOBQwQ" />
+  <title>用户中心</title>
+  <style>
+    :root {
+      --primary: #07C160;          /* 主色,可通过下方 JS 的 PRIMARY 变量覆盖 */
+      --bg: #f2f3f5;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --text-2: #888888;
+      --line: #ededed;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    #app { max-width: 480px; margin: 0 auto; min-height: 100vh; }
+    .hidden { display: none !important; }
+
+    /* ===== 通用 ===== */
+    .view { min-height: 100vh; }
+    .spinner {
+      display: inline-block; width: 16px; height: 16px; margin-right: 6px;
+      border: 2px solid rgba(0,0,0,.15); border-top-color: var(--primary);
+      border-radius: 50%; animation: spin .7s linear infinite; vertical-align: -3px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== 非微信浏览器提示 ===== */
+    .wechat-only {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 60px 32px; color: var(--text-2);
+    }
+    .wechat-only .wicon { font-size: 56px; margin-bottom: 20px; }
+    .wechat-only .wtxt { font-size: 16px; color: var(--text); }
+
+    /* ===== 登录页 ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #06a352 100%);
+      color: #fff; padding: 64px 24px 56px; text-align: center;
+    }
+    .hero-logo {
+      width: 88px; height: 88px; border-radius: 24px; margin: 0 auto 18px;
+      background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center;
+      font-size: 38px; font-weight: 700; overflow: hidden;
+    }
+    .hero-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-name { font-size: 22px; font-weight: 700; }
+    .hero-sub { font-size: 13px; opacity: .85; margin-top: 8px; }
+    .login-body { padding: 40px 24px; }
+    .wx-btn {
+      width: 100%; height: 48px; line-height: 48px; border: none; border-radius: 24px;
+      background: var(--primary); color: #fff; font-size: 16px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+    }
+    .wx-btn:active { opacity: .9; }
+    .tip { text-align: center; color: var(--text-2); font-size: 12px; margin-top: 20px; }
+
+    /* ===== 用户中心 ===== */
+    .profile-card {
+      display: flex; align-items: center; gap: 14px; padding: 22px 18px;
+      background: linear-gradient(135deg, var(--primary) 0%, #06a352 100%); color: #fff;
+    }
+    .avatar { width: 56px; height: 56px; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); }
+    .avatar-def { background: rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; }
+    .p-info { flex: 1; min-width: 0; }
+    .p-name { font-size: 18px; font-weight: 700; }
+    .p-sub { font-size: 12px; opacity: .85; margin-top: 4px; }
+    .p-logout { font-size: 12px; padding: 4px 12px; border: 1px solid rgba(255,255,255,.6); border-radius: 999px; }
+
+    .banner {
+      margin: 12px; padding: 10px 14px; border-radius: 10px; font-size: 13px;
+      background: #fff7e6; color: #ad6800; border: 1px solid #ffe7ba;
+    }
+
+    .section-title { padding: 16px 16px 6px; font-size: 15px; font-weight: 600; }
+
+    .order-list { padding: 4px 12px 12px; }
+    .order-card {
+      background: var(--card); border-radius: 12px; padding: 14px; margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+    }
+    .oc-head { display: flex; align-items: center; justify-content: space-between; }
+    .oc-id { font-size: 12px; color: var(--text-2); }
+    .oc-status { font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
+    .oc-prod { font-size: 15px; font-weight: 600; margin: 10px 0; line-height: 1.45;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .oc-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--text-2); }
+    .oc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; flex-wrap: wrap; gap: 6px; }
+    .oc-pay { font-size: 13px; color: var(--text-2); }
+    .oc-pay b { color: #fa5151; font-size: 17px; margin-left: 2px; }
+    .ship { font-size: 12px; color: var(--text-2); }
+    .ship .copy { color: var(--primary); font-style: normal; margin-left: 6px; }
+
+    .empty { text-align: center; padding: 70px 24px; color: var(--text-2); }
+    .empty .eimg { font-size: 60px; margin-bottom: 16px; }
+    .empty .etxt { font-size: 14px; }
+
+    .loadmore, .nomore { text-align: center; color: var(--text-2); font-size: 13px; padding: 16px 0 28px; }
+
+    /* ===== Toast ===== */
+    .toast {
+      position: fixed; left: 50%; top: 42%; transform: translate(-50%, -50%);
+      background: rgba(0,0,0,.8); color: #fff; padding: 10px 18px; border-radius: 8px;
+      font-size: 14px; z-index: 9999; max-width: 80%; text-align: center;
+    }
+  </style>
+</head>
+<body data-page-node-id="VDOvmUgfLVdM0QsQVNlXa7">
+  <div id="app" data-page-node-id="YADlabKdP1HYKiF3syrzQb">
+    <!-- 非微信浏览器 -->
+    <div id="wechatOnly" class="view wechat-only hidden" data-page-node-id="ZQu13NImrmbgQyD4QpoABI">
+      <div class="wicon" data-page-node-id="jAQWxOK79z6cOLArmjBOu6">💬</div>
+      <div class="wtxt" data-page-node-id="cHX1NU6TDOAxutLyhhRrvc">请在微信中打开本页</div>
+    </div>
+
+    <!-- 登录页 -->
+    <div id="loginView" class="view hidden" data-page-node-id="rq2stq9cQCxR68OshtCQXy">
+      <div class="hero" data-page-node-id="W6EriPHCz3zCvuhf8xZR53">
+        <div class="hero-logo" id="heroLogo" data-page-node-id="CaQ8wQ5JagUtm1QCtmgLF6">店</div>
+        <div class="hero-name" id="heroName" data-page-node-id="4fXPSNARlDBq4PKk5jIyIC">视频号小店</div>
+        <div class="hero-sub" data-page-node-id="QkfC8WcShJSblwV8SKfBcR">登录后查看你的订单</div>
+      </div>
+      <div class="login-body" data-page-node-id="m0dHwont6VK69wNP2HlIFh">
+        <button class="wx-btn" id="loginBtn" data-page-node-id="HKib3jaMOHAp6s73KYMHKB">微信授权登录</button>
+        <div class="tip" data-page-node-id="DrXFeUsC7qu6VeOBbfQoHh">登录即同意《用户协议》与《隐私政策》</div>
+      </div>
+    </div>
+
+    <!-- 用户中心 -->
+    <div id="centerView" class="view hidden" data-page-node-id="jXWlRY6bV5RDBIOcJGt7Me">
+      <div id="profileBox" data-page-node-id="C8V8nKI6nHYA4nb4zCN8MN"></div>
+      <div id="orderBanner" class="banner hidden" data-page-node-id="RXKpwZqeqkoAVTRAV4fjI9">当前账号暂时无法匹配订单，请联系客服</div>
+      <div class="section-title" data-page-node-id="c967pfZevtX0YiasM1ToTQ">我的订单</div>
+      <div id="orderList" class="order-list" data-page-node-id="YXUDD2kWgJHrJHTEqoZraT"></div>
+      <div id="emptyState" class="empty hidden" data-page-node-id="ogGSAnOGLxBtPmmF1IZrpY">
+        <div class="eimg" data-page-node-id="V1pUMPywTHcEgkOszUl8Z3">🛒</div>
+        <div class="etxt" data-page-node-id="eoyNs5Z8pI5mYbF0oFDcso">还没有订单，去视频号橱窗逛逛吧</div>
+      </div>
+      <div id="loadMore" class="loadmore hidden" data-page-node-id="zrSARladFIhsluK2gXHCdR"><span class="spinner" data-page-node-id="xT7HMf6GNfVoHcEmni55s2"></span>加载中…</div>
+      <div id="noMore" class="nomore hidden" data-page-node-id="EnfAeWAmno6DOPEErwcst8">没有更多了</div>
+    </div>
+
+    <div id="toast" class="toast hidden" data-page-node-id="gPGvy4rt6sG5oI0mJDyLzC"></div>
+  </div>
+
+  <script>
+  /* =================== 配置区(按需修改) =================== */
+  var API_BASE  = 'https://your-domain.com';   // TODO: 替换为你的后端域名(不要带结尾斜杠)
+  var BRAND_NAME = '视频号小店';                // TODO: 品牌名
+  var BRAND_LOGO = '';                          // TODO: 可选,品牌 logo 图片地址
+  var PRIMARY    = '#07C160';                   // 主色(微信绿)
+  var PAGE_SIZE  = 20;
+
+  /* =================== 运行时状态 =================== */
+  var state = { view: '', token: null, profile: null, page: 1, loaded: 0, total: 0, loading: false, finished: false };
+
+  /* =================== 工具函数 =================== */
+  function $(id) { return document.getElementById(id); }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function formatMoney(fen) { return (Number(fen || 0) / 100).toFixed(2); }
+
+  function statusColor(desc) {
+    var s = (desc || '').toLowerCase();
+    if (s.indexOf('取消') > -1) return '#9CA3AF';
+    if (s.indexOf('完成') > -1) return '#07C160';
+    if (s.indexOf('发货') > -1) return '#1989FA';
+    if (s.indexOf('付款') > -1 || s.indexOf('支付') > -1) return '#FF9F0A';
+    if (s.indexOf('待') > -1) return '#FF9F0A';
+    return '#1989FA';
+  }
+
+  var toastTimer;
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.remove('hidden');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.add('hidden'); }, 2000);
+  }
+
+  function show(view) {
+    state.view = view;
+    ['wechatOnly', 'loginView', 'centerView'].forEach(function (id) { $(id).classList.add('hidden'); });
+    $(view === 'wechatOnly' ? 'wechatOnly' : view === 'login' ? 'loginView' : 'centerView').classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  /* =================== 请求封装 =================== */
+  function isTokenError(b) {
+    if (!b) return false;
+    var code = b.code, msg = (b.message || '');
+    if (code === 401 || code === 1001 || code === 10001) return true;
+    return /token|登录|授权|expired|失效|未登录|unauthorized|forbidden|请先登录/i.test(msg);
+  }
+
+  function api(path, opts) {
+    opts = opts || {};
+    var params = opts.params || {};
+    var url = new URL(API_BASE + path);
+    Object.keys(params).forEach(function (k) { url.searchParams.set(k, params[k]); });
+    var headers = {};
+    var tk = localStorage.getItem('token');
+    if (tk) headers['Authorization'] =  tk;//'Bearer ' +
+    return fetch(url.toString(), { headers: headers }).then(function (res) {
+      var body = {};
+      return res.json().catch(function () { return {}; }).then(function (json) {
+        body = json;
+        if (res.status === 401 || isTokenError(body)) {
+          handleTokenExpired();
+          throw new Error('__TOKEN_EXPIRED__');
+        }
+        if (body.code !== 0) {
+          throw new Error(body.message || ('请求失败(' + res.status + ')'));
+        }
+        return body.data || {};
+      });
+    });
+  }
+
+  /* =================== 业务:登录 / 回调 =================== */
+  function goLogin() {
+    location.href = API_BASE + '/wxapp/wxlogin?back=' + encodeURIComponent(location.href.split('#')[0]);
+  }
+
+  function handleTokenExpired() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('uid');
+    state.token = null;
+    toast('登录已失效，请重新授权');
+    show('login');
+  }
+
+  function handleCallback() {
+    var params = new URLSearchParams(location.search);
+    var tk = params.get('token');
+    var uid = params.get('uid');
+    if (tk) {
+      localStorage.setItem('token', tk);
+      if (uid) localStorage.setItem('uid', uid);
+      var clean = location.origin + location.pathname + location.hash;
+      history.replaceState(null, '', clean);   // 清掉 URL 上的 token 参数
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('uid');
+    state.token = null;
+    show('login');
+  }
+
+  /* =================== 业务:资料 / 订单 =================== */
+  function loadProfile() {
+    return api('/wxapp/myProfile').then(function (data) {
+      state.profile = data;
+      renderProfile(data);
+      var banner = $('orderBanner');
+      if (data.order_match === false) banner.classList.remove('hidden');
+      else banner.classList.add('hidden');
+    });
+  }
+
+  function renderProfile(p) {
+    p = p || {};
+    var initial = (p.nickname || '微').charAt(0);
+    var avatarHtml = p.avatar
+      ? '<img class="avatar" src="' + escapeHtml(p.avatar) + '">'
+      : '<div class="avatar avatar-def">' + escapeHtml(initial) + '</div>';
+    $('profileBox').innerHTML =
+      '<div class="profile-card">' +
+        avatarHtml +
+        '<div class="p-info">' +
+          '<div class="p-name">' + escapeHtml(p.nickname || '微信用户') + '</div>' +
+          '<div class="p-sub">订单总数 ' + (p.order_total != null ? p.order_total : 0) + '</div>' +
+        '</div>' +
+        '<div class="p-logout" id="logoutBtn">退出</div>' +
+      '</div>';
+    var lb = $('logoutBtn');
+    if (lb) lb.onclick = logout;
+  }
+
+  function loadOrders(reset) {
+    if (reset) { state.page = 1; state.loaded = 0; state.finished = false; $('orderList').innerHTML = ''; }
+    else state.page += 1;
+    state.loading = true;
+    updateLoadMore();
+    api('/wxapp/myOrders', { params: { page: state.page, page_size: PAGE_SIZE } }).then(function (data) {
+      var list = data.list || [];
+      state.total = data.total != null ? data.total : 0;
+      state.loaded += list.length;
+      renderOrders(list);
+      if (list.length === 0 || state.loaded >= state.total) state.finished = true;
+      $('emptyState').classList.toggle('hidden', state.loaded !== 0);
+    }).catch(function (e) {
+      if (e.message !== '__TOKEN_EXPIRED__') toast(e.message || '加载失败');
+    }).then(function () {
+      state.loading = false;
+      if (state.view !== 'login') updateLoadMore();
+    });
+  }
+
+  function renderOrders(list) {
+    var html = '';
+    list.forEach(function (o) {
+      var real = (o.real_fee != null) ? o.real_fee : o.total_fee;
+      var source = o.source_nickname || '店铺直购';
+      var statusDesc = o.status_desc || o.status || '';
+      var c = statusColor(statusDesc);
+      var ship = '';
+      if (o.ship_code) {
+        ship = '<span class="ship">物流：' + escapeHtml(o.ship_company || '') + ' ' + escapeHtml(o.ship_code) +
+               ' <em class="copy" data-ship="' + escapeHtml(o.ship_code) + '">复制</em></span>';
+      }
+      html +=
+        '<div class="order-card">' +
+          '<div class="oc-head">' +
+            '<span class="oc-id">订单号 ' + escapeHtml(o.order_id || '') + '</span>' +
+            '<span class="oc-status" style="background:' + c + '1A;color:' + c + '">' + escapeHtml(statusDesc) + '</span>' +
+          '</div>' +
+          '<div class="oc-prod">' + escapeHtml(o.product_info || '') + '</div>' +
+          '<div class="oc-meta">' +
+            '<span>来源：' + escapeHtml(source) + '</span>' +
+            '<span>下单：' + escapeHtml(o.created_at || '') + '</span>' +
+          '</div>' +
+          '<div class="oc-foot">' +
+            '<span class="oc-pay">实付 <b>¥' + formatMoney(real) + '</b></span>' +
+            ship +
+          '</div>' +
+        '</div>';
+    });
+    if (html) $('orderList').insertAdjacentHTML('beforeend', html);
+  }
+
+  function updateLoadMore() {
+    if (state.finished) {
+      $('loadMore').classList.add('hidden');
+      $('noMore').classList.remove('hidden');
+    } else {
+      $('noMore').classList.add('hidden');
+      $('loadMore').classList.toggle('hidden', !state.loading);
+    }
+  }
+
+  /* =================== 复制物流单号 =================== */
+  function copyText(t) {
+    if (!t) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(function () { toast('已复制'); }).catch(function () { fallbackCopy(t); });
+    } else {
+      fallbackCopy(t);
+    }
+  }
+  function fallbackCopy(t) {
+    var ta = document.createElement('textarea');
+    ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('已复制'); } catch (e) { toast('复制失败'); }
+    document.body.removeChild(ta);
+  }
+  $('orderList').addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('.copy') : null;
+    if (el) copyText(el.getAttribute('data-ship'));
+  });
+
+  /* =================== 滚动分页 =================== */
+  window.addEventListener('scroll', function () {
+    if (state.view !== 'center' || state.loading || state.finished) return;
+    var top = document.documentElement.scrollTop || document.body.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    if (top + 60 >= h) loadOrders(false);
+  });
+
+  /* =================== 启动 =================== */
+  function init() {
+    document.documentElement.style.setProperty('--primary', PRIMARY);
+    $('heroName').textContent = BRAND_NAME;
+    if (BRAND_LOGO) {
+      $('heroLogo').innerHTML = '<img src="' + escapeHtml(BRAND_LOGO) + '">';
+    }
+    $('loginBtn').onclick = goLogin;
+
+    var isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+    if (!isWeChat) { show('wechatOnly'); return; }
+
+    handleCallback();
+
+    if (localStorage.getItem('token')) {
+      state.token = localStorage.getItem('token');
+      loadProfile().catch(function (e) {
+        if (e.message !== '__TOKEN_EXPIRED__') toast('获取资料失败');
+      }).then(function () {
+        if (state.view !== 'login') { show('center'); loadOrders(true); }
+      });
+    } else {
+      show('login');
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  </script>
+</body>
+</html>

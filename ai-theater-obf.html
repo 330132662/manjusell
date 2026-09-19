@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI剧场 · 戏入新生</title>
+  <meta name="description" content="AI剧场 — 用算法重写经典,让每一个故事都能被重新演绎。本季共十二部戏,等你来入戏。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ========== 设计令牌 ========== */
+    :root {
+      --bgw29Q: #0a0807;
+      --bg-soft4QbSS: #131010;
+      --bg_cardfs4ZCoo: #1a1413;
+      --bg-card-2rF4H: #221917;
+      --linee6W5NwTu: #2a2320;
+      --line-2L0ddAiO: #3a302b;
+      --inkExFUtmU3: #f5f1ea;
+      --ink_softg5gX: #d8cfc3;
+      --ink_muteAM5DDsnx: #9a8f83;
+      --ink-faintbM1y: #6a6058;
+      --redbgkdG0x: #c8102e;
+      --red-deep35Deef: #8b0a1f;
+      --goldIx8Dh7: #d4a017;
+      --gold_softW3fpi5C: #b88a13;
+      --serifHCgieg1: 'Noto Serif SC', 'Cormorant Garamond', 'Songti SC', serif;
+      --sansNd8x: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+      --display9nE5Ja6: 'Cormorant Garamond', 'Noto Serif SC', serif;
+      --max4pjRt: 1320px;
+      --padY9Ps: clamp(20px, 4vw, 56px);
+      --rZWKf4: 4px;
+      --r-lgFMo08W: 7px;
+      --shadow1bn3ksT6x: 0 1px 2px rgba(0,0,0,.3);
+      --shadow_27kOS3: 0 10px 37px rgba(0,0,0,.5);
+    }
+
+    /* ========== 基础重置 ========== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--sansNd8x);
+      background: var(--bgw29Q);
+      color: var(--inkExFUtmU3);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    ::selection { background: var(--redbgkdG0x); color: var(--inkExFUtmU3); }
+
+    /* ========== 通用工具类 ========== */
+    .waiMB0u { max-width: var(--max4pjRt); margin: 0 auto; padding-left: var(--padY9Ps); padding-right: var(--padY9Ps); }
+    .serifkrncU8y { font-family: var(--serifHCgieg1); }
+    .displaywBSu6 { font-family: var(--display9nE5Ja6); }
+    .eyebrowe1J7 {
+      font-family: var(--sansNd8x);
+      font-size: 11px;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--ink_muteAM5DDsnx);
+      display: inline-flex;
+      align-items: center;
+      gap: 13px;
+    }
+    .eyebrowe1J7::before {
+      content: '';
+      width: 23px;
+      height: 1px;
+      background: var(--ink-faintbM1y);
+    }
+    .eyebrowe1J7 .numG9oV {
+      font-family: var(--display9nE5Ja6);
+      font-style: italic;
+      color: var(--goldIx8Dh7);
+      font-size: 13px;
+      letter-spacing: 0;
+    }
+    h1, h2, h3, h4 { margin: 0; font-weight: 500; }
+    h1 { font-family: var(--serifHCgieg1); font-weight: 900; }
+    h2 { font-family: var(--serifHCgieg1); font-weight: 700; }
+
+    /* ========== 顶部导航 ========== */
+    .daohang7MUaii {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 18px 0;
+      background: rgba(10, 8, 7, .85);
+      backdrop-filter: saturate(140%) blur(10px);
+      -webkit-backdrop-filter: saturate(140%) blur(10px);
+      border-bottom: 1px solid transparent;
+      transition: background .3s, border-color .3s, padding .3s;
+    }
+    .daohang7MUaii.is_scrolledlhEiw6 {
+      padding: 10px 0;
+      background: rgba(10, 8, 7, .96);
+      border-bottom-color: var(--linee6W5NwTu);
+    }
+    .nav_innerL7pyOc {
+      display: flex;
+      align-items: center;
+      gap: 29px;
+    }
+    .brandkD9QA {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .brand-markWN4Be {
+      width: 29px; height: 29px;
+      display: grid; place-items: center;
+      color: var(--inkExFUtmU3);
+    }
+    .brand-markWN4Be svg { width: 100%; height: 100%; }
+    .brand-text4KaJma {
+      font-family: var(--serifHCgieg1);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: .04em;
+    }
+    .brand-text4KaJma .dotRSnU67B { color: var(--redbgkdG0x); }
+    .brand-subUYxkauP0 {
+      font-family: var(--display9nE5Ja6);
+      font-style: italic;
+      font-size: 11px;
+      color: var(--ink_muteAM5DDsnx);
+      letter-spacing: .12em;
+      margin-left: 2px;
+    }
+    .nav-menuiiP8C1 {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      flex: 1;
+    }
+    .nav-menuiiP8C1 a {
+      font-size: 13.5px;
+      color: var(--ink_softg5gX);
+      position: relative;
+      padding: 6px 0;
+      transition: color .2s;
+    }
+    .nav-menuiiP8C1 a::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 0; height: 1px;
+      background: var(--redbgkdG0x);
+      transition: all .3s;
+      transform: translateX(-50%);
+    }
+    .nav-menuiiP8C1 a:hover, .nav-menuiiP8C1 a.isActiveqHd0 { color: var(--inkExFUtmU3); }
+    .nav-menuiiP8C1 a:hover::after, .nav-menuiiP8C1 a.isActiveqHd0::after { width: 100%; }
+    .nav-actionsusUB1 {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .icon-btnKq2XFsy {
+      width: 36px; height: 36px;
+      display: grid; place-items: center;
+      border-radius: 50%;
+      color: var(--ink_softg5gX);
+      transition: background .2s, color .2s;
+    }
+    .icon-btnKq2XFsy:hover { background: var(--bg_cardfs4ZCoo); color: var(--inkExFUtmU3); }
+    .icon-btnKq2XFsy svg { width: 18px; height: 18px; }
+    .btnXEzRQ3 {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 19px;
+      font-size: 13px;
+      letter-spacing: .04em;
+      border-radius: var(--rZWKf4);
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .btnGhostWE14hO0 {
+      color: var(--inkExFUtmU3);
+      border: 1px solid var(--line-2L0ddAiO);
+    }
+    .btnGhostWE14hO0:hover { background: var(--bg_cardfs4ZCoo); border-color: var(--ink-faintbM1y); }
+    .btn-primaryKVV1s {
+      background: var(--redbgkdG0x);
+      color: var(--inkExFUtmU3);
+      font-weight: 500;
+    }
+    .btn-primaryKVV1s:hover { background: var(--red-deep35Deef); transform: translateY(-1px); }
+    .menu_toggleILpF4sa {
+      display: none;
+      width: 36px; height: 36px;
+      align-items: center; justify-content: center;
+    }
+    .menu_toggleILpF4sa span {
+      display: block;
+      width: 19px; height: 1.5px;
+      background: var(--inkExFUtmU3);
+      position: relative;
+    }
+    .menu_toggleILpF4sa span::before, .menu_toggleILpF4sa span::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 19px; height: 1.5px;
+      background: var(--inkExFUtmU3);
+    }
+    .menu_toggleILpF4sa span::before { top: -6px; }
+    .menu_toggleILpF4sa span::after { top: 6px; }
+    .menu_toggleILpF4sa.is_openAZIFvk2m span { background: transparent; }
+    .menu_toggleILpF4sa.is_openAZIFvk2m span::before { transform: rotate(45deg); top: 0; }
+    .menu_toggleILpF4sa.is_openAZIFvk2m span::after { transform: rotate(-45deg); top: 0; }
+
+    /* ========== 移动端抽屉 ========== */
+    .mobile-drawer7HsWfD {
+      position: fixed;
+      top: 0; right: 0;
+      width: min(360px, 88vw);
+      height: 100vh;
+      background: var(--bg-soft4QbSS);
+      border-left: 1px solid var(--linee6W5NwTu);
+      padding: 80px 29px 29px;
+      transform: translateX(100%);
+      transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+      z-index: 99;
+      overflow-y: auto;
+    }
+    .mobile-drawer7HsWfD.is_openAZIFvk2m { transform: translateX(0); }
+    .mobile-drawer7HsWfD ul {
+      list-style: none;
+      margin: 0; padding: 0;
+    }
+    .mobile-drawer7HsWfD li {
+      border-bottom: 1px solid var(--linee6W5NwTu);
+    }
+    .mobile-drawer7HsWfD a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+      font-family: var(--serifHCgieg1);
+      font-size: 18px;
+      color: var(--inkExFUtmU3);
+    }
+    .mobile-drawer7HsWfD a::after {
+      content: '→';
+      color: var(--ink_muteAM5DDsnx);
+      font-family: var(--sansNd8x);
+      transition: color .2s, transform .2s;
+    }
+    .mobile-drawer7HsWfD a:hover::after { color: var(--redbgkdG0x); transform: translateX(4px); }
+    .drawer_mask4TOo {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+      z-index: 98;
+    }
+    .drawer_mask4TOo.is_openAZIFvk2m { opacity: 1; pointer-events: auto; }
+
+    /* ========== HERO ========== */
+    .hero7KOv {
+      position: relative;
+      min-height: 100vh;
+      padding: 120px 0 80px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .hero_bgdUWDg3 {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 30%, rgba(200, 16, 46, .22) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 30% 80%, rgba(212, 160, 23, .12) 0%, transparent 60%),
+        linear-gradient(180deg, #0a0807 0%, #1a0d10 100%);
+    }
+    .hero_bgdUWDg3::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(90deg, transparent 0%, transparent 49.8%, rgba(212, 160, 23, .08) 50%, transparent 50.2%, transparent 100%);
+      background-size: 80px 100%;
+    }
+    /* 幕布 */
+    .curtain8OVUAa {
+      position: absolute;
+      top: 0;
+      width: 18%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .curtain-leftx0yOn2IC { left: 0; background: linear-gradient(90deg, #2b0a10 0%, #5a1018 50%, #3b0a14 70%, transparent 100%); }
+    .curtain-rightQyKFp7 { right: 0; background: linear-gradient(-90deg, #2b0a10 0%, #5a1018 50%, #3b0a14 70%, transparent 100%); }
+    .curtain8OVUAa::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 100%;
+      background: repeating-linear-gradient(90deg, transparent 0 7px, rgba(0,0,0,.3) 7px 9px);
+    }
+    .curtain-leftx0yOn2IC::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 37px;
+      background: linear-gradient(180deg, #1a0508 0%, transparent 100%);
+    }
+    .curtain-rightQyKFp7::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 100%; height: 37px;
+      background: linear-gradient(180deg, #1a0508 0%, transparent 100%);
+    }
+    /* 聚光灯 */
+    .spothzDz2fd {
+      position: absolute;
+      top: -10%;
+      width: 200px; height: 70%;
+      background: linear-gradient(180deg, rgba(255, 240, 200, .25) 0%, rgba(255, 240, 200, .04) 60%, transparent 100%);
+      filter: blur(20px);
+      transform-origin: top center;
+      opacity: .7;
+      z-index: 1;
+    }
+    .spot-1sIR62 { left: 18%; transform: rotate(15deg); }
+    .spot_2g1q7kR { left: 45%; transform: rotate(-3deg); opacity: .9; }
+    .spot-3FRc9UzR { right: 22%; transform: rotate(-12deg); }
+
+    .hero-inneriIiR84z {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 60px;
+      align-items: center;
+      width: 100%;
+    }
+    .heroLeftL1O5g1 {
+      max-width: 720px;
+    }
+    .heroMetaxA56mt {
+      display: flex;
+      align-items: center;
+      gap: 23px;
+      margin-bottom: 29px;
+      color: var(--ink_muteAM5DDsnx);
+      font-size: 12.5px;
+    }
+    .heroMetaxA56mt .metaItem2qw1ZO {
+      display: flex; align-items: center; gap: 7px;
+    }
+    .heroMetaxA56mt .metaItem2qw1ZO svg { width: 14px; height: 14px; color: var(--goldIx8Dh7); }
+    .heroTitleJ80o8 {
+      font-size: clamp(48px, 7vw, 96px);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 13px;
+    }
+    .heroTitleJ80o8 .lineqg53Ut { display: block; }
+    .heroTitleJ80o8 .accentIwNu35mp {
+      font-family: var(--display9nE5Ja6);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--goldIx8Dh7);
+    }
+    .heroTitleJ80o8 .strikebM56w {
+      position: relative;
+      display: inline-block;
+    }
+    .heroTitleJ80o8 .strikebM56w::after {
+      content: '';
+      position: absolute;
+      left: -2%; right: -2%;
+      top: 52%;
+      height: 4px;
+      background: var(--redbgkdG0x);
+      transform: rotate(-1deg);
+    }
+    .hero_subC9Ctl {
+      font-family: var(--serifHCgieg1);
+      font-size: clamp(16px, 1.4vw, 19px);
+      color: var(--ink_softg5gX);
+      max-width: 560px;
+      line-height: 1.7;
+      margin: 28px 0 37px;
+    }
+    .hero_subC9Ctl em {
+      font-style: italic;
+      color: var(--goldIx8Dh7);
+    }
+    .hero-cta5uUbg2T {
+      display: flex;
+      gap: 13px;
+      flex-wrap: wrap;
+    }
+    .hero-cta5uUbg2T .btnXEzRQ3 { padding: 14px 28px; font-size: 14px; }
+    .btn_arrow1R4t3 { transition: transform .2s; }
+    .btnXEzRQ3:hover .btn_arrow1R4t3 { transform: translateX(4px); }
+    .hero_statssOCE7 {
+      display: flex;
+      gap: 37px;
+      margin-top: 64px;
+      padding-top: 29px;
+      border-top: 1px solid var(--linee6W5NwTu);
+    }
+    .statdm3F4aw .numG9oV {
+      font-family: var(--display9nE5Ja6);
+      font-size: 36px;
+      color: var(--inkExFUtmU3);
+      font-weight: 600;
+      line-height: 1;
+    }
+    .statdm3F4aw .lblunUQ2 {
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ink_muteAM5DDsnx);
+      margin-top: 6px;
+    }
+    .heroRightwZr3Ck {
+      position: relative;
+      aspect-ratio: 3/4;
+      max-width: 420px;
+      justify-self: end;
+      width: 100%;
+    }
+    .heroPoster1RsJ0 {
+      position: relative;
+      width: 100%; height: 100%;
+      border-radius: var(--r-lgFMo08W);
+      overflow: hidden;
+      box-shadow: var(--shadow_27kOS3);
+      background: linear-gradient(160deg, #2b0a10 0%, #5a1018 50%, #1a0508 100%);
+    }
+    /* 用CSS艺术打造一张戏剧海报 */
+    .poster-artHTE6zR {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255, 220, 150, .35) 0%, transparent 35%),
+        radial-gradient(circle at 50% 80%, rgba(0,0,0,.8) 0%, transparent 60%),
+        linear-gradient(180deg, transparent 0%, transparent 50%, rgba(0,0,0,.5) 100%);
+    }
+    .poster-figureRO6SnL {
+      position: absolute;
+      left: 50%;
+      top: 35%;
+      transform: translateX(-50%);
+      width: 60%;
+      aspect-ratio: 1/1.4;
+      background:
+        radial-gradient(ellipse 50% 30% at 50% 20%, #f5e4c3 0%, #c9a07a 40%, #6b4030 70%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(0,0,0,.3) 100%);
+      border-radius: 50% 50% 8% 8% / 40% 40% 8% 8%;
+      filter: blur(.4px);
+    }
+    .poster-figureRO6SnL::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 35%;
+      transform: translateX(-50%);
+      width: 80%;
+      aspect-ratio: 1/1.2;
+      background: linear-gradient(180deg, #1a0508 0%, #0a0305 100%);
+      border-radius: 8% 8% 0 0;
+    }
+    .poster_textSLuudhD7 {
+      position: absolute;
+      left: 8%; right: 8%;
+      bottom: 8%;
+      z-index: 3;
+    }
+    .poster_textSLuudhD7 .plNnV0sEk {
+      font-family: var(--display9nE5Ja6);
+      font-style: italic;
+      font-size: 13px;
+      color: var(--goldIx8Dh7);
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .poster_textSLuudhD7 .ptESvO10 {
+      font-family: var(--serifHCgieg1);
+      font-weight: 900;
+      font-size: clamp(24px, 2.5vw, 29px);
+      color: var(--inkExFUtmU3);
+      line-height: 1.1;
+      margin-bottom: 7px;
+    }
+    .poster_textSLuudhD7 .paQjQ3mej {
+      font-size: 11px;
+      color: var(--ink_softg5gX);
+      letter-spacing: .12em;
+    }
+    .posterFramed54eK {
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(212, 160, 23, .3);
+      border-radius: var(--r-lgFMo08W);
+      pointer-events: none;
+    }
+    .poster_tagkcX9wXc {
+      position: absolute;
+      top: 19px; left: 19px;
+      z-index: 3;
+      background: var(--redbgkdG0x);
+      color: var(--inkExFUtmU3);
+      font-size: 10px;
+      letter-spacing: .2em;
+      padding: 5px 10px;
+      font-weight: 600;
+    }
+    .heroScrollJjwee1SG {
+      position: absolute;
+      bottom: 23px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      color: var(--ink_muteAM5DDsnx);
+      font-size: 10px;
+      letter-spacing: .3em;
+      z-index: 5;
+    }
+    .heroScrollJjwee1SG .lineqg53Ut {
+      width: 1px; height: 37px;
+      background: linear-gradient(180deg, var(--goldIx8Dh7) 0%, transparent 100%);
+      animation: scrollLine 2.2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      50.1% { transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ========== 通用板块 ========== */
+    section { padding: 97px 0; position: relative; }
+    .section-headWWQx6 {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 37px;
+      margin-bottom: 51px;
+      padding-bottom: 23px;
+      border-bottom: 1px solid var(--linee6W5NwTu);
+    }
+    .section-headWWQx6 h2 {
+      font-size: clamp(28px, 3.5vw, 44px);
+      line-height: 1.15;
+      margin-top: 13px;
+    }
+    .section-headWWQx6 h2 em {
+      font-family: var(--display9nE5Ja6);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--goldIx8Dh7);
+    }
+    .section-headWWQx6 .headSideyNRQ4 {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+    .link-arrow8cKT9j {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink_softg5gX);
+      font-size: 13px;
+      transition: color .2s, gap .2s;
+    }
+    .link-arrow8cKT9j:hover { color: var(--goldIx8Dh7); gap: 10px; }
+    .link-arrow8cKT9j svg { width: 14px; height: 14px; }
+
+    /* ========== 剧目网格 ========== */
+    .play-gridHjP3Z {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 23px;
+    }
+    .play-card4MUqFTBG {
+      position: relative;
+      cursor: pointer;
+    }
+    .play_coverHDDZl7 {
+      position: relative;
+      aspect-ratio: 3/4;
+      border-radius: var(--rZWKf4);
+      overflow: hidden;
+      background: var(--bg_cardfs4ZCoo);
+      margin-bottom: 17px;
+    }
+    .play_cover_artao01MFQ {
+      position: absolute;
+      inset: 0;
+      transition: transform .6s cubic-bezier(.4, 0, .2, 1);
+    }
+    .play-card4MUqFTBG:hover .play_cover_artao01MFQ { transform: scale(1.05); }
+    .play_coverHDDZl7::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.8) 100%);
+      pointer-events: none;
+    }
+    .play_coverHDDZl7 .play-actionsEg3g {
+      position: absolute;
+      bottom: 13px; right: 13px;
+      z-index: 2;
+      width: 36px; height: 36px;
+      background: var(--redbgkdG0x);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      color: var(--inkExFUtmU3);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all .3s;
+    }
+    .play-card4MUqFTBG:hover .play-actionsEg3g { opacity: 1; transform: translateY(0); }
+    .play_coverHDDZl7 .play_tag7vT8WJ {
+      position: absolute;
+      top: 13px; left: 13px;
+      z-index: 2;
+      background: rgba(10, 8, 7, .8);
+      backdrop-filter: blur(8px);
+      color: var(--goldIx8Dh7);
+      font-size: 10px;
+      letter-spacing: .2em;
+      padding: 4px 7px;
+      border: 1px solid rgba(212, 160, 23, .3);
+    }
+    .play_meta9mTN {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--ink_muteAM5DDsnx);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .play_meta9mTN .dotRSnU67B { color: var(--goldIx8Dh7); }
+    .play-title2KhLhT {
+      font-family: var(--serifHCgieg1);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--inkExFUtmU3);
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .playSubb2bF {
+      font-size: 12.5px;
+      color: var(--ink_muteAM5DDsnx);
+    }
+    .play_rating7DtfE {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--goldIx8Dh7);
+    }
+    /* 海报CSS艺术变体 */
+    .art-1SmTp7Qp { background: linear-gradient(160deg, #4a0e1a 0%, #1a0508 100%); }
+    .art-1SmTp7Qp::before {
+      content: ''; position: absolute; left: 50%; top: 30%; transform: translateX(-50%);
+      width: 50%; aspect-ratio: 1/1.4;
+      background: radial-gradient(ellipse at 50% 30%, #e8c896 0%, #8a6040 50%, transparent 80%);
+      border-radius: 50% 50% 0 0;
+    }
+    .art2F0tx { background: linear-gradient(180deg, #0a1530 0%, #050810 100%); }
+    .art2F0tx::before {
+      content: ''; position: absolute; left: 50%; top: 40%; transform: translateX(-50%);
+      width: 4px; height: 50%; background: linear-gradient(180deg, transparent, #d4a017, transparent);
+      box-shadow: 0 0 30px rgba(212, 160, 23, .5);
+    }
+    .art2F0tx::after {
+      content: ''; position: absolute; left: 50%; top: 38%; transform: translateX(-50%);
+      width: 30%; aspect-ratio: 1/1; border-radius: 50%;
+      background: radial-gradient(circle, #d4a017 0%, #8b5a0a 50%, transparent 80%);
+    }
+    .art-38d7uPLs { background: linear-gradient(135deg, #2d1a08 0%, #1a0d04 100%); }
+    .art-38d7uPLs::before {
+      content: ''; position: absolute; inset: 20% 25%;
+      background:
+        linear-gradient(45deg, transparent 45%, #d4a017 45%, #d4a017 55%, transparent 55%),
+        linear-gradient(-45deg, transparent 45%, #d4a017 45%, #d4a017 55%, transparent 55%);
+      opacity: .4;
+    }
+    .art4oiq2mgdA { background: linear-gradient(180deg, #1a0810 0%, #050204 100%); }
+    .art4oiq2mgdA::before {
+      content: ''; position: absolute; left: 30%; top: 20%; width: 7px; height: 7px; border-radius: 50%;
+      background: #fff; box-shadow:
+        37px 30px 0 -2px #fff,
+        80px 63px 0 -3px #fff,
+        120px 19px 0 -1px #fff,
+        50px 97px 0 -2px #fff,
+        110px 130px 0 -2px #fff,
+        19px 160px 0 -1px #fff,
+        90px 200px 0 -3px #fff;
+    }
+    .art537yoY { background: linear-gradient(135deg, #1a2010 0%, #0a0f05 100%); }
+    .art537yoY::before {
+      content: ''; position: absolute; left: 50%; top: 35%; transform: translateX(-50%);
+      width: 70%; height: 1px; background: var(--goldIx8Dh7);
+      box-shadow: 0 30px 0 var(--goldIx8Dh7), 0 63px 0 var(--goldIx8Dh7), 0 90px 0 var(--goldIx8Dh7);
+    }
+    .art-6QduP5J { background: linear-gradient(160deg, #2b0a10 0%, #0a0205 100%); }
+    .art-6QduP5J::before {
+      content: '幕'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      font-family: var(--serifHCgieg1); font-size: 80px; font-weight: 900;
+      color: var(--goldIx8Dh7); opacity: .3;
+    }
+    .art-7xnL4 { background: linear-gradient(135deg, #1a0a05 0%, #0a0502 100%); }
+    .art-7xnL4::before {
+      content: ''; position: absolute; inset: 30% 35%;
+      background: radial-gradient(circle, var(--redbgkdG0x) 0%, transparent 70%);
+      animation: pulse 3s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: .6; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+    .art-8AmimN9Kc { background: linear-gradient(180deg, #0a0820 0%, #050410 100%); }
+    .art-8AmimN9Kc::before {
+      content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: 60%; aspect-ratio: 1/1; border-radius: 50%;
+      border: 1px solid var(--goldIx8Dh7);
+      box-shadow: inset 0 0 30px rgba(212, 160, 23, .3), 0 0 60px rgba(212, 160, 23, .2);
+    }
+    .art-8AmimN9Kc::after {
+      content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: 30%; aspect-ratio: 1/1; border-radius: 50%;
+      background: radial-gradient(circle, var(--goldIx8Dh7) 0%, var(--gold_softW3fpi5C) 100%);
+      box-shadow: 0 0 37px rgba(212, 160, 23, .6);
+    }
+
+    /* ========== 新剧目横向滚动 ========== */
+    .newReleasesSowKyL6 { background: var(--bg-soft4QbSS); }
+    .releaseRowPu5LnPt {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 19px;
+    }
+    .release-cardnCh0SO {
+      position: relative;
+      aspect-ratio: 4/3;
+      border-radius: var(--rZWKf4);
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .release-cardnCh0SO:first-child {
+      grid-row: span 2;
+      aspect-ratio: auto;
+    }
+    .release-artyZov1 {
+      position: absolute;
+      inset: 0;
+      transition: transform .5s;
+    }
+    .release-cardnCh0SO:hover .release-artyZov1 { transform: scale(1.04); }
+    .release_info9AiMaJ {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 23px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.9) 100%);
+      z-index: 2;
+    }
+    .release-cardnCh0SO:first-child .release_info9AiMaJ { padding: 29px; }
+    .release-titlerUE6DrIb {
+      font-family: var(--serifHCgieg1);
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .release-cardnCh0SO:first-child .release-titlerUE6DrIb { font-size: 29px; }
+    .release-meta1yTg4fxz {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--ink_muteAM5DDsnx);
+    }
+    .release-meta1yTg4fxz .sep1elxKS { color: var(--goldIx8Dh7); }
+    .releaseDate4BPhF55 {
+      position: absolute;
+      top: 17px; right: 17px;
+      z-index: 2;
+      background: rgba(10, 8, 7, .85);
+      backdrop-filter: blur(8px);
+      padding: 6px 13px;
+      border-radius: 100px;
+      font-size: 11px;
+      color: var(--goldIx8Dh7);
+      letter-spacing: .1em;
+    }
+
+    /* ========== 演员阵容 ========== */
+    .artist-rowPPYm6S {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 19px;
+    }
+    .yanyuanY2FsPAvE {
+      cursor: pointer;
+    }
+    .artist_photomMX9t {
+      position: relative;
+      aspect-ratio: 1/1.2;
+      border-radius: var(--rZWKf4);
+      overflow: hidden;
+      margin-bottom: 14px;
+      background: var(--bg_cardfs4ZCoo);
+    }
+    .artist_photomMX9t .ph_artbDyVF1G {
+      position: absolute;
+      inset: 0;
+      transition: filter .4s, transform .4s;
+    }
+    .yanyuanY2FsPAvE:hover .ph_artbDyVF1G { transform: scale(1.05); filter: brightness(1.1); }
+    .artist_photomMX9t::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,.6) 100%);
+    }
+    .artist-roleLgWA3 {
+      position: absolute;
+      top: 13px; left: 13px;
+      z-index: 2;
+      background: rgba(10, 8, 7, .7);
+      backdrop-filter: blur(6px);
+      color: var(--ink_softg5gX);
+      font-size: 10px;
+      letter-spacing: .15em;
+      padding: 3px 7px;
+      text-transform: uppercase;
+    }
+    .artist_nameQ1a6 {
+      font-family: var(--serifHCgieg1);
+      font-weight: 700;
+      font-size: 17px;
+      margin-bottom: 2px;
+    }
+    .artist_taghC9M025 {
+      font-size: 13px;
+      color: var(--ink_muteAM5DDsnx);
+    }
+    /* 头像艺术 */
+    .ph1hFGna3s { background: radial-gradient(circle at 50% 35%, #e8c896 0%, #6b4030 50%, #1a0508 100%); }
+    .ph1hFGna3s::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -10%); width: 60%; aspect-ratio: 1/1.4; background: linear-gradient(180deg, transparent, #0a0305); border-radius: 50% 50% 0 0; }
+    .ph29Ov05 { background: radial-gradient(circle at 50% 40%, #d4b88a 0%, #5a3a20 60%, #1a0d04 100%); }
+    .ph29Ov05::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -10%); width: 65%; aspect-ratio: 1/1.3; background: #1a0508; border-radius: 50% 50% 0 0; }
+    .ph-31TuqDmZz { background: radial-gradient(circle at 50% 30%, #f0d4a8 0%, #8a5a30 50%, #2a1505 100%); }
+    .ph-31TuqDmZz::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -10%); width: 55%; aspect-ratio: 1/1.5; background: #0a0305; border-radius: 50% 50% 0 0; }
+    .ph-4Sd1Z5vB9 { background: radial-gradient(circle at 50% 35%, #c9a07a 0%, #4a2818 60%, #1a0808 100%); }
+    .ph-4Sd1Z5vB9::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -10%); width: 58%; aspect-ratio: 1/1.4; background: #0a0305; border-radius: 50% 50% 0 0; }
+    .ph-5y1OOed5w { background: radial-gradient(circle at 50% 32%, #e0c098 0%, #5a3820 55%, #1a0a04 100%); }
+    .ph-5y1OOed5w::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -10%); width: 62%; aspect-ratio: 1/1.4; background: #0a0305; border-radius: 50% 50% 0 0; }
+    .ph-6wbLM3Bcn { background: radial-gradient(circle at 50% 38%, #d8b890 0%, #6a4030 55%, #1a0a05 100%); }
+    .ph-6wbLM3Bcn::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -10%); width: 60%; aspect-ratio: 1/1.4; background: #0a0305; border-radius: 50% 50% 0 0; }
+
+    /* ========== 巡演日程 ========== */
+    .tour-sectionOmezc7 { background: var(--bg-soft4QbSS); }
+    .tour-tabs9S3f {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 29px;
+      border-bottom: 1px solid var(--linee6W5NwTu);
+    }
+    .tour-tabrrpyZi7P {
+      padding: 13px 19px;
+      font-size: 13px;
+      color: var(--ink_muteAM5DDsnx);
+      position: relative;
+      transition: color .2s;
+    }
+    .tour-tabrrpyZi7P.isActiveqHd0 { color: var(--inkExFUtmU3); }
+    .tour-tabrrpyZi7P.isActiveqHd0::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: -1px;
+      height: 2px;
+      background: var(--redbgkdG0x);
+    }
+    .tour-tabrrpyZi7P:hover { color: var(--inkExFUtmU3); }
+    .tour-listWcQml9x2 {
+      border-top: 1px solid var(--linee6W5NwTu);
+    }
+    .tour-rowozSrx3w {
+      display: grid;
+      grid-template-columns: 90px 1fr 1fr 1.2fr 140px;
+      gap: 23px;
+      align-items: center;
+      padding: 23px 0;
+      border-bottom: 1px solid var(--linee6W5NwTu);
+      transition: background .2s, padding .2s;
+      cursor: pointer;
+    }
+    .tour-rowozSrx3w:hover { background: var(--bg_cardfs4ZCoo); padding-left: 17px; padding-right: 17px; }
+    .tourDatep1QvWxa {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 13px 7px;
+      background: var(--bg_cardfs4ZCoo);
+      border: 1px solid var(--linee6W5NwTu);
+    }
+    .tourDatep1QvWxa .dayR1ZAch {
+      font-family: var(--display9nE5Ja6);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--inkExFUtmU3);
+      line-height: 1;
+    }
+    .tourDatep1QvWxa .mon4bAz3gnd {
+      font-size: 10px;
+      letter-spacing: .2em;
+      color: var(--goldIx8Dh7);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .tour-rowozSrx3w:hover .tourDatep1QvWxa { background: var(--redbgkdG0x); border-color: var(--redbgkdG0x); }
+    .tour-rowozSrx3w:hover .tourDatep1QvWxa .mon4bAz3gnd { color: var(--inkExFUtmU3); }
+    .tour_info5LMuRmH h4 {
+      font-family: var(--serifHCgieg1);
+      font-weight: 700;
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+    .tour_info5LMuRmH .tagX3mIiu {
+      font-size: 11px;
+      letter-spacing: .15em;
+      color: var(--ink_muteAM5DDsnx);
+      text-transform: uppercase;
+    }
+    .tourVenueIikA6eB {
+      font-size: 13.5px;
+      color: var(--ink_softg5gX);
+    }
+    .tourVenueIikA6eB .citylqo8moB {
+      display: block;
+      font-size: 11px;
+      color: var(--ink_muteAM5DDsnx);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .tourCastQGv51 {
+      font-size: 13px;
+      color: var(--ink_muteAM5DDsnx);
+    }
+    .tourCastQGv51 .lead3vZ9qU { color: var(--ink_softg5gX); }
+    .tour-ctalTk6zPw1 {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .tour-ctalTk6zPw1 .btnXEzRQ3 { padding: 7px 18px; font-size: 13px; }
+
+    /* ========== 剧评 ========== */
+    .review-gridqMfwvQW1 {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 28px;
+    }
+    .review-cardUXil0u { cursor: pointer; }
+    .review-cardUXil0u .ph7Hax {
+      aspect-ratio: 4/3;
+      border-radius: var(--rZWKf4);
+      overflow: hidden;
+      margin-bottom: 19px;
+      position: relative;
+    }
+    .review-cardUXil0u:first-child .ph7Hax { aspect-ratio: 5/4; }
+    .review-cardUXil0u .ph_artbDyVF1G {
+      position: absolute; inset: 0;
+      transition: transform .5s;
+    }
+    .review-cardUXil0u:hover .ph_artbDyVF1G { transform: scale(1.05); }
+    .review-catUb010DR {
+      font-size: 11px;
+      letter-spacing: .2em;
+      color: var(--goldIx8Dh7);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .review-catUb010DR::before {
+      content: ''; width: 17px; height: 1px; background: var(--goldIx8Dh7);
+    }
+    .review-title9iWnpY {
+      font-family: var(--serifHCgieg1);
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.3;
+      margin-bottom: 10px;
+      transition: color .2s;
+    }
+    .review-cardUXil0u:first-child .review-title9iWnpY { font-size: 29px; }
+    .review-cardUXil0u:hover .review-title9iWnpY { color: var(--goldIx8Dh7); }
+    .reviewExcerptRIa6iT9K {
+      font-size: 13.5px;
+      color: var(--ink_muteAM5DDsnx);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .reviewMetatt1dRRZk {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-size: 13px;
+      color: var(--ink_muteAM5DDsnx);
+    }
+    .reviewMetatt1dRRZk .avaL1pSGBJ {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--goldIx8Dh7) 0%, var(--redbgkdG0x) 100%);
+    }
+    .reviewMetatt1dRRZk .namePMjG3 { color: var(--ink_softg5gX); }
+
+    /* ========== 订阅区 ========== */
+    .subscribeIAn3 {
+      padding: 97px 0;
+      background:
+        radial-gradient(ellipse 50% 80% at 50% 50%, rgba(200, 16, 46, .15) 0%, transparent 60%),
+        var(--bgw29Q);
+      position: relative;
+      overflow: hidden;
+    }
+    .subscribeIAn3::before, .subscribeIAn3::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, transparent 0%, var(--line-2L0ddAiO) 50%, transparent 100%);
+    }
+    .subscribeIAn3::before { left: 15%; }
+    .subscribeIAn3::after { right: 15%; }
+    .subscribe-innerO7u0 {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    .subscribeIAn3 h2 {
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.15;
+      margin: 13px 0 19px;
+    }
+    .subscribeIAn3 h2 em {
+      font-family: var(--display9nE5Ja6);
+      font-style: italic;
+      color: var(--goldIx8Dh7);
+      font-weight: 400;
+    }
+    .subscribeIAn3 p {
+      color: var(--ink_muteAM5DDsnx);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+    .subscribe_formACH9x {
+      display: flex;
+      max-width: 480px;
+      margin: 0 auto;
+      border: 1px solid var(--line-2L0ddAiO);
+      border-radius: var(--rZWKf4);
+      overflow: hidden;
+      background: var(--bg-soft4QbSS);
+    }
+    .subscribe_formACH9x input {
+      flex: 1;
+      padding: 17px 19px;
+      background: transparent;
+      border: none;
+      color: var(--inkExFUtmU3);
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    .subscribe_formACH9x input::placeholder { color: var(--ink-faintbM1y); }
+    .subscribe_formACH9x button {
+      padding: 0 28px;
+      background: var(--redbgkdG0x);
+      color: var(--inkExFUtmU3);
+      font-size: 13px;
+      letter-spacing: .1em;
+      font-weight: 500;
+      transition: background .2s;
+    }
+    .subscribe_formACH9x button:hover { background: var(--red-deep35Deef); }
+    .subscribe_hint09ldU1 {
+      margin-top: 17px;
+      font-size: 11px;
+      color: var(--ink-faintbM1y);
+      letter-spacing: .1em;
+    }
+
+    /* ========== 页脚 ========== */
+    footer {
+      background: var(--bg-soft4QbSS);
+      padding: 80px 0 37px;
+      border-top: 1px solid var(--linee6W5NwTu);
+    }
+    .footer-gridrW3fYE2 {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
+      gap: 51px;
+      margin-bottom: 60px;
+    }
+    .footer-brandkLLC0 .brandkD9QA { margin-bottom: 19px; }
+    .footer-brandkLLC0 p {
+      color: var(--ink_muteAM5DDsnx);
+      font-size: 13px;
+      line-height: 1.7;
+      max-width: 320px;
+    }
+    .footer-brandkLLC0 .socialsoBU126pO {
+      display: flex;
+      gap: 13px;
+      margin-top: 23px;
+    }
+    .footer-brandkLLC0 .socialsoBU126pO a {
+      width: 36px; height: 36px;
+      display: grid; place-items: center;
+      border: 1px solid var(--line-2L0ddAiO);
+      border-radius: 50%;
+      color: var(--ink_muteAM5DDsnx);
+      transition: all .2s;
+    }
+    .footer-brandkLLC0 .socialsoBU126pO a:hover {
+      border-color: var(--redbgkdG0x);
+      color: var(--redbgkdG0x);
+      transform: translateY(-2px);
+    }
+    .footer-colTE9jr5k h5 {
+      font-family: var(--sansNd8x);
+      font-size: 13px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--goldIx8Dh7);
+      margin-bottom: 19px;
+    }
+    .footer-colTE9jr5k ul {
+      list-style: none;
+      margin: 0; padding: 0;
+    }
+    .footer-colTE9jr5k li { margin-bottom: 13px; }
+    .footer-colTE9jr5k a {
+      font-size: 13.5px;
+      color: var(--ink_muteAM5DDsnx);
+      transition: color .2s;
+    }
+    .footer-colTE9jr5k a:hover { color: var(--inkExFUtmU3); }
+    .footer_bottom1Mgi6qN9 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 29px;
+      border-top: 1px solid var(--linee6W5NwTu);
+      font-size: 13px;
+      color: var(--ink-faintbM1y);
+    }
+    .footer_bottom1Mgi6qN9 .linksHM0q {
+      display: flex;
+      gap: 23px;
+    }
+    .footer_bottom1Mgi6qN9 a:hover { color: var(--ink_softg5gX); }
+
+    /* ========== 滚动揭示动效 ========== */
+    .reveal4mMG09um {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    .reveal4mMG09um.is-in0Juuw8s6 {
+      opacity: 1;
+      transform: none;
+    }
+    .revealD1R16Ax { transition-delay: .1s; }
+    .revealD2xRX4 { transition-delay: .2s; }
+    .reveal_d3UV3jQ { transition-delay: .3s; }
+    .revealD4rx8cEx { transition-delay: .4s; }
+
+    /* ========== 响应式 ========== */
+    @media (max-width: 1024px) {
+      .nav-menuiiP8C1 { display: none; }
+      .menu_toggleILpF4sa { display: flex; }
+      .nav-actionsusUB1 .btnGhostWE14hO0 { display: none; }
+      .hero-inneriIiR84z { grid-template-columns: 1fr; gap: 37px; }
+      .heroRightwZr3Ck { max-width: 360px; justify-self: center; }
+      .play-gridHjP3Z { grid-template-columns: repeat(3, 1fr); }
+      .releaseRowPu5LnPt { grid-template-columns: 1fr 1fr; }
+      .release-cardnCh0SO:first-child { grid-column: span 2; grid-row: auto; aspect-ratio: 16/9; }
+      .artist-rowPPYm6S { grid-template-columns: repeat(3, 1fr); }
+      .tour-rowozSrx3w { grid-template-columns: 80px 1fr 1fr 120px; gap: 17px; }
+      .tour-rowozSrx3w .tourCastQGv51 { display: none; }
+      .review-gridqMfwvQW1 { grid-template-columns: 1fr 1fr; }
+      .review-cardUXil0u:first-child { grid-column: span 2; }
+      .footer-gridrW3fYE2 { grid-template-columns: 1fr 1fr 1fr; gap: 29px; }
+      .footer-brandkLLC0 { grid-column: span 3; }
+    }
+    @media (max-width: 768px) {
+      section { padding: 63px 0; }
+      .section-headWWQx6 { flex-direction: column; align-items: flex-start; gap: 17px; }
+      .section-headWWQx6 .headSideyNRQ4 { align-items: flex-start; }
+      .play-gridHjP3Z { grid-template-columns: repeat(2, 1fr); gap: 17px; }
+      .releaseRowPu5LnPt { grid-template-columns: 1fr; }
+      .release-cardnCh0SO:first-child { grid-column: auto; aspect-ratio: 16/9; }
+      .artist-rowPPYm6S { grid-template-columns: repeat(2, 1fr); gap: 17px; }
+      .tour-rowozSrx3w {
+        grid-template-columns: 70px 1fr;
+        grid-template-rows: auto auto;
+        gap: 13px;
+        padding: 17px 0;
+      }
+      .tour-rowozSrx3w:hover { padding-left: 7px; padding-right: 7px; }
+      .tour-rowozSrx3w .tourVenueIikA6eB, .tour-rowozSrx3w .tour-ctalTk6zPw1 { grid-column: 2; }
+      .tour-rowozSrx3w .tour-ctalTk6zPw1 { justify-content: flex-start; }
+      .review-gridqMfwvQW1 { grid-template-columns: 1fr; }
+      .review-cardUXil0u:first-child { grid-column: auto; }
+      .footer-gridrW3fYE2 { grid-template-columns: 1fr 1fr; gap: 23px; }
+      .footer-brandkLLC0 { grid-column: span 2; }
+      .footer_bottom1Mgi6qN9 { flex-direction: column; gap: 17px; align-items: flex-start; }
+      .curtain8OVUAa { width: 8%; }
+      .spothzDz2fd { width: 100px; }
+      .hero_statssOCE7 { gap: 23px; }
+      .statdm3F4aw .numG9oV { font-size: 28px; }
+      .subscribe_formACH9x { flex-direction: column; }
+      .subscribe_formACH9x button { padding: 14px 19px; }
+    }
+    @media (max-width: 480px) {
+      .hero-cta5uUbg2T .btnXEzRQ3 { width: 100%; justify-content: center; }
+      .play-gridHjP3Z { grid-template-columns: 1fr; }
+      .artist-rowPPYm6S { grid-template-columns: 1fr 1fr; }
+      .footer-gridrW3fYE2 { grid-template-columns: 1fr; }
+      .footer-brandkLLC0 { grid-column: auto; }
+      .footer_bottom1Mgi6qN9 .linksHM0q { flex-wrap: wrap; gap: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 头顶那排导航 -->
+  <header class="daohang7MUaii" id="daohangzKLcH6y">
+    <div class="waiMB0u nav_innerL7pyOc">
+      <a href="#" class="brandkD9QA" aria-label="AI剧场">
+        <div class="brand-markWN4Be">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 4 L26 4 L26 8 L24 10 L24 26 Q24 28 22 28 L10 28 Q8 28 8 26 L8 10 L6 8 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M12 14 L20 14 M12 18 L20 18 M12 22 L17 22" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="24" cy="6" r="2" fill="#c8102e"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-text4KaJma">AI剧场<span class="dotRSnU67B">·</span></div>
+        </div>
+        <span class="brand-subUYxkauP0">Curu Theatre</span>
+      </a>
+      <nav>
+        <ul class="nav-menuiiP8C1">
+          <li><a href="#" class="isActiveqHd0">首页</a></li>
+          <li><a href="#playsch2mWw">本季剧目</a></li>
+          <li><a href="#releasesf1ceXEv">新戏速递</a></li>
+          <li><a href="#artistsgQvNww1e">剧团</a></li>
+          <li><a href="#touroElqivi0">巡演日程</a></li>
+          <li><a href="#reviewsdX9s">剧评</a></li>
+          <li><a href="#aboutzCh10tu">关于</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actionsusUB1">
+        <button class="icon-btnKq2XFsy" aria-label="搜索">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </button>
+        <button class="icon-btnKq2XFsy" aria-label="账户">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+          </svg>
+        </button>
+        <a href="#" class="btnXEzRQ3 btnGhostWE14hO0">登录</a>
+        <a href="#" class="btnXEzRQ3 btn-primaryKVV1s">
+          立即购票
+          <svg class="btn_arrow1R4t3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </a>
+        <button class="menu_toggleILpF4sa" id="menu_toggleIKnR0" aria-label="菜单">
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 手机上那个侧滑菜单 -->
+  <div class="drawer_mask4TOo" id="drawer-maskKn86f63"></div>
+  <aside class="mobile-drawer7HsWfD" id="mobileDrawerc6aQ96q" aria-label="移动端菜单">
+    <ul>
+      <li><a href="#">首页</a></li>
+      <li><a href="#playsch2mWw">本季剧目</a></li>
+      <li><a href="#releasesf1ceXEv">新戏速递</a></li>
+      <li><a href="#artistsgQvNww1e">剧团阵容</a></li>
+      <li><a href="#touroElqivi0">巡演日程</a></li>
+      <li><a href="#reviewsdX9s">剧评精选</a></li>
+      <li><a href="#aboutzCh10tu">关于剧场</a></li>
+    </ul>
+  </aside>
+
+  <!-- 首屏大图 -->
+  <section class="hero7KOv">
+    <div class="hero_bgdUWDg3" aria-hidden="true"></div>
+    <div class="curtain8OVUAa curtain-leftx0yOn2IC" aria-hidden="true"></div>
+    <div class="curtain8OVUAa curtain-rightQyKFp7" aria-hidden="true"></div>
+    <div class="spothzDz2fd spot-1sIR62" aria-hidden="true"></div>
+    <div class="spothzDz2fd spot_2g1q7kR" aria-hidden="true"></div>
+    <div class="spothzDz2fd spot-3FRc9UzR" aria-hidden="true"></div>
+
+    <div class="waiMB0u hero-inneriIiR84z">
+      <div class="heroLeftL1O5g1">
+        <div class="heroMetaxA56mt">
+          <span class="metaItem2qw1ZO">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2.3 4.6 5.1.7-3.7 3.6.9 5.1L8 12.5 3.4 15l.9-5.1L.6 6.3l5.1-.7L8 1z"/></svg>
+            2026 春季演出季
+          </span>
+          <span class="metaItem2qw1ZO">本季共 12 部戏</span>
+          <span class="metaItem2qw1ZO">38 场演出</span>
+        </div>
+        <h1 class="heroTitleJ80o8">
+          <span class="lineqg53Ut">戏入<span class="accentIwNu35mp">新生</span></span>
+          <span class="lineqg53Ut"><span class="strikebM56w">当算法</span></span>
+          <span class="lineqg53Ut">执笔写戏</span>
+        </h1>
+        <p class="hero_subC9Ctl">
+          我们用十二台机器，<em>重写了七部经典</em>，又写出了五部从未上演的新戏。
+          这一季，从《牡丹亭》的 GPU 算力到元宇宙的《等待戈多》——
+          每一场演出，都是人类与算法的一次同台。
+        </p>
+        <div class="hero-cta5uUbg2T">
+          <a href="#playsch2mWw" class="btnXEzRQ3 btn-primaryKVV1s">
+            探索本季剧目
+            <svg class="btn_arrow1R4t3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </a>
+          <a href="#touroElqivi0" class="btnXEzRQ3 btnGhostWE14hO0">
+            查看巡演场次
+          </a>
+        </div>
+        <div class="hero_statssOCE7">
+          <div class="statdm3F4aw">
+            <div class="numG9oV">12</div>
+            <div class="lblunUQ2">本季剧目</div>
+          </div>
+          <div class="statdm3F4aw">
+            <div class="numG9oV">38</div>
+            <div class="lblunUQ2">巡演场次</div>
+          </div>
+          <div class="statdm3F4aw">
+            <div class="numG9oV">9.4</div>
+            <div class="lblunUQ2">观众评分</div>
+          </div>
+          <div class="statdm3F4aw">
+            <div class="numG9oV">6</div>
+            <div class="lblunUQ2">城市联动</div>
+          </div>
+        </div>
+      </div>
+      <div class="heroRightwZr3Ck">
+        <div class="heroPoster1RsJ0">
+          <div class="poster-artHTE6zR"></div>
+          <div class="poster-figureRO6SnL"></div>
+          <div class="poster_tagkcX9wXc">PREMIERE · 4.12</div>
+          <div class="poster_textSLuudhD7">
+            <div class="plNnV0sEk">A CURU PRODUCTION</div>
+            <div class="ptESvO10">牡丹亭 · <br/>2049</div>
+            <div class="paQjQ3mej">导演 / 林婉 · 算法编曲 / MuseNet-X</div>
+          </div>
+          <div class="posterFramed54eK"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="heroScrollJjwee1SG">
+      <span>SCROLL</span>
+      <div class="lineqg53Ut"></div>
+    </div>
+  </section>
+
+  <!-- 这季在演的戏 -->
+  <section id="playsch2mWw">
+    <div class="waiMB0u">
+      <div class="section-headWWQx6 reveal4mMG09um">
+        <div>
+          <div class="eyebrowe1J7"><span class="numG9oV">01</span> 本季正在上演</div>
+          <h2>12 部戏，<em>各有各的脾气</em></h2>
+        </div>
+        <div class="headSideyNRQ4">
+          <span style="font-size:12px;color:var(--ink_muteAM5DDsnx);letter-spacing:.1em;">每周二、周五 20:00 开场</span>
+          <a href="#" class="link-arrow8cKT9j">
+            查看全部剧目
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="play-gridHjP3Z">
+        <article class="play-card4MUqFTBG reveal4mMG09um">
+          <div class="play_coverHDDZl7">
+            <div class="play_cover_artao01MFQ art-1SmTp7Qp"></div>
+            <span class="play_tag7vT8WJ">经典新编</span>
+            <div class="play-actionsEg3g">
+              <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14"><path d="M3 2l11 6-11 6V2z"/></svg>
+            </div>
+          </div>
+          <div class="play_meta9mTN">
+            <span>2026.04.12</span>
+            <span class="play_rating7DtfE">
+              <svg viewBox="0 0 12 12" fill="currentColor" width="12" height="12"><path d="M6 1l1.5 3 3.5.5-2.5 2.5.5 3.5L6 8.5 3 10.5l.5-3.5L1 4.5l3.5-.5L6 1z"/></svg>
+              9.6
+            </span>
+          </div>
+          <h3 class="play-title2KhLhT">牡丹亭·2049</h3>
+          <p class="playSubb2bF">杜丽娘在数字伊甸园里重活一次</p>
+        </article>
+        <article class="play-card4MUqFTBG reveal4mMG09um revealD1R16Ax">
+          <div class="play_coverHDDZl7">
+            <div class="play_cover_artao01MFQ art2F0tx"></div>
+            <span class="play_tag7vT8WJ">独幕剧</span>
+            <div class="play-actionsEg3g">
+              <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14"><path d="M3 2l11 6-11 6V2z"/></svg>
+            </div>
+          </div>
+          <div class="play_meta9mTN">
+            <span>2026.04.18</span>
+            <span class="play_rating7DtfE">
+              <svg viewBox="0 0 12 12" fill="currentColor" width="12" height="12"><path d="M6 1l1.5 3 3.5.5-2.5 2.5.5 3.5L6 8.5 3 10.5l.5-3.5L1 4.5l3.5-.5L6 1z"/></svg>
+              9.2
+            </span>
+          </div>
+          <h3 class="play-title2KhLhT">等待戈多·元宇宙版</h3>
+          <p class="playSubb2bF">两个流浪汉在云端等了 38 分钟</p>
+        </article>
+        <article class="play-card4MUqFTBG reveal4mMG09um revealD2xRX4">
+          <div class="play_coverHDDZl7">
+            <div class="play_cover_artao01MFQ art-38d7uPLs"></div>
+            <span class="play_tag7vT8WJ">原创</span>
+            <div class="play-actionsEg3g">
+              <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14"><path d="M3 2l11 6-11 6V2z"/></svg>
+            </div>
+          </div>
+          <div class="play_meta9mTN">
+            <span>2026.04.22</span>
+            <span class="play_rating7DtfE">
+              <svg viewBox="0 0 12 12" fill="currentColor" width="12" height="12"><path d="M6 1l1.5 3 3.5.5-2.5 2.5.5 3.5L6 8.5 3 10.5l.5-3.5L1 4.5l3.5-.5L6 1z"/></svg>
+              8.9
+            </span>
+          </div>
+          <h3 class="play-title2KhLhT">哈姆雷特的备份</h3>
+          <p class="playSubb2bF">王子在死前 0.3 秒想起的 7 件事</p>
+        </article>
+        <article class="play-card4MUqFTBG reveal4mMG09um reveal_d3UV3jQ">
+          <div class="play_coverHDDZl7">
+            <div class="play_cover_artao01MFQ art4oiq2mgdA"></div>
+            <span class="play_tag7vT8WJ">实验戏剧</span>
+            <div class="play-actionsEg3g">
+              <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14"><path d="M3 2l11 6-11 6V2z"/></svg>
+            </div>
+          </div>
+          <div class="play_meta9mTN">
+            <span>2026.04.26</span>
+            <span class="play_rating7DtfE">
+              <svg viewBox="0 0 12 12" fill="currentColor" width="12" height="12"><path d="M6 1l1.5 3 3.5.5-2.5 2.5.5 3.5L6 8.5 3 10.5l.5-3.5L1 4.5l3.5-.5L6 1z"/></svg>
+              9.4
+            </span>
+          </div>
+          <h3 class="play-title2KhLhT">仲夏夜之梦 2.0</h3>
+          <p class="playSubb2bF">当仙后爱上了一个聊天机器人</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 最近新上的 -->
+  <section id="releasesf1ceXEv" class="newReleasesSowKyL6">
+    <div class="waiMB0u">
+      <div class="section-headWWQx6 reveal4mMG09um">
+        <div>
+          <div class="eyebrowe1J7"><span class="numG9oV">02</span> 新戏速递</div>
+          <h2>本月 <em>上新</em></h2>
+        </div>
+        <div class="headSideyNRQ4">
+          <a href="#" class="link-arrow8cKT9j">
+            全部新戏
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="releaseRowPu5LnPt">
+        <article class="release-cardnCh0SO reveal4mMG09um">
+          <div class="release-artyZov1 art537yoY"></div>
+          <span class="releaseDate4BPhF55">04 · 28 上演</span>
+          <div class="release_info9AiMaJ">
+            <h3 class="release-titlerUE6DrIb">雷雨·2026 修订版</h3>
+            <div class="release-meta1yTg4fxz">
+              <span>曹禺 × AI 协同创作</span>
+              <span class="sep1elxKS">·</span>
+              <span>国家大剧院</span>
+            </div>
+          </div>
+        </article>
+        <article class="release-cardnCh0SO reveal4mMG09um revealD1R16Ax">
+          <div class="release-artyZov1 art-6QduP5J"></div>
+          <div class="release_info9AiMaJ">
+            <h3 class="release-titlerUE6DrIb">麦克白夫人</h3>
+            <div class="release-meta1yTg4fxz">
+              <span>独角戏</span>
+              <span class="sep1elxKS">·</span>
+              <span>5.06</span>
+            </div>
+          </div>
+        </article>
+        <article class="release-cardnCh0SO reveal4mMG09um revealD2xRX4">
+          <div class="release-artyZov1 art-7xnL4"></div>
+          <div class="release_info9AiMaJ">
+            <h3 class="release-titlerUE6DrIb">长恨歌 · 续</h3>
+            <div class="release-meta1yTg4fxz">
+              <span>实景</span>
+              <span class="sep1elxKS">·</span>
+              <span>5.12</span>
+            </div>
+          </div>
+        </article>
+        <article class="release-cardnCh0SO reveal4mMG09um reveal_d3UV3jQ">
+          <div class="release-artyZov1 art-8AmimN9Kc"></div>
+          <div class="release_info9AiMaJ">
+            <h3 class="release-titlerUE6DrIb">日瓦戈医生</h3>
+            <div class="release-meta1yTg4fxz">
+              <span>话剧</span>
+              <span class="sep1elxKS">·</span>
+              <span>5.18</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 台上的演员们 -->
+  <section id="artistsgQvNww1e">
+    <div class="waiMB0u">
+      <div class="section-headWWQx6 reveal4mMG09um">
+        <div>
+          <div class="eyebrowe1J7"><span class="numG9oV">03</span> 剧团阵容</div>
+          <h2>9 位 <em>常驻演员</em>，3 位客座</h2>
+        </div>
+        <div class="headSideyNRQ4">
+          <a href="#" class="link-arrow8cKT9j">
+            查看完整阵容
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="artist-rowPPYm6S">
+        <article class="yanyuanY2FsPAvE reveal4mMG09um">
+          <div class="artist_photomMX9t">
+            <div class="ph_artbDyVF1G ph1hFGna3s"></div>
+            <span class="artist-roleLgWA3">艺术总监</span>
+          </div>
+          <h4 class="artist_nameQ1a6">林婉</h4>
+          <p class="artist_taghC9M025">导演 · 编剧</p>
+        </article>
+        <article class="yanyuanY2FsPAvE reveal4mMG09um revealD1R16Ax">
+          <div class="artist_photomMX9t">
+            <div class="ph_artbDyVF1G ph29Ov05"></div>
+            <span class="artist-roleLgWA3">首席男伶</span>
+          </div>
+          <h4 class="artist_nameQ1a6">沈昼</h4>
+          <p class="artist_taghC9M025">饰 哈姆雷特</p>
+        </article>
+        <article class="yanyuanY2FsPAvE reveal4mMG09um revealD2xRX4">
+          <div class="artist_photomMX9t">
+            <div class="ph_artbDyVF1G ph-31TuqDmZz"></div>
+            <span class="artist-roleLgWA3">首席女伶</span>
+          </div>
+          <h4 class="artist_nameQ1a6">姜穗</h4>
+          <p class="artist_taghC9M025">饰 杜丽娘</p>
+        </article>
+        <article class="yanyuanY2FsPAvE reveal4mMG09um reveal_d3UV3jQ">
+          <div class="artist_photomMX9t">
+            <div class="ph_artbDyVF1G ph-4Sd1Z5vB9"></div>
+            <span class="artist-roleLgWA3">客座</span>
+          </div>
+          <h4 class="artist_nameQ1a6">陶砚之</h4>
+          <p class="artist_taghC9M025">饰 周朴园</p>
+        </article>
+        <article class="yanyuanY2FsPAvE reveal4mMG09um revealD4rx8cEx">
+          <div class="artist_photomMX9t">
+            <div class="ph_artbDyVF1G ph-5y1OOed5w"></div>
+            <span class="artist-roleLgWA3">新锐</span>
+          </div>
+          <h4 class="artist_nameQ1a6">苏望</h4>
+          <p class="artist_taghC9M025">饰 麦克白</p>
+        </article>
+        <article class="yanyuanY2FsPAvE reveal4mMG09um">
+          <div class="artist_photomMX9t">
+            <div class="ph_artbDyVF1G ph-6wbLM3Bcn"></div>
+            <span class="artist-roleLgWA3">常驻</span>
+          </div>
+          <h4 class="artist_nameQ1a6">韦子衿</h4>
+          <p class="artist_taghC9M025">饰 仙后</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 后面要去的城市 -->
+  <section id="touroElqivi0" class="tour-sectionOmezc7">
+    <div class="waiMB0u">
+      <div class="section-headWWQx6 reveal4mMG09um">
+        <div>
+          <div class="eyebrowe1J7"><span class="numG9oV">04</span> 巡演日程</div>
+          <h2>未来 30 天 · <em>6 城 · 11 场</em></h2>
+        </div>
+        <div class="headSideyNRQ4">
+          <a href="#" class="link-arrow8cKT9j">
+            完整巡演表
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="tour-tabs9S3f reveal4mMG09um">
+        <button class="tour-tabrrpyZi7P isActiveqHd0">全部剧目</button>
+        <button class="tour-tabrrpyZi7P">牡丹亭·2049</button>
+        <button class="tour-tabrrpyZi7P">雷雨</button>
+        <button class="tour-tabrrpyZi7P">仲夏夜之梦 2.0</button>
+        <button class="tour-tabrrpyZi7P">实验剧目</button>
+      </div>
+
+      <div class="tour-listWcQml9x2">
+        <div class="tour-rowozSrx3w reveal4mMG09um">
+          <div class="tourDatep1QvWxa">
+            <div class="dayR1ZAch">12</div>
+            <div class="mon4bAz3gnd">APR</div>
+          </div>
+          <div class="tour_info5LMuRmH">
+            <h4>牡丹亭·2049</h4>
+            <span class="tagX3mIiu">首演 · 开幕剧目</span>
+          </div>
+          <div class="tourVenueIikA6eB">
+            国家大剧院 · 歌剧厅
+            <span class="citylqo8moB">北京 · CHAOYANG</span>
+          </div>
+          <div class="tourCastQGv51">
+            <span class="lead3vZ9qU">领衔：</span>姜穗 / 沈昼
+          </div>
+          <div class="tour-ctalTk6zPw1">
+            <a href="#" class="btnXEzRQ3 btn-primaryKVV1s">购票</a>
+          </div>
+        </div>
+        <div class="tour-rowozSrx3w reveal4mMG09um revealD1R16Ax">
+          <div class="tourDatep1QvWxa">
+            <div class="dayR1ZAch">18</div>
+            <div class="mon4bAz3gnd">APR</div>
+          </div>
+          <div class="tour_info5LMuRmH">
+            <h4>等待戈多·元宇宙版</h4>
+            <span class="tagX3mIiu">实验戏剧</span>
+          </div>
+          <div class="tourVenueIikA6eB">
+            蜂巢剧场
+            <span class="citylqo8moB">北京 · DONGCHENG</span>
+          </div>
+          <div class="tourCastQGv51">
+            <span class="lead3vZ9qU">领衔：</span>陶砚之
+          </div>
+          <div class="tour-ctalTk6zPw1">
+            <a href="#" class="btnXEzRQ3 btn-primaryKVV1s">购票</a>
+          </div>
+        </div>
+        <div class="tour-rowozSrx3w reveal4mMG09um revealD2xRX4">
+          <div class="tourDatep1QvWxa">
+            <div class="dayR1ZAch">22</div>
+            <div class="mon4bAz3gnd">APR</div>
+          </div>
+          <div class="tour_info5LMuRmH">
+            <h4>哈姆雷特的备份</h4>
+            <span class="tagX3mIiu">原创</span>
+          </div>
+          <div class="tourVenueIikA6eB">
+            上海大剧院 · 小剧场
+            <span class="citylqo8moB">上海 · HUANGPU</span>
+          </div>
+          <div class="tourCastQGv51">
+            <span class="lead3vZ9qU">领衔：</span>沈昼
+          </div>
+          <div class="tour-ctalTk6zPw1">
+            <a href="#" class="btnXEzRQ3 btn-primaryKVV1s">购票</a>
+          </div>
+        </div>
+        <div class="tour-rowozSrx3w reveal4mMG09um reveal_d3UV3jQ">
+          <div class="tourDatep1QvWxa">
+            <div class="dayR1ZAch">26</div>
+            <div class="mon4bAz3gnd">APR</div>
+          </div>
+          <div class="tour_info5LMuRmH">
+            <h4>仲夏夜之梦 2.0</h4>
+            <span class="tagX3mIiu">喜剧 · 全息投影</span>
+          </div>
+          <div class="tourVenueIikA6eB">
+            广州大剧院
+            <span class="citylqo8moB">广州 · TIANHE</span>
+          </div>
+          <div class="tourCastQGv51">
+            <span class="lead3vZ9qU">领衔：</span>姜穗 / 苏望
+          </div>
+          <div class="tour-ctalTk6zPw1">
+            <a href="#" class="btnXEzRQ3 btn-primaryKVV1s">购票</a>
+          </div>
+        </div>
+        <div class="tour-rowozSrx3w reveal4mMG09um revealD4rx8cEx">
+          <div class="tourDatep1QvWxa">
+            <div class="dayR1ZAch">02</div>
+            <div class="mon4bAz3gnd">MAY</div>
+          </div>
+          <div class="tour_info5LMuRmH">
+            <h4>雷雨·2026 修订版</h4>
+            <span class="tagX3mIiu">经典新编</span>
+          </div>
+          <div class="tourVenueIikA6eB">
+            四川大剧院
+            <span class="citylqo8moB">成都 · JINNIU</span>
+          </div>
+          <div class="tourCastQGv51">
+            <span class="lead3vZ9qU">领衔：</span>陶砚之 / 韦子衿
+          </div>
+          <div class="tour-ctalTk6zPw1">
+            <a href="#" class="btnXEzRQ3 btn-primaryKVV1s">购票</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 散场后写的字 -->
+  <section id="reviewsdX9s">
+    <div class="waiMB0u">
+      <div class="section-headWWQx6 reveal4mMG09um">
+        <div>
+          <div class="eyebrowe1J7"><span class="numG9oV">05</span> 剧评精选</div>
+          <h2>写在散场之后</h2>
+        </div>
+        <div class="headSideyNRQ4">
+          <a href="#" class="link-arrow8cKT9j">
+            阅读更多
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="review-gridqMfwvQW1">
+        <article class="review-cardUXil0u reveal4mMG09um">
+          <div class="ph7Hax">
+            <div class="ph_artbDyVF1G art2F0tx"></div>
+          </div>
+          <div class="review-catUb010DR">深度长评</div>
+          <h3 class="review-title9iWnpY">当算法执笔写戏，<br/>戏剧还剩下什么？</h3>
+          <p class="reviewExcerptRIa6iT9K">看了《牡丹亭·2049》三遍。第一遍看情节，第二遍看调度，第三遍才意识到——真正让我落泪的，是那行人类导演写给算法的批注："此处不必工整。"</p>
+          <div class="reviewMetatt1dRRZk">
+            <div class="avaL1pSGBJ"></div>
+            <span class="namePMjG3">苏明远</span>
+            <span>·</span>
+            <span>资深剧评人</span>
+            <span>·</span>
+            <span>8 分钟阅读</span>
+          </div>
+        </article>
+        <article class="review-cardUXil0u reveal4mMG09um revealD1R16Ax">
+          <div class="ph7Hax">
+            <div class="ph_artbDyVF1G art-6QduP5J"></div>
+          </div>
+          <div class="review-catUb010DR">观众手记</div>
+          <h3 class="review-title9iWnpY">一场没有戈多的等待</h3>
+          <p class="reviewExcerptRIa6iT9K">陶砚之独自站在空旷的元宇宙里，整整 38 分钟没有一句台词。我数了 23 次眨眼。第 24 次他哭了，我才知道他在等。</p>
+          <div class="reviewMetatt1dRRZk">
+            <div class="avaL1pSGBJ"></div>
+            <span class="namePMjG3">林知夏</span>
+            <span>·</span>
+            <span>普通观众</span>
+          </div>
+        </article>
+        <article class="review-cardUXil0u reveal4mMG09um revealD2xRX4">
+          <div class="ph7Hax">
+            <div class="ph_artbDyVF1G art-7xnL4"></div>
+          </div>
+          <div class="review-catUb010DR">对话</div>
+          <h3 class="review-title9iWnpY">林婉：<br/>AI 不是演员，是对手</h3>
+          <p class="reviewExcerptRIa6iT9K">"我让算法写台词，但语气要我自己定。"她在一杯凉掉的咖啡后面说，"它提供了 200 种告别，我选了最笨的那一种。"</p>
+          <div class="reviewMetatt1dRRZk">
+            <div class="avaL1pSGBJ"></div>
+            <span class="namePMjG3">陈景行</span>
+            <span>·</span>
+            <span>戏剧周刊</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 留邮箱那个框 -->
+  <section class="subscribeIAn3" id="aboutzCh10tu">
+    <div class="waiMB0u subscribe-innerO7u0 reveal4mMG09um">
+      <div class="eyebrowe1J7" style="justify-content:center;"><span class="numG9oV">06</span> 入戏通知</div>
+      <h2>新戏 <em>第一排</em>，<br/>永远先告诉你</h2>
+      <p>每周三上午十点，我们把下一周的开场戏、最后一排的票、和主创的手写便条，寄到你的邮箱。<br/>不打扰，可以随时退订。</p>
+      <form class="subscribe_formACH9x" onsubmit="event.preventDefault(); this.querySelector('button').textContent='已订阅 ✓';">
+        <input type="email" placeholder="留下你的邮箱" required />
+        <button type="submit">订阅</button>
+      </form>
+      <div class="subscribe_hint09ldU1">我们尊重你的收件箱 · 不会发送任何广告</div>
+    </div>
+  </section>
+
+  <!-- 最底下一栏 -->
+  <footer>
+    <div class="waiMB0u">
+      <div class="footer-gridrW3fYE2">
+        <div class="footer-brandkLLC0">
+          <a href="#" class="brandkD9QA">
+            <div class="brand-markWN4Be">
+              <svg viewBox="0 0 32 32" fill="none"><path d="M6 4 L26 4 L26 8 L24 10 L24 26 Q24 28 22 28 L10 28 Q8 28 8 26 L8 10 L6 8 Z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 14 L20 14 M12 18 L20 18 M12 22 L17 22" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="24" cy="6" r="2" fill="#c8102e"/></svg>
+            </div>
+            <div>
+              <div class="brand-text4KaJma">AI剧场<span class="dotRSnU67B">·</span></div>
+            </div>
+          </a>
+          <p>用算法重写经典，让每一个故事都能被重新演绎。<br/>我们相信，戏是演给人看的，<br/>技术只是让它多一种可能。</p>
+          <div class="socialsoBU126pO">
+            <a href="#" aria-label="微博">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M9.5 18C5.36 18 2 15.64 2 12.5S5.36 7 9.5 7s7.5 2.36 7.5 5.5S13.64 18 9.5 18zm5.3-7.8c-.3-.1-.2-.4.1-.5.8-.3 1.4-.9 1.4-1.5 0-.8-.8-1.4-1.8-1.4-.4 0-.8.1-1.1.3-.3.1-.5 0-.4-.2.3-.7 1-1.2 1.8-1.2 1.1 0 2 .7 2 1.6 0 .9-.7 1.7-1.7 1.9-.3.1-.5 0-.3 0z"/></svg>
+            </a>
+            <a href="#" aria-label="微信">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M8.7 5C4.9 5 2 7.5 2 10.6c0 1.7 1 3.3 2.5 4.4l-.6 1.8 2.2-1.1c.8.2 1.6.3 2.5.3.2 0 .4 0 .6-.1-.1-.4-.2-.8-.2-1.2 0-2.8 2.7-5 6-5 .2 0 .4 0 .6.1C15.1 7 12.1 5 8.7 5zM7 8.5c.5 0 .8.4.8.8s-.3.8-.8.8-.8-.4-.8-.8.4-.8.8-.8zm3.4 0c.5 0 .8.4.8.8s-.3.8-.8.8-.8-.4-.8-.8.4-.8.8-.8zM15 11c-3 0-5.5 1.9-5.5 4.2 0 1.4.9 2.7 2.2 3.5l-.4 1.4 1.6-.8c.6.1 1.3.2 2 .2 3 0 5.5-1.9 5.5-4.2S18 11 15 11zm-1.7 2.5c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.3-.7-.7.3-.7.7-.7zm3.3 0c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.3-.7-.7.3-.7.7-.7z"/></svg>
+            </a>
+            <a href="#" aria-label="B站">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.8 4l-1.5 1.5h-8.6L6.2 4 4.7 5.5l1.5 1.5H5C3.9 7 3 7.9 3 9v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2h-1.2l1.5-1.5L17.8 4zM8 12h2v-1H8v1zm6 0h2v-1h-2v1z"/></svg>
+            </a>
+            <a href="#" aria-label="小红书">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M3 3h18v18H3V3zm5 5v8h2v-3h1l1.5 3h2.2L12.4 13c.9-.3 1.6-1 1.6-2 0-1.7-1.3-3-3-3H8zm2 2h1c.6 0 1 .4 1 1s-.4 1-1 1h-1v-2z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-colTE9jr5k">
+          <h5>剧目</h5>
+          <ul>
+            <li><a href="#">本季演出</a></li>
+            <li><a href="#">经典新编</a></li>
+            <li><a href="#">原创剧目</a></li>
+            <li><a href="#">实验戏剧</a></li>
+            <li><a href="#">儿童剧</a></li>
+          </ul>
+        </div>
+        <div class="footer-colTE9jr5k">
+          <h5>看戏</h5>
+          <ul>
+            <li><a href="#">巡演日程</a></li>
+            <li><a href="#">购票</a></li>
+            <li><a href="#">会员计划</a></li>
+            <li><a href="#">团体票</a></li>
+            <li><a href="#">学生优惠</a></li>
+          </ul>
+        </div>
+        <div class="footer-colTE9jr5k">
+          <h5>了解</h5>
+          <ul>
+            <li><a href="#">关于剧场</a></li>
+            <li><a href="#">剧团</a></li>
+            <li><a href="#">剧评</a></li>
+            <li><a href="#">幕后故事</a></li>
+            <li><a href="#">加入我们</a></li>
+          </ul>
+        </div>
+        <div class="footer-colTE9jr5k">
+          <h5>联系</h5>
+          <ul>
+            <li><a href="#">+86 010 8888 0000</a></li>
+            <li><a href="#">hello@curutheatre.com</a></li>
+            <li><a href="#">北京市朝阳区<br/>国家大剧院东侧</a></li>
+            <li><a href="#">周二至周日 10:00-21:00</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer_bottom1Mgi6qN9">
+        <div>© 2026 AI剧场 · Curu Theatre. 一台机器和一个剧团的同台实验.</div>
+        <div class="linksHM0q">
+          <a href="#">隐私</a>
+          <a href="#">服务条款</a>
+          <a href="#">票务规则</a>
+          <a href="#">无障碍</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 导航滚动效果
+    const nav = document.getElementById('daohangzKLcH6y');
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const cur = window.pageYOffset;
+      if (cur > 40) nav.classList.add('is_scrolledlhEiw6');
+      else nav.classList.remove('is_scrolledlhEiw6');
+      lastScroll = cur;
+    }, { passive: true });
+
+    // 移动端抽屉
+    const toggle = document.getElementById('menu_toggleIKnR0');
+    const drawer = document.getElementById('mobileDrawerc6aQ96q');
+    const mask = document.getElementById('drawer-maskKn86f63');
+    function closeDrawer() {
+      toggle.classList.remove('is_openAZIFvk2m');
+      drawer.classList.remove('is_openAZIFvk2m');
+      mask.classList.remove('is_openAZIFvk2m');
+    }
+    toggle.addEventListener('click', () => {
+      const isOpen = drawer.classList.contains('is_openAZIFvk2m');
+      if (isOpen) closeDrawer();
+      else {
+        toggle.classList.add('is_openAZIFvk2m');
+        drawer.classList.add('is_openAZIFvk2m');
+        mask.classList.add('is_openAZIFvk2m');
+      }
+    });
+    mask.addEventListener('click', closeDrawer);
+    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+
+    // 滚动揭示
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-in0Juuw8s6');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal4mMG09um').forEach(el => io.observe(el));
+
+    // 巡演标签切换
+    document.querySelectorAll('.tour-tabrrpyZi7P').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tour-tabrrpyZi7P').forEach(t => t.classList.remove('isActiveqHd0'));
+        tab.classList.add('isActiveqHd0');
+      });
+    });
+
+    // 锚点平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if (href === '#' || href.length < 2) return;
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
