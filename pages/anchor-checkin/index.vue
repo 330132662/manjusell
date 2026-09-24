@@ -91,6 +91,25 @@
 			</view>
 		</view>
 
+		<!-- 主播自用功能网格 -->
+		<view class="grid-wrap">
+			<view class="grid-title">主播功能</view>
+			<view class="grid">
+				<view class="grid-item" @click="goRecords">
+					<view class="grid-icon record">📋</view>
+					<text class="grid-label">直播记录</text>
+				</view>
+				<view class="grid-item" @click="goAttendance">
+					<view class="grid-icon attendance">📅</view>
+					<text class="grid-label">直播考勤</text>
+				</view>
+				<view class="grid-item grid-placeholder">
+					<view class="grid-icon">🔜</view>
+					<text class="grid-label">敬请期待</text>
+				</view>
+			</view>
+		</view>
+
 		<!-- 房间绑定弹层：扫码为主，手动选择兜底 -->
 		<view v-if="showRoomModal" class="mask" @click="closeRoomModal">
 			<view class="sheet" @click.stop>
@@ -255,6 +274,21 @@
 		console.log("aaaa");
 		uni.navigateTo({
 			url: "/pages/anchor-login/index"
+		})
+	}
+
+	// 跳转直播记录列表
+	function goRecords() {
+		uni.navigateTo({
+			url: '/pages/anchor-records/index'
+		})
+	}
+
+	// 直播考勤（暂未开放）
+	function goAttendance() {
+		uni.showToast({
+			title: '直播考勤功能开发中',
+			icon: 'none'
 		})
 	}
 
@@ -630,6 +664,71 @@
 		font-size: 28rpx;
 		color: #1a535c;
 		font-weight: 600;
+	}
+
+	/* ===== 主播功能网格 ===== */
+	.grid-wrap {
+		padding: 32rpx;
+	}
+
+	.grid-title {
+		font-size: 28rpx;
+		font-weight: 700;
+		color: #1a535c;
+		margin-bottom: 20rpx;
+	}
+
+	.grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20rpx;
+	}
+
+	.grid-item {
+		width: calc((100% - 40rpx) / 3);
+		background: #ffffff;
+		border-radius: 20rpx;
+		padding: 32rpx 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 14rpx;
+		box-shadow: 0 6rpx 20rpx rgba(26, 83, 92, 0.05);
+		transition: transform 0.15s, opacity 0.15s;
+	}
+
+	.grid-item:active {
+		transform: scale(0.96);
+		opacity: 0.85;
+	}
+
+	.grid-icon {
+		width: 80rpx;
+		height: 80rpx;
+		border-radius: 20rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 40rpx;
+		background: rgba(78, 205, 196, 0.12);
+	}
+
+	.grid-icon.record {
+		background: rgba(78, 205, 196, 0.15);
+	}
+
+	.grid-icon.attendance {
+		background: rgba(255, 107, 107, 0.12);
+	}
+
+	.grid-label {
+		font-size: 26rpx;
+		color: #1a535c;
+		font-weight: 600;
+	}
+
+	.grid-placeholder {
+		opacity: 0.5;
 	}
 
 	/* ===== 房间绑定弹层 ===== */

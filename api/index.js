@@ -170,6 +170,15 @@ export function getLiveRecords({ streamer_id = 0, page = 1, pageSize = 10 } = {}
   return get('/admin/wxchannel/live/records', { streamer_id, page, pageSize })
 }
 
+// 当前登录主播的直播记录列表（后端强制按登录 uid 过滤，主播只能看自己的）
+// 返回 { page, pageSize, total, items: [{id, office_no, account_name, start_time, end_time, order_count}] }
+export function getMyLiveRecords({ page = 1, pageSize = 10 } = {}) {
+  if (USE_LIVE_API_MOCK) {
+    return Promise.resolve({ page, pageSize, total: 0, items: [] })
+  }
+  return get('/admin/wxchannel/live/myRecords', { page, pageSize })
+}
+
 // ===================== 主播账号登录 =====================
 // 后端：POST /admin/user/login  { username, password, captcha, codeid }
 //   noLogin:1 + noAuth:1(无需登录) 返回 data 为一串 token，请求头用 Bearer <token>。

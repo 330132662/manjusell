@@ -60,6 +60,14 @@
 				"navigationBarTitleText": "主播登录",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/anchor-records/index",
+			"style": {
+				"navigationBarTitleText": "直播记录",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
 		}
 	],
 	"globalStyle": {
