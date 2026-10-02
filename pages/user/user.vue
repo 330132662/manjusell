@@ -6,12 +6,12 @@
 				<view class="login-logo">
 					<uni-icons type="weixin" size="44" color="#FFFFFF"></uni-icons>
 				</view>
-				<text class="login-title">AI短剧影院</text>
+				<text class="login-title">本页面已停用</text>
 				<text class="login-sub">授权登录后查看你的订单</text>
 
 				<button class="wechat-btn" :disabled="logging" @click="handleLogin">
 					<uni-icons type="weixin" size="20" color="#FFFFFF"></uni-icons>
-					<text class="wechat-btn-text">{{ logging ? '登录中…' : '微信授权登录' }}</text>
+					<text class="wechat-btn-text">{{ logging ? '已停用登录中…' : '已停用微信授权登录' }}</text>
 				</button>
 
 				<text v-if="error" class="login-error">{{ error }}</text>
