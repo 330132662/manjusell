@@ -98,6 +98,31 @@
 				</view>
 			</view>
 
+			<!-- 排班与协作 -->
+			<view class="card">
+				<view class="card-title">排班与协作</view>
+				<view class="nav-row" @click="go('/pages/my-schedule/index')">
+					<text class="nav-label">📅 我的排班</text>
+					<text class="nav-desc">查看排班 / 确认 / 换班请假</text>
+					<text class="nav-arrow">›</text>
+				</view>
+				<view class="nav-row" @click="go('/pages/grab-list/index')">
+					<text class="nav-label">🏃 抢班</text>
+					<text class="nav-desc">抢下开放顶班的场次</text>
+					<text class="nav-arrow">›</text>
+				</view>
+				<view class="nav-row" @click="go('/pages/my-requests/index')">
+					<text class="nav-label">📝 我的申请</text>
+					<text class="nav-desc">换班 / 请假记录与进度</text>
+					<text class="nav-arrow">›</text>
+				</view>
+				<view class="nav-row" @click="go('/pages/my-notifications/index')">
+					<text class="nav-label">🔔 站内提醒</text>
+					<text class="nav-desc">审核结果 / 替班通知 / 确认提醒</text>
+					<text class="nav-arrow">›</text>
+				</view>
+			</view>
+
 			<view class="bottom-space"></view>
 		</scroll-view>
 
@@ -135,6 +160,11 @@
 		const g = Number(profile.value.gender || 0)
 		return g === 1 ? '男' : g === 2 ? '女' : '未知'
 	})
+
+	// 排班与协作入口
+	function go(url) {
+		uni.navigateTo({ url })
+	}
 
 	onMounted(() => {
 		const token = uni.getStorageSync('token')
@@ -533,6 +563,37 @@
 
 	.bottom-space {
 		height: 40rpx;
+	}
+
+	/* ===== 排班与协作入口 ===== */
+	.nav-row {
+		display: flex;
+		align-items: center;
+		gap: 12rpx;
+		padding: 22rpx 0;
+		border-bottom: 1rpx solid #f1f3f5;
+	}
+
+	.nav-row:last-child {
+		border-bottom: none;
+	}
+
+	.nav-label {
+		font-size: 26rpx;
+		color: #1f2d3d;
+		font-weight: 600;
+		width: 180rpx;
+	}
+
+	.nav-desc {
+		flex: 1;
+		font-size: 20rpx;
+		color: #9aa1ac;
+	}
+
+	.nav-arrow {
+		font-size: 30rpx;
+		color: #c4cad2;
 	}
 
 	.footer {

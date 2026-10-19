@@ -264,3 +264,111 @@ export function anchorLogin({ username, password, captcha, codeid }) {
     }
   })
 }
+
+// ===================== 主播自助与协同 =====================
+// 统一说明：全部按登录 token 里的 uid 隔离，前端不传 anchor_id
+// 后端前缀 /admin/schedule/me/*，返回结构 { code, message, data }
+
+// 我的排班（view: week / month / range）
+export function getMySchedules({ view = 'week', date = '', start_date = '', end_date = '' } = {}) {
+  if (USE_LIVE_API_MOCK) {
+    return Promise.resolve({
+      anchor_id: 888,
+      anchor_name: '主播',
+      view,
+      start_date: '2026-10-19',
+      end_date: '2026-10-25',
+      days: [],
+      summary: { count: 0, minutes: 0, hours: 0, unconfirmed: 0, need_confirm: 0 }
+    })
+  }
+  return get('/admin/schedule/me/schedules', { view, date, start_date, end_date })
+}
+
+// 我的申请（type: 0全部 1换班 2请假；status: -1全部 0待审核 1已通过 2已驳回 3已生效 4已取消）
+export function getMyRequests({ page = 1, pageSize = 20, type = 0, status = -1 } = {}) {
+  if (USE_LIVE_API_MOCK) {
+    return Promise.resolve({ list: [], total: 0, page, page_size: pageSize, pending: 0 })
+  }
+  return get('/admin/schedule/me/requests', { page, pageSize, type, status })
+}
+
+// 发起换班（req_type: 1单方代班 2互调；互调必须带 to_plan_id）
+export function applySwap({ req_type = 1, from_plan_id, to_anchor_id, to_plan_id = 0, reason = '' }) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve({ id: 1, status: 0 })
+  return post('/admin/schedule/me/swap/apply', { req_type, from_plan_id, to_anchor_id, to_plan_id, reason })
+}
+
+// 发起请假 / 休班（auto_cover=1 表示审核通过后按候选自动替班）
+export function applyLeave({
+  leave_type = 1,
+  start_date,
+  end_date = '',
+  start_time = '',
+  end_time = '',
+  plan_ids = '',
+  auto_cover = 0,
+  reason = ''
+}) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve({ id: 1, plan_count: 0 })
+  return post('/admin/schedule/me/leave/apply', {
+    leave_type,
+    start_date,
+    end_date,
+    start_time,
+    end_time,
+    plan_ids,
+    auto_cover,
+    reason
+  })
+}
+
+// 取消本人申请（type: 1换班 2请假）
+export function cancelMyRequest({ id, type, reason = '' }) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve({})
+  return post('/admin/schedule/me/request/cancel', { id, type, reason })
+}
+
+// 换班候选：可代班主播 covers + 可互调场次 mutual
+export function getSwapCandidates({ from_plan_id, date = '', limit = 5 }) {
+  if (USE_LIVE_API_MOCK) {
+    return Promise.resolve({ covers: [], blocked: [], mutual: [], reason: '' })
+  }
+  return get('/admin/schedule/me/swap/candidates', { from_plan_id, date, limit })
+}
+
+// 请假前替班候选预览（plan_ids 逗号分隔）
+export function getLeaveSuggestions({ plan_ids, limit = 3 }) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve({ items: [], suggestions: [] })
+  return get('/admin/schedule/me/leave/suggestions', { plan_ids, limit })
+}
+
+// 可抢场次（scope: 1可抢 2我抢到的）
+export function getGrabbableList({ page = 1, pageSize = 20, scope = 1 } = {}) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve({ list: [], total: 0, page, page_size: pageSize })
+  return get('/admin/schedule/me/cover/list', { page, pageSize, scope })
+}
+
+// 抢班
+export function grabCover({ id }) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve({ cover_id: id })
+  return post('/admin/schedule/me/cover/grab', { id })
+}
+
+// 确认 / 拒接排班（action: 1确认 2拒接）
+export function confirmMyPlan({ plan_id, action = 1, reject_reason = '' }) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve({ plan_id, status: 1 })
+  return post('/admin/schedule/me/plan/confirm', { plan_id, action, reject_reason })
+}
+
+// 站内提醒
+export function getMyNotifications({ page = 1, pageSize = 20, status = -1, type = 0 } = {}) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve({ list: [], total: 0, unread: 0 })
+  return get('/admin/schedule/me/notifications', { page, pageSize, status, type })
+}
+
+// 标记已读（ids 为空 = 全部已读）
+export function readMyNotifications({ ids = '' } = {}) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve({ updated: 0 })
+  return post('/admin/schedule/me/notifications/read', { ids })
+}

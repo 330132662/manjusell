@@ -75,6 +75,52 @@
 				"navigationBarTitleText": "我的资料",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/my-schedule/index",
+			"style": {
+				"navigationBarTitleText": "我的排班",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/my-requests/index",
+			"style": {
+				"navigationBarTitleText": "我的申请",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/swap-apply/index",
+			"style": {
+				"navigationBarTitleText": "发起换班",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/leave-apply/index",
+			"style": {
+				"navigationBarTitleText": "请假/休班",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/grab-list/index",
+			"style": {
+				"navigationBarTitleText": "抢班",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/my-notifications/index",
+			"style": {
+				"navigationBarTitleText": "站内提醒",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
 		}
 	],
 	"globalStyle": {
