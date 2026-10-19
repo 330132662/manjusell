@@ -103,9 +103,9 @@
 					<view class="grid-icon attendance">📅</view>
 					<text class="grid-label">直播考勤</text>
 				</view>
-				<view class="grid-item grid-placeholder">
-					<view class="grid-icon">🔜</view>
-					<text class="grid-label">敬请期待</text>
+				<view class="grid-item" @click="goProfile">
+					<view class="grid-icon profile">👤</view>
+					<text class="grid-label">我的资料</text>
 				</view>
 			</view>
 		</view>
@@ -289,6 +289,13 @@
 		uni.showToast({
 			title: '直播考勤功能开发中',
 			icon: 'none'
+		})
+	}
+
+	// 我的资料
+	function goProfile() {
+		uni.navigateTo({
+			url: '/pages/anchor-profile/index'
 		})
 	}
 

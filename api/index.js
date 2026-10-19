@@ -1,5 +1,5 @@
 // 业务接口层
-import { post, get } from '@/utils/request'
+import { post, get, upload } from '@/utils/request'
 import { BASE_URL, USE_MOCK, USE_LIVE_API_MOCK } from '@/utils/config'
 import { md5 } from '@/utils/md5'
 import { aesDecrypt } from '@/utils/aes'
@@ -177,6 +177,52 @@ export function getMyLiveRecords({ page = 1, pageSize = 10 } = {}) {
     return Promise.resolve({ page, pageSize, total: 0, items: [] })
   }
   return get('/admin/wxchannel/live/myRecords', { page, pageSize })
+}
+
+// ===================== 主播「我的资料」 =====================
+// 后端按 token 里的 uid 匹配 gf_anchor_resource.user_id
+// 返回 { id, name, avatar, phone, gender, skills, skills_array, available_time,
+//        platform_accounts: [{platform, account, url}], status }
+export function getMyAnchorProfile() {
+  if (USE_LIVE_API_MOCK) {
+    return Promise.resolve({
+      id: 888,
+      user_id: 888,
+      name: '主播',
+      avatar: '',
+      phone: '',
+      gender: 2,
+      skills: '美妆,穿搭',
+      skills_array: ['美妆', '穿搭'],
+      available_time: '周一至周五 9:00-18:00',
+      platform_accounts: [{ platform: '抖音', account: 'demo', url: '' }],
+      status: 1
+    })
+  }
+  return get('/admin/schedule/anchor/me')
+}
+
+// 主播端只允许改头像/可用时段/平台账号
+export function saveMyAnchorProfile({ avatar = '', available_time = '', platform_accounts = [] } = {}) {
+  if (USE_LIVE_API_MOCK) {
+    return Promise.resolve({ ok: true })
+  }
+  return post('/admin/schedule/anchor/me/save', {
+    avatar,
+    available_time,
+    platform_accounts
+  })
+}
+
+// 上传头像，返回 { id, url, ... }
+export function uploadAnchorAvatar(filePath) {
+  if (USE_LIVE_API_MOCK) {
+    return Promise.resolve({ id: Date.now(), url: filePath })
+  }
+  return upload('/admin/datacenter/upfile/upload', filePath, {
+    pid: 0,
+    filetype: 'image'
+  })
 }
 
 // ===================== 主播账号登录 =====================

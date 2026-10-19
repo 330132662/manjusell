@@ -49,4 +49,50 @@ function request(options) {
 export const get = (url, data, header) => request({ url, method: 'GET', data, header })
 export const post = (url, data, header) => request({ url, method: 'POST', data, header })
 
-export default { request, get, post, BASE_URL }
+/**
+ * 文件上传（multipart/form-data）
+ * @param {String} url 相对路径，如 /admin/datacenter/upfile/upload
+ * @param {String} filePath 本地临时文件路径
+ * @param {Object} formData 附加表单字段
+ * @returns {Promise<any>} 后端 data
+ */
+export function upload(url, filePath, formData = {}) {
+  const header = {}
+  const token = uni.getStorageSync('token')
+  if (token) {
+    const ts = Math.floor(Date.now() / 1000)
+    header['Authorization'] = aesEncrypt(token + '#' + ts)
+    header['apiverify'] = utf8ToBase64(md5(API_SECRET + ts) + '#' + ts)
+  }
+
+  return new Promise((resolve, reject) => {
+    uni.uploadFile({
+      url: BASE_URL + url,
+      filePath,
+      name: 'file',
+      formData,
+      header,
+      success: (res) => {
+        let body = null
+        try {
+          body = typeof res.data === 'string' ? JSON.parse(res.data) : res.data
+        } catch (e) {
+          body = null
+        }
+        if (res.statusCode >= 200 && res.statusCode < 300 && body && body.code === 0) {
+          resolve(body.data)
+        } else {
+          const msg = (body && body.message) || ('上传失败 (' + res.statusCode + ')')
+          uni.showToast({ title: msg, icon: 'none' })
+          reject(new Error(msg))
+        }
+      },
+      fail: (err) => {
+        uni.showToast({ title: '上传失败，请稍后重试', icon: 'none' })
+        reject(err)
+      }
+    })
+  })
+}
+
+export default { request, get, post, upload, BASE_URL }
