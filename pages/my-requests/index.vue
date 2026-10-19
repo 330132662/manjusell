@@ -73,6 +73,7 @@
 
 <script>
 	import { getMyRequests, cancelMyRequest } from '@/api/index'
+	import { goBack as navBack } from '@/utils/nav'
 
 	export default {
 		data() {
@@ -155,7 +156,8 @@
 				})
 			},
 			goBack() {
-				uni.navigateBack()
+				// 统一返回：本项目未配置 tabBar，不能用 switchTab
+				navBack()
 			}
 		}
 	}

@@ -1,46 +1,70 @@
 <template>
-	<view class="page">
-		<view class="topbar">
-			<view class="topbar-back" @click="goBack">‹</view>
-			<text class="topbar-title">发起换班</text>
+	<view class="page gf-page">
+		<!-- ===== 顶栏 ===== -->
+		<view class="gf-topbar">
+			<view class="gf-back" @click="goBack">‹</view>
+			<view class="gf-topbar-mid">
+				<text class="gf-title">发起换班</text>
+				<text class="gf-subtitle">换班申请 · 提交后由运营审核</text>
+			</view>
 			<view class="topbar-holder"></view>
 		</view>
 
 		<scroll-view scroll-y class="body">
-			<!-- 我的这场 -->
-			<view class="card">
-				<view class="card-title">我要换出的排班</view>
+			<!-- ===== 换出的排班 ===== -->
+			<view class="gf-card slotcard">
+				<view class="gf-card-title">
+					<text>我要换出的排班</text>
+					<text class="slot-seal">换出</text>
+				</view>
 				<view class="slot">
-					<text class="slot-time">{{ source.plan_date }} {{ source.start_time }}-{{ source.end_time }}</text>
+					<view class="slot-date">
+						<text class="slot-date-main">{{ source.plan_date }}</text>
+						<text class="slot-date-time">{{ source.start_time }} - {{ source.end_time }}</text>
+					</view>
+					<view class="slot-line"></view>
 					<text class="slot-topic">{{ source.topic || '未命名场次' }}</text>
 				</view>
 			</view>
 
-			<!-- 换班类型 -->
-			<view class="card">
-				<view class="card-title">换班方式</view>
-				<view class="tabs">
-					<view class="tab" :class="{ on: reqType === 1 }" @click="switchType(1)">请人代班</view>
-					<view class="tab" :class="{ on: reqType === 2 }" @click="switchType(2)">与人互调</view>
+			<!-- ===== 换班方式 ===== -->
+			<view class="gf-card">
+				<view class="gf-card-title">
+					<text>换班方式</text>
+					<text class="gf-card-title-sub">二选一</text>
 				</view>
-				<text class="hint">
-					{{ reqType === 1 ? '把你的场次交给别人，你不接手对方的班。' : '双方互换场次，两场都要能接得住才能提交。' }}
-				</text>
+				<view class="tabs">
+					<view class="tab" :class="{ on: reqType === 1 }" @click="switchType(1)">
+						<text class="tab-seal">代</text>
+						<text class="tab-txt">请人代班</text>
+					</view>
+					<view class="tab" :class="{ on: reqType === 2 }" @click="switchType(2)">
+						<text class="tab-seal">换</text>
+						<text class="tab-txt">与人互调</text>
+					</view>
+				</view>
+				<view class="hint">
+					<text class="hint-mark">注</text>
+					<text class="hint-txt">
+						{{ reqType === 1 ? '把你的场次交给别人，你不接手对方的班。' : '双方互换场次，两场都要能接得住才能提交。' }}
+					</text>
+				</view>
 			</view>
 
-			<!-- 候选主播 -->
-			<view class="card">
-				<view class="card-title">
-					{{ reqType === 1 ? '可代班主播' : '可互换的主播' }}
-					<text class="card-title-sub">按技能+时段+负载排序</text>
+			<!-- ===== 候选主播 ===== -->
+			<view class="gf-card">
+				<view class="gf-card-title">
+					<text>{{ reqType === 1 ? '可代班主播' : '可互换的主播' }}</text>
+					<text class="gf-card-title-sub">按技能 + 时段 + 负载排序</text>
 				</view>
 
-				<view v-if="loading" class="state-box small">
-					<text class="state-text">计算候选中…</text>
+				<view v-if="loading" class="gf-state small">
+					<text class="gf-state-text">计算候选中…</text>
 				</view>
 
 				<view v-else-if="reqType === 1">
 					<view v-if="covers.length === 0" class="empty">
+						<text class="gf-state-ico">候</text>
 						<text class="empty-text">{{ reason || '暂无可用候选' }}</text>
 						<text class="empty-tip">可改天再试，或直接在「我的排班」发起请假让运营处理</text>
 					</view>
@@ -54,22 +78,30 @@
 					>
 						<view class="person-avatar">{{ (c.anchor_name || '?').slice(0, 1) }}</view>
 						<view class="person-main">
-							<text class="person-name">{{ c.anchor_name }}</text>
+							<view class="person-head">
+								<text class="person-name">{{ c.anchor_name }}</text>
+								<text class="person-score-seal">{{ c.score }}</text>
+							</view>
 							<text class="person-reason">{{ c.reason }}</text>
 						</view>
-						<text class="person-score">{{ c.score }}</text>
+						<view class="person-check">
+							<text v-if="pickedAnchor === c.anchor_id">已选</text>
+							<text v-else>选择</text>
+						</view>
 					</view>
 
 					<view v-if="blocked.length" class="blocked">
-						<text class="blocked-title">以下主播接不住这场：</text>
-						<text v-for="b in blocked" :key="b.anchor_id" class="blocked-item">
-							· {{ b.anchor_name }}：{{ (b.blockers && b.blockers[0] && b.blockers[0].message) || '不满足约束' }}
-						</text>
+						<text class="blocked-title">以下主播接不住这场</text>
+						<view v-for="b in blocked" :key="b.anchor_id" class="blocked-item">
+							<text class="blocked-name">{{ b.anchor_name }}</text>
+							<text class="blocked-msg">{{ (b.blockers && b.blockers[0] && b.blockers[0].message) || '不满足约束' }}</text>
+						</view>
 					</view>
 				</view>
 
 				<view v-else>
 					<view v-if="mutual.length === 0" class="empty">
+						<text class="gf-state-ico">空</text>
 						<text class="empty-text">附近没有可互换的场次</text>
 						<text class="empty-tip">互调只展示「互换后双方都不冲突」的场次</text>
 					</view>
@@ -83,29 +115,40 @@
 					>
 						<view class="person-avatar">{{ (m.to_anchor_name || '?').slice(0, 1) }}</view>
 						<view class="person-main">
-							<text class="person-name">{{ m.to_anchor_name }}</text>
+							<view class="person-head">
+								<text class="person-name">{{ m.to_anchor_name }}</text>
+								<text class="person-score-seal swap">⇄</text>
+							</view>
 							<text class="person-reason">{{ m.target_date }} {{ m.target_start }}-{{ m.target_end }} · {{ m.topic }}</text>
 						</view>
-						<text class="person-score">⇄</text>
+						<view class="person-check">
+							<text v-if="pickedToPlanId === m.to_plan_id">已选</text>
+							<text v-else>选择</text>
+						</view>
 					</view>
 				</view>
 			</view>
 
-			<!-- 理由 -->
-			<view class="card">
-				<view class="card-title">申请理由</view>
+			<!-- ===== 申请理由 ===== -->
+			<view class="gf-card">
+				<view class="gf-card-title">
+					<text>申请理由</text>
+					<text class="gf-card-title-sub">选填</text>
+				</view>
 				<textarea
 					v-model="reasonText"
 					class="textarea"
 					placeholder="简单说明原因，方便运营快速审核（选填）"
+					placeholder-class="ph"
 					maxlength="200"
 				/>
 			</view>
 
 			<view class="footer">
-				<view class="submit" :class="{ disabled: !canSubmit }" @click="submit">
+				<view class="gf-btn-main" :class="{ disabled: !canSubmit }" @click="submit">
 					{{ submitting ? '提交中…' : '提交换班申请' }}
 				</view>
+				<text class="footer-note">提交后将由运营审核，审核结果会在站内提醒中通知</text>
 			</view>
 		</scroll-view>
 	</view>
@@ -113,6 +156,7 @@
 
 <script>
 	import { getSwapCandidates, applySwap } from '@/api/index'
+	import { goBack as navBack } from '@/utils/nav'
 
 	export default {
 		data() {
@@ -213,246 +257,362 @@
 				}
 			},
 			goBack() {
-				uni.navigateBack()
+				// 统一返回：本项目未配置 tabBar，不能用 switchTab
+				navBack()
 			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/guofeng.scss';
+
 .page {
 	height: 100vh;
-	background: #f4f7f5;
 	display: flex;
 	flex-direction: column;
-}
-
-.topbar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 96rpx;
-	padding: 0 24rpx;
-	background: #1a535c;
-	color: #fff;
-	flex-shrink: 0;
-}
-
-.topbar-back {
-	width: 64rpx;
-	font-size: 48rpx;
-	line-height: 96rpx;
-}
-
-.topbar-title {
-	font-size: 34rpx;
-	font-weight: 700;
-}
-
-.topbar-holder {
-	width: 64rpx;
+	overflow: hidden;
 }
 
 .body {
 	flex: 1;
 	overflow: hidden;
-	padding: 24rpx 32rpx 0;
-	box-sizing: border-box;
+	padding: 24rpx 28rpx 0;
 }
 
-.card {
-	background: #fff;
-	border-radius: 20rpx;
-	padding: 24rpx;
-	margin-bottom: 20rpx;
-	box-shadow: 0 4rpx 16rpx rgba(26, 83, 92, 0.05);
-}
-
-.card-title {
-	font-size: 26rpx;
+/* ===== 换出的排班 ===== */
+.slot-seal {
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 19rpx;
 	font-weight: 700;
-	color: #1a3a3f;
-	margin-bottom: 16rpx;
+	color: $gf-cinnabar;
+	border: 2rpx solid $gf-cinnabar;
+	border-radius: 6rpx;
+	padding: 2rpx 10rpx;
+	background: rgba(178, 58, 46, 0.06);
+	letter-spacing: 0;
 }
 
-.card-title-sub {
-	font-size: 20rpx;
-	font-weight: 400;
-	color: rgba(26, 83, 92, 0.45);
-	margin-left: 12rpx;
+.slot {
+	display: flex;
+	align-items: center;
+	gap: 20rpx;
+	padding: 18rpx 18rpx;
+	border-radius: 12rpx;
+	background: linear-gradient(180deg, #fdf7ec 0%, #f6ecd8 100%);
+	border: 1rpx solid rgba(201, 162, 75, 0.35);
 }
 
-.slot-time {
-	display: block;
-	font-size: 30rpx;
+.slot-date {
+	display: flex;
+	flex-direction: column;
+	gap: 6rpx;
+	flex-shrink: 0;
+}
+
+.slot-date-main {
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 34rpx;
 	font-weight: 700;
-	color: #1a535c;
+	color: $gf-ink;
+	letter-spacing: 1rpx;
+}
+
+.slot-date-time {
+	font-size: 21rpx;
+	color: $gf-cinnabar;
+	font-weight: 700;
+}
+
+.slot-line {
+	width: 1rpx;
+	align-self: stretch;
+	background: rgba(201, 162, 75, 0.4);
 }
 
 .slot-topic {
-	display: block;
-	margin-top: 8rpx;
-	font-size: 24rpx;
-	color: #2c4a4e;
+	flex: 1;
+	font-size: 26rpx;
+	color: $gf-ink;
+	font-weight: 700;
+	line-height: 1.5;
 }
 
+/* ===== 换班方式 ===== */
 .tabs {
 	display: flex;
 	gap: 16rpx;
-	margin-bottom: 14rpx;
+	margin-bottom: 16rpx;
 }
 
 .tab {
 	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10rpx;
+	height: 84rpx;
+	border: 1rpx solid $gf-line-soft;
+	border-radius: 12rpx;
+	background: rgba(255, 253, 247, 0.85);
+}
+
+.tab-seal {
+	width: 40rpx;
+	height: 40rpx;
+	line-height: 36rpx;
 	text-align: center;
-	padding: 18rpx 0;
+	border: 1rpx solid rgba(140, 130, 116, 0.4);
+	border-radius: 4rpx;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 21rpx;
+	font-weight: 700;
+	color: $gf-ink-3;
+}
+
+.tab-txt {
 	font-size: 26rpx;
-	color: #1a535c;
-	background: #eef4f2;
-	border-radius: 999rpx;
+	color: $gf-ink-2;
+	letter-spacing: 1rpx;
 }
 
 .tab.on {
-	background: #1a535c;
-	color: #fff;
+	border-color: $gf-cinnabar;
+	background: rgba(178, 58, 46, 0.06);
+}
+
+.tab.on .tab-seal {
+	border-color: $gf-cinnabar;
+	background: $gf-cinnabar;
+	color: #fdf6e6;
+}
+
+.tab.on .tab-txt {
+	color: $gf-cinnabar;
 	font-weight: 700;
 }
 
 .hint {
-	font-size: 20rpx;
-	color: rgba(26, 83, 92, 0.55);
-	line-height: 30rpx;
-}
-
-.state-box.small {
-	padding: 40rpx 0;
-}
-
-.state-text {
-	font-size: 24rpx;
-	color: rgba(26, 83, 92, 0.5);
-}
-
-.empty {
-	padding: 40rpx 0;
 	display: flex;
-	flex-direction: column;
-	align-items: center;
 	gap: 10rpx;
+	padding: 14rpx 16rpx;
+	border-radius: 8rpx;
+	background: rgba(201, 162, 75, 0.09);
+	border: 1rpx solid rgba(201, 162, 75, 0.3);
 }
 
-.empty-text {
-	font-size: 24rpx;
-	color: rgba(26, 83, 92, 0.6);
+.hint-mark {
+	width: 30rpx;
+	height: 30rpx;
+	line-height: 28rpx;
+	text-align: center;
+	border: 1rpx solid rgba(201, 162, 75, 0.7);
+	border-radius: 3rpx;
+	font-size: 17rpx;
+	color: #8a6a1f;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	flex-shrink: 0;
 }
 
-.empty-tip {
-	font-size: 20rpx;
-	color: rgba(26, 83, 92, 0.4);
+.hint-txt {
+	flex: 1;
+	font-size: 21rpx;
+	color: $gf-ink-2;
+	line-height: 1.55;
 }
 
+/* ===== 候选 ===== */
 .person {
+	position: relative;
 	display: flex;
 	align-items: center;
 	gap: 18rpx;
-	padding: 18rpx 16rpx;
-	border-radius: 16rpx;
-	border: 2rpx solid #eef2f0;
+	padding: 18rpx;
+	border: 1rpx solid $gf-line-soft;
+	border-radius: 14rpx;
+	background: rgba(255, 253, 247, 0.92);
 	margin-bottom: 14rpx;
 }
 
 .person.picked {
-	border-color: #1a535c;
-	background: #f2f8f6;
+	border-color: $gf-cinnabar;
+	background: rgba(178, 58, 46, 0.045);
+	box-shadow: 0 5rpx 16rpx rgba(178, 58, 46, 0.1);
 }
 
 .person-avatar {
-	width: 64rpx;
-	height: 64rpx;
+	width: 76rpx;
+	height: 76rpx;
+	line-height: 74rpx;
+	text-align: center;
 	border-radius: 50%;
-	background: #1a535c;
-	color: #fff;
-	font-size: 26rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	border: 2rpx solid $gf-gold;
+	background: linear-gradient(180deg, #fffdf7 0%, #f0e4cd 100%);
+	color: $gf-ink;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 32rpx;
+	font-weight: 700;
 	flex-shrink: 0;
+	box-shadow: inset 0 0 0 3rpx rgba(255, 255, 255, 0.7);
 }
 
 .person-main {
 	flex: 1;
-	overflow: hidden;
-}
-
-.person-name {
-	display: block;
-	font-size: 26rpx;
-	font-weight: 700;
-	color: #1a3a3f;
-}
-
-.person-reason {
-	display: block;
-	margin-top: 4rpx;
-	font-size: 20rpx;
-	color: rgba(26, 83, 92, 0.55);
-	line-height: 28rpx;
-}
-
-.person-score {
-	font-size: 28rpx;
-	font-weight: 700;
-	color: #1a535c;
-}
-
-.blocked {
-	margin-top: 8rpx;
-	padding: 16rpx;
-	background: #f7f9f8;
-	border-radius: 12rpx;
+	min-width: 0;
 	display: flex;
 	flex-direction: column;
 	gap: 6rpx;
 }
 
-.blocked-title {
+.person-head {
+	display: flex;
+	align-items: center;
+	gap: 10rpx;
+}
+
+.person-name {
+	font-size: 27rpx;
+	font-weight: 700;
+	color: $gf-ink;
+	letter-spacing: 1rpx;
+}
+
+.person-score-seal {
+	min-width: 44rpx;
+	height: 36rpx;
+	line-height: 32rpx;
+	text-align: center;
+	padding: 0 6rpx;
+	border: 2rpx solid $gf-cinnabar;
+	border-radius: 4rpx;
+	color: $gf-cinnabar;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
 	font-size: 20rpx;
-	color: rgba(26, 83, 92, 0.6);
+	font-weight: 700;
+	background: rgba(178, 58, 46, 0.06);
+}
+
+.person-score-seal.swap {
+	border-color: $gf-indigo;
+	color: $gf-indigo;
+	background: rgba(58, 74, 82, 0.06);
+}
+
+.person-reason {
+	font-size: 21rpx;
+	color: $gf-ink-3;
+	line-height: 1.5;
+}
+
+.person-check {
+	flex-shrink: 0;
+	height: 52rpx;
+	line-height: 50rpx;
+	padding: 0 18rpx;
+	border-radius: 8rpx;
+	border: 1rpx solid $gf-line;
+	font-size: 21rpx;
+	color: $gf-ink-2;
+	background: rgba(255, 253, 247, 0.9);
+}
+
+.person.picked .person-check {
+	border-color: $gf-cinnabar;
+	color: #fdf6e6;
+	background: $gf-cinnabar;
+}
+
+/* ===== 不可接 ===== */
+.blocked {
+	margin-top: 6rpx;
+	padding: 16rpx 18rpx;
+	border-radius: 10rpx;
+	background: rgba(140, 130, 116, 0.07);
+	border: 1rpx dashed rgba(140, 130, 116, 0.35);
+}
+
+.blocked-title {
+	display: block;
+	font-size: 21rpx;
+	color: $gf-ink-3;
+	margin-bottom: 10rpx;
+	letter-spacing: 1rpx;
 }
 
 .blocked-item {
-	font-size: 20rpx;
-	color: rgba(26, 83, 92, 0.45);
-	line-height: 28rpx;
+	display: flex;
+	align-items: baseline;
+	gap: 10rpx;
+	margin-bottom: 6rpx;
 }
 
+.blocked-name {
+	font-size: 21rpx;
+	color: $gf-ink-2;
+	font-weight: 700;
+	flex-shrink: 0;
+}
+
+.blocked-msg {
+	font-size: 20rpx;
+	color: $gf-ink-3;
+	line-height: 1.5;
+}
+
+/* ===== 空态 ===== */
+.empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 40rpx 20rpx;
+	gap: 8rpx;
+}
+
+.empty-text {
+	font-size: 24rpx;
+	color: $gf-ink-2;
+	letter-spacing: 1rpx;
+}
+
+.empty-tip {
+	font-size: 20rpx;
+	color: $gf-ink-3;
+	text-align: center;
+	line-height: 1.6;
+}
+
+/* ===== 理由 ===== */
 .textarea {
 	width: 100%;
-	height: 140rpx;
-	font-size: 24rpx;
-	color: #2c4a4e;
-	background: #f7f9f8;
-	border-radius: 12rpx;
-	padding: 16rpx;
+	min-height: 150rpx;
+	padding: 18rpx;
 	box-sizing: border-box;
+	border: 1rpx solid $gf-line-soft;
+	border-radius: 10rpx;
+	background: rgba(255, 253, 247, 0.9);
+	font-size: 24rpx;
+	color: $gf-ink;
+	line-height: 1.6;
 }
 
+.ph {
+	color: $gf-ink-3;
+	font-size: 23rpx;
+}
+
+/* ===== 底部 ===== */
 .footer {
-	padding: 20rpx 0 60rpx;
+	padding: 10rpx 0 40rpx;
+	padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
 }
 
-.submit {
-	height: 88rpx;
-	line-height: 88rpx;
+.footer-note {
+	display: block;
+	margin-top: 16rpx;
 	text-align: center;
-	background: #1a535c;
-	color: #fff;
-	font-size: 28rpx;
-	font-weight: 700;
-	border-radius: 999rpx;
-}
-
-.submit.disabled {
-	background: #b9c9c6;
+	font-size: 19rpx;
+	color: $gf-ink-3;
+	line-height: 1.6;
+	letter-spacing: 1rpx;
 }
 </style>

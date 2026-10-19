@@ -284,10 +284,16 @@
 				<text class="navLinkV1cX6" :class="{ navLinkOnF3gY2: true }" @click="dianji_daohang8hQw('剧评')">剧评</text>
 				<text class="navLinkV1cX6" @click="dianji_daohang8hQw('新闻')">新闻</text>
 				<text class="navLinkV1cX6" @click="dianji_daohang8hQw('票务')">票务</text>
-				<text class="navLinkV1cX6" @click="toAnchor()">内部-主播</text>
+				<!-- 主播端入口（平板/桌面）：手机端这段导航整体隐藏，改由右侧胶囊承担 -->
+				<text class="navLinkV1cX6" @click="toAnchor()">主播端</text>
 			</view>
 
 			<view class="daohang_youD8hK5">
+				<!-- 主播端入口：放在右侧常驻区，手机端也不会被隐藏 -->
+				<view class="daohang_zhuboK7wQ2" @click="toAnchor()">
+					<text class="daohang_zhubo_icoR5tB9">◈</text>
+					<text>主播端</text>
+				</view>
 				<view class="searchBarN6pT1">
 					<text class="daohang_chaxun_icoL4rB7">⌕</text>
 					<input class="daohang_chaxun_inS5mC9" v-model="chaxun_zhiT9xK1" placeholder="搜剧目 / 演员 / 剧评"
@@ -667,6 +673,33 @@
 		display: flex;
 		align-items: center;
 		gap: 19rpx;
+	}
+
+	/* 主播端入口（手机端胶囊）：桌面/平板由中间导航的「主播端」文字链承担，
+	   这里默认隐藏，只在 ≤767px 出现，避免给顶栏额外增加宽度。 */
+	.daohang_zhuboK7wQ2 {
+		display: none;
+		align-items: center;
+		gap: 5rpx;
+		border: 1rpx solid #3a3a3a;
+		color: #d9d9d9;
+		border-radius: 197rpx;
+		padding: 5rpx 17rpx;
+		white-space: nowrap;
+		cursor: pointer;
+		transition: all .15s ease;
+		flex-shrink: 0;
+	}
+
+	.daohang_zhuboK7wQ2:hover {
+		border-color: #e63027;
+		color: #fff;
+	}
+
+	.daohang_zhubo_icoR5tB9 {
+		font-size: 19rpx;
+		line-height: 1;
+		opacity: .75;
 	}
 
 	.searchBarN6pT1 {
@@ -1865,6 +1898,19 @@
 			gap: 29rpx;
 		}
 
+		/* 平板空间紧张：收起英文副标 + 压缩右侧胶囊，给中间导航多出的「主播端」腾位置 */
+		.daohang_zimuK3mP2 {
+			display: none;
+		}
+
+		.daohang_youD8hK5 {
+			gap: 13rpx;
+		}
+
+		.daohang_huiyuanP7xK3 {
+			padding: 5rpx 13rpx;
+		}
+
 		.bendi_qu_gridB8nR1 {
 			grid-template-columns: repeat(3, 1fr);
 		}
@@ -1935,6 +1981,29 @@
 		.daohang_dengluR9qN4 {
 			font-size: 15rpx;
 			padding: 7rpx 17rpx;
+		}
+
+		/* 手机端：右侧三个胶囊要挤在一行，压缩间距与内边距，主播端入口保持可见 */
+		.daohang_youD8hK5 {
+			gap: 11rpx;
+		}
+
+		.daohang_zhuboK7wQ2 {
+			display: flex; /* 手机端中间导航已隐藏，这里接管主播端入口 */
+			padding: 5rpx 13rpx;
+			border-color: #4a4a4a;
+		}
+
+		.daohang_zhubo_icoR5tB9 {
+			display: none;
+		}
+
+		.daohang_huiyuanP7xK3 {
+			padding: 5rpx 13rpx;
+		}
+
+		.daohang_zimuK3mP2 {
+			display: none;
 		}
 
 		.shouye_heroA8cF6 {
