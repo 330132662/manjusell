@@ -142,6 +142,54 @@
 				</scroll-view>
 			</view>
 		</view>
+		<!-- 下播时间选择弹层：主播必须选定这场直播的具体下播时间才能下播 -->
+		<view v-if="showDownSheet" class="mask" @click="closeDownSheet">
+			<view class="sheet" @click.stop>
+				<view class="sheet-head">
+					<text class="sheet-title">选择下播时间</text>
+					<text class="sheet-close" @click="closeDownSheet">×</text>
+				</view>
+
+				<view class="down-tip" v-if="liveInfo.start_time">
+					本次直播上播时间：{{ liveInfo.start_time }}
+				</view>
+				<view class="down-tip">
+					请选择这场直播的实际下播时间（不能早于上播时间、不能晚于当前时间），确认后完成下播方可重新上播
+				</view>
+
+				<picker mode="date" :value="downDate" :start="downMinDate" :end="downMaxDate" @change="onDownDateChange">
+					<view class="field">
+						<view class="field-left">
+							<text class="field-label">下播日期</text>
+							<text class="field-req">*</text>
+						</view>
+						<view class="field-value">
+							<text class="field-text">{{ downDate || '请选择日期' }}</text>
+						</view>
+						<view class="field-arrow">⌄</view>
+					</view>
+				</picker>
+				<picker mode="time" :value="downTime" @change="onDownTimeChange">
+					<view class="field">
+						<view class="field-left">
+							<text class="field-label">下播时间</text>
+							<text class="field-req">*</text>
+						</view>
+						<view class="field-value">
+							<text class="field-text">{{ downTime || '请选择时间' }}</text>
+						</view>
+						<view class="field-arrow">⌄</view>
+					</view>
+				</picker>
+
+				<view class="action-wrap">
+					<button class="btn-down" :class="{ disabled: !canDown || submitting }"
+						:disabled="!canDown || submitting" @click="confirmDown">
+						{{ submitting ? '下播中…' : '确认下播' }}
+					</button>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -171,11 +219,31 @@
 	const liveInfo = ref({})
 	const showRoomModal = ref(false)
 	const scanHint = ref('')
+	// 下播时间选择弹层(主播必须选定具体下播时间才能下播)
+	const showDownSheet = ref(false)
+	const downDate = ref('')
+	const downTime = ref('')
+	const downMinDate = ref('')
+	const downMaxDate = ref('')
 
 	const accountNames = computed(() => accounts.value.map((a) => a.source_name || `视频号${a.id}`))
 	const officeNames = computed(() => offices.value.map((o) => `${o.no} 室`))
 
 	const canUp = computed(() => !!roomOffice.value && !!selectedAccount.value && !submitting.value)
+
+	// 下播时间合法性：按分钟粒度比较(选择器只到分钟)
+	// 选定分钟 >= 上播分钟 且 <= 当前时间, 才允许确认下播
+	const canDown = computed(() => {
+		if (!downDate.value || !downTime.value) return false
+		const end = new Date(`${downDate.value} ${downTime.value}:00`.replace(/-/g, '/'))
+		if (isNaN(end.getTime())) return false
+		const st = String(liveInfo.value.start_time || '')
+		if (st) {
+			// yyyy-MM-dd HH:mm 字符串可直接比较
+			if (`${downDate.value} ${downTime.value}` < st.slice(0, 16)) return false
+		}
+		return end.getTime() <= Date.now()
+	})
 
 	// 房间号下拉选择
 	function onOfficeChange(e) {
@@ -379,36 +447,95 @@
 				icon: 'success'
 			})
 		} catch (e) {
-			uni.showToast({
-				title: (e && e.message) || '上播失败',
-				icon: 'none'
-			})
+			// 后端拦截"有未下播记录"：直接进入下播界面, 并强制主播选定这场直播的具体下播时间
+			const msg = (e && e.message) || ''
+			if (msg.indexOf('未下播') !== -1) {
+				const rec = (e && e.data && e.data.open_record) || null
+				if (rec && rec.id) {
+					isLive.value = true
+					liveInfo.value = {
+						id: rec.id,
+						start_time: rec.start_time
+					}
+					roomOffice.value = rec.office_id ? {
+						id: rec.office_id,
+						no: rec.office_no || ''
+					} : null
+					selectedAccount.value = rec.account_id ? {
+						id: rec.account_id,
+						source_name: rec.source_nickname || ''
+					} : null
+				} else {
+					// 后端未带出记录时兜底: 按直播记录列表恢复直播中状态
+					await checkLiveStatus()
+				}
+				openDownSheet()
+				return
+			}
+			if (msg) {
+				uni.showToast({
+					title: msg,
+					icon: 'none'
+				})
+			}
 		} finally {
 			submitting.value = false
 		}
 	}
 
-	// 下播签退（先弹确认框）
+	// 下播：进入下播界面, 必须选定具体下播时间后确认
 	function handleDown() {
-		uni.showModal({
-			title: '确认下播',
-			content: '下播后将结束本次直播并签退，确认继续吗？',
-			confirmText: '确认下播',
-			confirmColor: '#FF6B6B',
-			success: (r) => {
-				if (r.confirm) {
-					doCheckOut()
-				}
-			}
-		})
+		openDownSheet()
 	}
 
-	async function doCheckOut() {
+	// ===== 下播时间选择弹层 =====
+	function pad(n) {
+		return String(n).padStart(2, '0')
+	}
+
+	function fmtDate(d) {
+		return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+	}
+
+	function fmtTime(d) {
+		return `${pad(d.getHours())}:${pad(d.getMinutes())}`
+	}
+
+	// 打开下播界面：默认日期/时间 = 当前，可选日期范围 = 上播日期 ~ 今天
+	function openDownSheet() {
+		const now = new Date()
+		downDate.value = fmtDate(now)
+		downTime.value = fmtTime(now)
+		downMaxDate.value = fmtDate(now)
+		const st = String(liveInfo.value.start_time || '')
+		downMinDate.value = st ? st.slice(0, 10) : ''
+		showDownSheet.value = true
+	}
+
+	function closeDownSheet() {
+		showDownSheet.value = false
+	}
+
+	function onDownDateChange(e) {
+		downDate.value = e.detail.value
+	}
+
+	function onDownTimeChange(e) {
+		downTime.value = e.detail.value
+	}
+
+	// 确认下播：携带主播选定的具体下播时间
+	async function confirmDown() {
+		if (!canDown.value || submitting.value) return
 		submitting.value = true
 		try {
-			const res = await liveCheckOut()
+			await liveCheckOut({
+				id: liveInfo.value.id || 0,
+				end_time: `${downDate.value} ${downTime.value}:00`
+			})
+			showDownSheet.value = false
 			uni.showToast({
-				title: '下播签退成功',
+				title: '下播成功，可重新上播',
 				icon: 'success'
 			})
 			// 回到可上播状态，清空本次绑定以重新选择
@@ -417,10 +544,7 @@
 			selectedAccount.value = null
 			liveInfo.value = {}
 		} catch (e) {
-			uni.showToast({
-				title: (e && e.message) || '下播失败',
-				icon: 'none'
-			})
+			// 失败提示由请求层统一 toast(如: 下播时间不能早于上播时间)
 		} finally {
 			submitting.value = false
 		}
@@ -772,6 +896,14 @@
 		font-size: 44rpx;
 		color: rgba(26, 83, 92, 0.5);
 		padding: 0 12rpx;
+	}
+
+	/* ===== 下播时间弹层提示 ===== */
+	.down-tip {
+		margin-top: 20rpx;
+		font-size: 24rpx;
+		color: rgba(26, 83, 92, 0.65);
+		line-height: 1.5;
 	}
 
 	.scan-btn {

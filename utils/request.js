@@ -35,7 +35,10 @@ function request(options) {
         } else {
           const msg = (body && body.message) || ('请求失败 (' + res.statusCode + ')')
           uni.showToast({ title: msg, icon: 'none' })
-          reject(new Error(msg))
+          // 失败响应的 data 也挂到 Error 上(如 checkIn 被拦时携带未下播记录 open_record)
+          const err = new Error(msg)
+          err.data = body && body.data
+          reject(err)
         }
       },
       fail: (err) => {

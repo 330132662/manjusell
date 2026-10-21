@@ -141,16 +141,17 @@ export function liveCheckIn({ office_id, account_id }) {
 }
 
 // 下播签退：不传 id 时自动匹配当前主播最近一条未下播记录
-export function liveCheckOut() {
+// {id?, end_time?} end_time=主播自选的具体下播时间(yyyy-MM-dd HH:mm:ss)，主播端必传
+export function liveCheckOut({ id, end_time } = {}) {
   if (USE_LIVE_API_MOCK) {
     return Promise.resolve({
-      id: Date.now(),
+      id: id || Date.now(),
       streamer_id: 888,
       start_time: '',
-      end_time: new Date().toLocaleString('zh-CN', { hour12: false })
+      end_time: end_time || new Date().toLocaleString('zh-CN', { hour12: false })
     })
   }
-  return post('/admin/wxchannel/live/checkOut', {})
+  return post('/admin/wxchannel/live/checkOut', { id: id || 0, end_time: end_time || '' })
 }
 
 // 获取当前登录主播(后台用户)信息，其中 id 即直播记录里的 streamer_id（用于按主播查询直播状态）
