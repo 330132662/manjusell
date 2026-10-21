@@ -202,8 +202,7 @@
 	import {
 			getLiveOffices,
 			getLiveAccounts,
-			getAnchorUserinfo,
-			getLiveRecords,
+			getMyLiveRecords,
 			liveCheckIn,
 			liveCheckOut
 		} from '@/api'
@@ -287,29 +286,17 @@
 		}
 	})
 
-	// 查询当前主播是否有未下播(直播中)的记录，有则恢复为已上播状态
+	// 进页先查是否有未下播场次：
+	// 走主播自用接口 myRecords(后端强制按登录 uid 过滤, 权限主播角色必有), open_only=1 只查未下播记录
+	// 查到则恢复直播中状态并自动弹下播时间弹层, 主播选时间下播后回到签到(上播)页
 	async function checkLiveStatus() {
-		// 取当前登录主播的 uid(=直播记录 streamer_id)，本地缓存避免每次进页面多拉一次用户信息
-		let uid = uni.getStorageSync('streamer_id')
-		if (!uid) {
-			try {
-				const info = await getAnchorUserinfo()
-				uid = info && info.id
-				if (uid) uni.setStorageSync('streamer_id', uid)
-			} catch (e) {
-				return
-			}
-		}
-		if (!uid) return
 		try {
-			const res = await getLiveRecords({
-				streamer_id: Number(uid),
+			const res = await getMyLiveRecords({
 				page: 1,
-				pageSize: 10
+				pageSize: 1,
+				open_only: 1
 			})
-			const items = (res && res.items) || []
-			// 存在 end_time 为空的记录 = 仍在直播
-			const live = items.find((it) => !it.end_time)
+			const live = (res && res.items && res.items.find((it) => !it.end_time)) || null
 			if (live) {
 				isLive.value = true
 				roomOffice.value = live.office_id ? {
@@ -324,6 +311,8 @@
 					id: live.id,
 					start_time: live.start_time
 				}
+				// 已有未下播场次: 自动弹出下播界面, 引导主播先下播
+				openDownSheet()
 			}
 		} catch (e) {
 			// 查询失败不阻断页面，保持未上播初始态

@@ -172,12 +172,13 @@ export function getLiveRecords({ streamer_id = 0, page = 1, pageSize = 10 } = {}
 }
 
 // 当前登录主播的直播记录列表（后端强制按登录 uid 过滤，主播只能看自己的）
+// open_only=1: 仅返回未下播(end_time 为空)记录 —— 签到页进页恢复直播中状态用
 // 返回 { page, pageSize, total, items: [{id, office_no, account_name, start_time, end_time, order_count}] }
-export function getMyLiveRecords({ page = 1, pageSize = 10 } = {}) {
+export function getMyLiveRecords({ page = 1, pageSize = 10, open_only = 0 } = {}) {
   if (USE_LIVE_API_MOCK) {
     return Promise.resolve({ page, pageSize, total: 0, items: [] })
   }
-  return get('/admin/wxchannel/live/myRecords', { page, pageSize })
+  return get('/admin/wxchannel/live/myRecords', { page, pageSize, open_only })
 }
 
 // ===================== 主播「我的资料」 =====================
