@@ -2,6 +2,14 @@
 	import {
 		ref
 	} from 'vue'
+	// <script setup> 下必须从 @dcloudio/uni-app 导入页面生命周期,
+	// 不能写成 export default { onLoad(){} }(setup 里没有 options 对象)
+	import {
+		onLoad,
+		onShow,
+		onReady
+	} from '@dcloudio/uni-app'
+
 
 	// 当前激活的剧目分类(0=全部 / 1=话剧 / 2=戏曲 / 3=环境式)
 	const xiangmu_xuanranQ8vX3 = ref(0)
@@ -104,6 +112,7 @@
 		}
 	])
 
+
 	// 五个核心演员
 	const jutuan_liebiaoP8mB2 = ref([{
 			mingzi: '白婉清',
@@ -185,6 +194,121 @@
 			se: 'linear-gradient(135deg,#ffa726,#bf360c)'
 		}
 	])
+
+	// ================= 页面加载(onLoad / onReady / onShow) =================
+
+	// 进入参数: 分享卡片 / 扫码 / navigateTo 带过来的 query 都落在这里
+	const jinru_canshuR2kM7 = ref({})
+	// 首屏数据是否已请求过, 避免 onShow 反复打接口
+	const shuju_yijiazaiT5nV3 = ref(false)
+	// 本次页面实例只初始化一次; H5 刷新/重复 onLoad 时不再跑
+	let yi_chushihuaQ9pL4 = false
+
+	onLoad((options) => {
+		if (yi_chushihuaQ9pL4) return
+		yi_chushihuaQ9pL4 = true
+
+		jinru_canshuR2kM7.value = options || {}
+		console.log('[home onLoad] options =', jinru_canshuR2kM7.value)
+
+		// 1) 搞清楚"从哪进来的": 分享/扫码带 tab、kw 时还原视图
+		huanyuan_jinru_zhuangtaiX8pL4(jinru_canshuR2kM7.value)
+
+		// 2) 登录态: 有 openid 即视为已登录(与 pages/user/user.vue 同一口径)
+		const openid = uni.getStorageSync('openid')
+		console.log('[home onLoad] 登录态 openid =', openid || '(未登录)')
+
+		// 3) 首屏数据: 现在全是写死的静态数组, 以后接接口只改这一个函数
+		jiazai_shouye_shujuW3mB8()
+		testCoze();
+	})
+
+	onReady(() => {
+		// 首屏渲染完成: 埋点上报 / 关骨架屏 / 锚点滚动放这里
+		console.log('[home onReady] 首屏渲染完成')
+	})
+
+	onShow(() => {
+		// 从其它页面返回走这里(onLoad 只跑一次, 刷新逻辑别往 onLoad 塞)
+		if (!shuju_yijiazaiT5nV3.value) return
+		// TODO: 需要"回到首页就刷新"的内容(未读数、主播排班状态等)写在这
+	})
+
+	function testCoze() {
+		var answer = "我是回答";
+		// var test =			"{\"回答\":\" 亲，有的哈～学习中有专门的老师为您指导学习，学习中遇到问题随时问，老师会帮您解答，老师工作时间是早 9 点到下午 5 点，收到书本后跟着课程上的课程练习操作就可以开始了，有问题随时在这里找我哦～\",\" 问题 \":\" 后续还有老师专门指导吗 \"}";
+		var test = "";
+		// console.log(obj);
+		let obj = test;
+		if (obj == ""){
+			return "";
+		}
+		try {
+			// raw 可能本身就是字符串化的JSON，先解析
+			obj = typeof obj === "string" ? JSON.parse(obj) : obj;
+			// console.log(obj);
+			answer = obj["回答"] || obj.answer || "";
+
+		} catch (e) {
+			answer = "错误：" + e.message;
+		}
+		console.log("结果 ",obj);
+		console.log("2",answer);
+		return {
+			hit: answer !== "",
+			answer2: answer,
+			data: obj
+		};
+	}
+	// 还原分享/扫码带进来的参数
+	function huanyuan_jinru_zhuangtaiX8pL4(params) {
+		// tab: quanbu / huaju / xiqu / huanjingshi -> 剧目分类索引
+		const fenleiMap = {
+			quanbu: 0,
+			huaju: 1,
+			xiqu: 2,
+			huanjingshi: 3
+		}
+		if (params.tab && fenleiMap[params.tab] !== undefined) {
+			xiangmu_xuanranQ8vX3.value = fenleiMap[params.tab]
+		}
+		// dongtai: quanbu / duanshipin / zhibo / pailian -> 动态筛选索引
+		const dongtaiMap = {
+			quanbu: 0,
+			duanshipin: 1,
+			zhibo: 2,
+			pailian: 3
+		}
+		if (params.dongtai && dongtaiMap[params.dongtai] !== undefined) {
+			dongtai_biaoqianK3mP2.value = dongtaiMap[params.dongtai]
+		}
+		// 搜索词直填(分享"搜索结果页"时有用)
+		if (params.kw) {
+			try {
+				chaxun_zhiT9xK1.value = decodeURIComponent(params.kw)
+			} catch (e) {
+				chaxun_zhiT9xK1.value = params.kw
+			}
+		}
+		// TODO: params.city / params.jumu 用于巡演列表过滤, 接接口时补
+	}
+
+	// 首屏数据加载(目前全是静态数据, 只做占位与防重复标记)
+	async function jiazai_shouye_shujuW3mB8() {
+		if (shuju_yijiazaiT5nV3.value) return
+		shuju_yijiazaiT5nV3.value = true
+		try {
+			// TODO: 换成真实接口, 例如:
+			// const res = await getHomeIndex()
+			// bendi_liebiaoS5mC9.value = res.jumu || []
+			// xunyan_liebiaoN7mR5.value = res.xunyan || []
+			// dongtai_liebiaoF6rK1.value = res.dongtai || []
+			// pinglun_liebiaoG8sH9.value = res.pinglun || []
+		} catch (e) {
+			// 接口失败时保留静态数据兜底, 不阻塞首屏渲染
+			console.warn('[home onLoad] 首屏数据加载失败, 使用静态兜底', e)
+		}
+	}
 
 	// 点导航上面那几格,先 toast 占位一下,真跳转以后接
 	function dianji_daohang8hQw(t) {
@@ -1989,7 +2113,8 @@
 		}
 
 		.daohang_zhuboK7wQ2 {
-			display: flex; /* 手机端中间导航已隐藏，这里接管主播端入口 */
+			display: flex;
+			/* 手机端中间导航已隐藏，这里接管主播端入口 */
 			padding: 5rpx 13rpx;
 			border-color: #4a4a4a;
 		}
