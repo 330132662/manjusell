@@ -168,11 +168,11 @@
 					</view>
 					<text class="nav-arrow">›</text>
 				</view>
-				<view class="nav-row" @click="go('/pages/my-notifications/index')">
+				<view class="nav-row" @click="go('/pages/anchor-messages/index')">
 					<text class="nav-seal">信</text>
 					<view class="nav-main">
-						<text class="nav-label">站内提醒</text>
-						<text class="nav-desc">审核结果 / 替班通知 / 确认提醒</text>
+						<text class="nav-label">消息中心</text>
+						<text class="nav-desc">审核结果 / 替班通知 / 工资与违规提醒</text>
 					</view>
 					<text class="nav-arrow">›</text>
 				</view>
@@ -188,29 +188,14 @@
 			</button>
 		</view>
 
-		<view class="gf-tabbar">
-			<navigator class="gf-tab" url="/pages/my-schedule/index" open-type="reLaunch">
-				<text class="gf-tab-seal">排</text>
-				<text class="gf-tab-txt">排班</text>
-			</navigator>
-			<navigator class="gf-tab" url="/pages/my-requests/index" open-type="reLaunch">
-				<text class="gf-tab-seal">申</text>
-				<text class="gf-tab-txt">申请</text>
-			</navigator>
-			<navigator class="gf-tab" url="/pages/my-notifications/index" open-type="reLaunch">
-				<text class="gf-tab-seal">信</text>
-				<text class="gf-tab-txt">消息</text>
-			</navigator>
-			<navigator class="gf-tab on" url="/pages/anchor-profile/index" open-type="reLaunch">
-				<text class="gf-tab-seal">我</text>
-				<text class="gf-tab-txt">我的</text>
-			</navigator>
-		</view>
+		<!-- ===== 底部四 Tab（统一组件） ===== -->
+		<gf-tabbar active="mine" />
 	</view>
 </template>
 
 <script setup>
 	import { ref, computed, onMounted } from 'vue'
+	import GfTabbar from '@/components/gf-tabbar/gf-tabbar.vue'
 	import { getMyAnchorProfile, saveMyAnchorProfile, uploadAnchorAvatar } from '@/api'
 
 	const platformOptions = ['抖音', '快手', '视频号', '小红书', '其他']
@@ -274,7 +259,7 @@
 
 	function goBack() {
 		uni.navigateBack({
-			fail: () => uni.reLaunch({ url: '/pages/anchor-checkin/index' })
+			fail: () => uni.reLaunch({ url: '/pages/anchor-home/index' })
 		})
 	}
 
@@ -346,7 +331,7 @@
 			uni.showToast({ title: '保存成功', icon: 'success' })
 			setTimeout(() => {
 				uni.navigateBack({
-					fail: () => uni.reLaunch({ url: '/pages/anchor-checkin/index' })
+					fail: () => uni.reLaunch({ url: '/pages/anchor-home/index' })
 				})
 			}, 800)
 		} catch (e) {

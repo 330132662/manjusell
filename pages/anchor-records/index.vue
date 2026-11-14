@@ -147,7 +147,7 @@ onPullDownRefresh(async () => {
 
 function goBack() {
 	uni.navigateBack({
-		fail: () => uni.reLaunch({ url: '/pages/anchor-checkin/index' })
+		fail: () => uni.reLaunch({ url: '/pages/anchor-home/index' })
 	})
 }
 </script>

@@ -19,14 +19,44 @@
 		</view>
 
 		<!-- ===== 上播签到入口（标题下方显著位置） ===== -->
-		<navigator class="checkin-bar" url="/pages/anchor-checkin/index" open-type="navigate">
-			<view class="checkin-seal">签</view>
+		<navigator class="checkin-bar" url="/pages/anchor-scan/index" open-type="navigate">
+			<view class="checkin-seal">播</view>
 			<view class="checkin-main">
-				<text class="checkin-title">上播签到</text>
-				<text class="checkin-sub">选择房间号与视频号，开始今日直播</text>
+				<text class="checkin-title">扫码上播</text>
+				<text class="checkin-sub">扫房间码 → 四维校验 → 合规自查 → 开播</text>
 			</view>
 			<text class="checkin-go">进入 ›</text>
 		</navigator>
+
+		<!-- ===== 换班邀请 / 本组排班确认（按身份出现） ===== -->
+		<view v-if="extra.swapInvite || extra.leaderPending" class="extra-bar">
+			<navigator
+				v-if="extra.swapInvite"
+				class="extra-item"
+				url="/pages/swap-invite/index"
+				open-type="navigate"
+			>
+				<text class="extra-seal">换</text>
+				<view class="extra-main">
+					<text class="extra-t">{{ extra.swapInvite.fromName }} 邀请你换班</text>
+					<text class="extra-d">24 小时内处理，逾期失效</text>
+				</view>
+				<text class="extra-go">去处理 ›</text>
+			</navigator>
+			<navigator
+				v-if="extra.leaderPending"
+				class="extra-item gold"
+				url="/pages/team-schedule/index"
+				open-type="navigate"
+			>
+				<text class="extra-seal">组</text>
+				<view class="extra-main">
+					<text class="extra-t">本组有 {{ extra.leaderPending }} 条排班待确认</text>
+					<text class="extra-d">确认后进入公示</text>
+				</view>
+				<text class="extra-go">去确认 ›</text>
+			</navigator>
+		</view>
 
 		<!-- ===== 周切换 + 周日期轴 ===== -->
 		<view class="weekwrap">
@@ -169,32 +199,18 @@
 		</scroll-view>
 
 		<!-- ===== 底部四 Tab ===== -->
-		<view class="gf-tabbar">
-			<navigator class="gf-tab on" url="/pages/my-schedule/index" open-type="reLaunch">
-				<text class="gf-tab-seal">排</text>
-				<text class="gf-tab-txt">排班</text>
-			</navigator>
-			<navigator class="gf-tab" url="/pages/my-requests/index" open-type="reLaunch">
-				<text class="gf-tab-seal">申</text>
-				<text class="gf-tab-txt">申请</text>
-			</navigator>
-			<navigator class="gf-tab" url="/pages/my-notifications/index" open-type="reLaunch">
-				<text class="gf-tab-seal">信</text>
-				<text class="gf-tab-txt">消息</text>
-			</navigator>
-			<navigator class="gf-tab" url="/pages/anchor-profile/index" open-type="reLaunch">
-				<text class="gf-tab-seal">我</text>
-				<text class="gf-tab-txt">我的</text>
-			</navigator>
-		</view>
+		<gf-tabbar active="schedule" />
 	</view>
 </template>
 
 <script>
 	import { getMySchedules, getMyNotifications, confirmMyPlan } from '@/api/index'
+	import { getScheduleExtra } from '@/api/mp'
 	import { goBack as navBack } from '@/utils/nav'
+	import GfTabbar from '@/components/gf-tabbar/gf-tabbar.vue'
 
 	export default {
+		components: { GfTabbar },
 		data() {
 			return {
 				loading: false,
@@ -205,7 +221,8 @@
 				summary: { count: 0, hours: 0, need_confirm: 0, unconfirmed: 0 },
 				startDate: '',
 				endDate: '',
-				unread: 0
+				unread: 0,
+				extra: { swapInvite: null, leaderPending: 0 }
 			}
 		},
 		computed: {
@@ -224,6 +241,7 @@
 		},
 		onShow() {
 			this.loadUnread()
+			this.loadExtra()
 		},
 		onPullDownRefresh() {
 			this.load().then(() => uni.stopPullDownRefresh())
@@ -256,6 +274,13 @@
 					this.unread = res.unread || 0
 				} catch (e) {
 					this.unread = 0
+				}
+			},
+			async loadExtra() {
+				try {
+					this.extra = await getScheduleExtra()
+				} catch (e) {
+					/* 演示数据不可用时静默降级 */
 				}
 			},
 			shiftWeek(step) {
@@ -992,5 +1017,74 @@
 	color: $gf-ink-3;
 	line-height: 1.6;
 	letter-spacing: 1rpx;
+}
+
+/* ===== 换班邀请 / 本组确认入口 ===== */
+.extra-bar {
+	flex-shrink: 0;
+	margin: 12rpx 28rpx 0;
+	display: flex;
+	flex-direction: column;
+	gap: 12rpx;
+}
+
+.extra-item {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	padding: 16rpx 20rpx;
+	border-radius: 14rpx;
+	background: rgba(255, 253, 247, 0.94);
+	border: 1rpx solid rgba(178, 58, 46, 0.28);
+}
+
+.extra-item.gold {
+	border-color: rgba(201, 162, 75, 0.45);
+}
+
+.extra-seal {
+	width: 56rpx;
+	height: 56rpx;
+	line-height: 54rpx;
+	text-align: center;
+	border-radius: 10rpx;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 26rpx;
+	font-weight: 700;
+	color: $gf-cinnabar;
+	background: rgba(178, 58, 46, 0.08);
+	border: 1rpx solid rgba(178, 58, 46, 0.24);
+	flex-shrink: 0;
+}
+
+.extra-item.gold .extra-seal {
+	color: #8a6a1f;
+	background: rgba(201, 162, 75, 0.14);
+	border-color: rgba(201, 162, 75, 0.4);
+}
+
+.extra-main {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2rpx;
+}
+
+.extra-t {
+	font-size: 24rpx;
+	font-weight: 600;
+	color: $gf-ink;
+}
+
+.extra-d {
+	font-size: 19rpx;
+	color: $gf-ink-3;
+}
+
+.extra-go {
+	font-size: 21rpx;
+	color: $gf-cinnabar;
+	flex-shrink: 0;
 }
 </style>

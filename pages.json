@@ -121,6 +121,185 @@
 				"navigationStyle": "custom",
 				"enablePullDownRefresh": true
 			}
+		},
+		{
+			"path": "pages/anchor-home/index",
+			"style": {
+				"navigationBarTitleText": "主播工作台",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/anchor-scan/index",
+			"style": {
+				"navigationBarTitleText": "扫码上播",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-verify/index",
+			"style": {
+				"navigationBarTitleText": "开播校验",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-compliance/index",
+			"style": {
+				"navigationBarTitleText": "合规自查",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-live/index",
+			"style": {
+				"navigationBarTitleText": "直播中",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-live-data/index",
+			"style": {
+				"navigationBarTitleText": "录入本场数据",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-live-summary/index",
+			"style": {
+				"navigationBarTitleText": "本场小结",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-performance/index",
+			"style": {
+				"navigationBarTitleText": "我的业绩",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/anchor-session-orders/index",
+			"style": {
+				"navigationBarTitleText": "场次订单",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/anchor-team-board/index",
+			"style": {
+				"navigationBarTitleText": "本组看板",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-salary/index",
+			"style": {
+				"navigationBarTitleText": "我的工资",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-payslip/index",
+			"style": {
+				"navigationBarTitleText": "工资条",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-salary-objection/index",
+			"style": {
+				"navigationBarTitleText": "工资异议",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-advance/index",
+			"style": {
+				"navigationBarTitleText": "工资预支",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-mine/index",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-devices/index",
+			"style": {
+				"navigationBarTitleText": "账号与设备",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-attendance/index",
+			"style": {
+				"navigationBarTitleText": "考勤日历",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-violations/index",
+			"style": {
+				"navigationBarTitleText": "违规与交接",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-rules/index",
+			"style": {
+				"navigationBarTitleText": "制度签收",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-growth/index",
+			"style": {
+				"navigationBarTitleText": "成长与晋升",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-daily-report/index",
+			"style": {
+				"navigationBarTitleText": "今日日报",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-okr/index",
+			"style": {
+				"navigationBarTitleText": "OKR 与 KPI",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/anchor-messages/index",
+			"style": {
+				"navigationBarTitleText": "消息中心",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/team-schedule/index",
+			"style": {
+				"navigationBarTitleText": "本组排班",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/swap-invite/index",
+			"style": {
+				"navigationBarTitleText": "换班邀请",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

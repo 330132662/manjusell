@@ -341,11 +341,10 @@
 		})
 	}
 
-	// 直播考勤（暂未开放）
+	// 直播考勤
 	function goAttendance() {
-		uni.showToast({
-			title: '直播考勤功能开发中',
-			icon: 'none'
+		uni.navigateTo({
+			url: '/pages/anchor-attendance/index'
 		})
 	}
 

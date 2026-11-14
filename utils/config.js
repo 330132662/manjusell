@@ -10,6 +10,11 @@ export const USE_MOCK = false
 // 后台已在 localhost:8600 跑起来时置为 false，让这几个接口走真实后端。
 export const USE_LIVE_API_MOCK = false
 
+// 主播工作台 M0–M9：业绩 / 工资 / 违规 / OKR / 制度签收等模块后端尚未提供接口，
+// 置 true 时读本地演示数据（含排班、场次、订单），便于真机联调界面与跳转。
+// 后端对应接口就绪后置 false，页面无需改动。
+export const USE_MP_DEMO = true
+
 // ===== 后端接口对称加密验证(与 backend_web 的 .env / 后端 app.yaml 一致) =====
 // 接口对称解密验证密钥（app.apisecret / VITE_ENCRYPT）
 export const API_SECRET = 'gofly@888'

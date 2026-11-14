@@ -194,7 +194,8 @@ async function handleLogin() {
 }
 
 function goCheckin() {
-  uni.reLaunch({ url: '/pages/anchor-checkin/index' })
+  // 登录后进入主播工作台（M2 首页），由首页按排班状态引导扫码 / 录数据 / 下播
+  uni.reLaunch({ url: '/pages/anchor-home/index' })
 }
 </script>
 

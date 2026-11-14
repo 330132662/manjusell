@@ -306,3 +306,891 @@ $gf-line-soft: rgba(201, 162, 75, 0.22);
 	color: $gf-cinnabar;
 	font-weight: 700;
 }
+
+/* ============================================================
+ * V2：主播工作台 M0–M9 通用组件
+ * 与上方同一套国风变量，只新增类，不改动既有类
+ * ============================================================ */
+
+/* ---------- 页面骨架 ---------- */
+.gf-scroll {
+	flex: 1;
+	overflow: hidden;
+}
+.gf-pad {
+	padding: 20rpx 28rpx 40rpx;
+}
+.gf-pad-b {
+	padding-bottom: 40rpx;
+}
+.gf-safe-b {
+	padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ---------- 首页头图 ---------- */
+.gf-hero {
+	position: relative;
+	padding: calc(24rpx + env(safe-area-inset-top)) 28rpx 110rpx;
+	background: linear-gradient(158deg, #26241f 0%, #3a4a52 58%, #4c5c63 100%);
+	color: #fdf6e6;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+.gf-hero::after {
+	content: '';
+	position: absolute;
+	right: -90rpx;
+	top: -70rpx;
+	width: 320rpx;
+	height: 320rpx;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(232, 199, 122, 0.28) 0%, rgba(232, 199, 122, 0) 70%);
+}
+.gf-hero-hi {
+	display: flex;
+	align-items: center;
+	gap: 18rpx;
+	position: relative;
+	z-index: 1;
+}
+.gf-hero-av {
+	width: 84rpx;
+	height: 84rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 36rpx;
+	font-weight: 700;
+	color: #fdf6e6;
+	background: rgba(253, 246, 230, 0.16);
+	border: 2rpx solid rgba(232, 199, 122, 0.6);
+	flex-shrink: 0;
+}
+.gf-hero-name {
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 40rpx;
+	font-weight: 700;
+	letter-spacing: 2rpx;
+}
+.gf-hero-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10rpx;
+	margin-top: 8rpx;
+}
+.gf-hero-tag {
+	height: 36rpx;
+	line-height: 34rpx;
+	padding: 0 12rpx;
+	border-radius: 4rpx;
+	font-size: 19rpx;
+	color: #fdf6e6;
+	background: rgba(253, 246, 230, 0.16);
+	border: 1rpx solid rgba(253, 246, 230, 0.28);
+}
+.gf-hero-tag.warn {
+	color: #f4d9a8;
+	border-color: rgba(232, 199, 122, 0.55);
+}
+.gf-hero-bell {
+	position: relative;
+	margin-left: auto;
+	width: 72rpx;
+	height: 72rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 28rpx;
+	background: rgba(253, 246, 230, 0.14);
+	border: 1rpx solid rgba(253, 246, 230, 0.3);
+	flex-shrink: 0;
+}
+.gf-hero-bell i {
+	position: absolute;
+	top: 10rpx;
+	right: 12rpx;
+	width: 12rpx;
+	height: 12rpx;
+	border-radius: 50%;
+	background: #e2564a;
+}
+.gf-lift {
+	position: relative;
+	z-index: 2;
+	margin-top: -84rpx;
+	padding: 0 28rpx;
+}
+
+/* ---------- 主行动按钮（上播 / 下播 / 录数据） ---------- */
+.gf-action {
+	display: flex;
+	align-items: center;
+	gap: 22rpx;
+	width: 100%;
+	padding: 26rpx 24rpx;
+	border-radius: 20rpx;
+	background: linear-gradient(135deg, #b23a2e 0%, #8f2d24 100%);
+	border: 1rpx solid $gf-gold;
+	box-shadow: 0 12rpx 28rpx rgba(178, 58, 46, 0.26);
+	color: #fdf6e6;
+	position: relative;
+	overflow: hidden;
+	text-align: left;
+}
+.gf-action.ink {
+	background: linear-gradient(135deg, #3a4a52 0%, #2a363c 100%);
+	border-color: rgba(201, 162, 75, 0.55);
+	box-shadow: 0 12rpx 28rpx rgba(42, 54, 60, 0.28);
+}
+.gf-action.gold {
+	background: linear-gradient(135deg, #c9973c 0%, #a97b22 100%);
+	box-shadow: 0 12rpx 28rpx rgba(169, 123, 34, 0.28);
+}
+.gf-action.gray {
+	background: linear-gradient(135deg, #b9b0a1 0%, #a39a8b 100%);
+	border-color: rgba(255, 253, 247, 0.5);
+	box-shadow: none;
+	color: #fffdf7;
+}
+.gf-action-ico {
+	width: 96rpx;
+	height: 96rpx;
+	border-radius: 18rpx;
+	background: rgba(253, 246, 230, 0.18);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 40rpx;
+	font-weight: 700;
+	flex-shrink: 0;
+}
+.gf-action-main {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6rpx;
+	z-index: 1;
+}
+.gf-action-t {
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 36rpx;
+	font-weight: 700;
+	letter-spacing: 2rpx;
+}
+.gf-action-d {
+	font-size: 21rpx;
+	opacity: 0.86;
+	line-height: 1.5;
+}
+.gf-action-go {
+	font-size: 30rpx;
+	opacity: 0.8;
+	z-index: 1;
+}
+
+/* ---------- 统计格 ---------- */
+.gf-kpi-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 14rpx;
+}
+.gf-kpi-grid.three {
+	grid-template-columns: repeat(3, 1fr);
+}
+.gf-kpi {
+	background: $gf-card;
+	border: 1rpx solid $gf-line-soft;
+	border-radius: 14rpx;
+	padding: 18rpx 18rpx 16rpx;
+}
+.gf-kpi-l {
+	font-size: 21rpx;
+	color: $gf-ink-3;
+	letter-spacing: 1rpx;
+}
+.gf-kpi-v {
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 40rpx;
+	font-weight: 700;
+	color: $gf-ink;
+	line-height: 1.2;
+	margin-top: 4rpx;
+}
+.gf-kpi-v.small {
+	font-size: 30rpx;
+}
+.gf-kpi-s {
+	font-size: 19rpx;
+	color: $gf-ink-3;
+	margin-top: 4rpx;
+	line-height: 1.4;
+}
+
+/* ---------- 行 / 列表 ---------- */
+.gf-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16rpx;
+	padding: 16rpx 0;
+	border-bottom: 1rpx dashed $gf-line-soft;
+	font-size: 24rpx;
+}
+.gf-row:last-child {
+	border-bottom: 0;
+	padding-bottom: 0;
+}
+.gf-row-k {
+	color: $gf-ink-3;
+	flex-shrink: 0;
+}
+.gf-row-v {
+	color: $gf-ink;
+	text-align: right;
+	word-break: break-all;
+}
+.gf-row-v.strong {
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 28rpx;
+	font-weight: 700;
+}
+.gf-li {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	padding: 20rpx 0;
+	border-bottom: 1rpx solid $gf-line-soft;
+}
+.gf-li:last-child {
+	border-bottom: 0;
+}
+.gf-li-ico {
+	width: 64rpx;
+	height: 64rpx;
+	border-radius: 12rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 26rpx;
+	font-weight: 700;
+	color: #8a6a1f;
+	background: rgba(201, 162, 75, 0.14);
+	border: 1rpx solid rgba(201, 162, 75, 0.3);
+	flex-shrink: 0;
+}
+.gf-li-ico.red {
+	color: $gf-cinnabar;
+	background: rgba(178, 58, 46, 0.08);
+	border-color: rgba(178, 58, 46, 0.28);
+}
+.gf-li-ico.ink {
+	color: $gf-indigo;
+	background: rgba(58, 74, 82, 0.08);
+	border-color: rgba(58, 74, 82, 0.22);
+}
+.gf-li-main {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4rpx;
+}
+.gf-li-t {
+	font-size: 26rpx;
+	color: $gf-ink;
+	font-weight: 600;
+}
+.gf-li-d {
+	font-size: 21rpx;
+	color: $gf-ink-3;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.gf-li-go {
+	font-size: 30rpx;
+	color: rgba(140, 130, 116, 0.65);
+	flex-shrink: 0;
+}
+.gf-li-right {
+	font-size: 21rpx;
+	color: $gf-ink-3;
+	text-align: right;
+	flex-shrink: 0;
+}
+
+/* ---------- 按钮 ---------- */
+.gf-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 84rpx;
+	padding: 0 28rpx;
+	border-radius: 12rpx;
+	font-size: 27rpx;
+	font-weight: 700;
+	letter-spacing: 2rpx;
+	border: 1rpx solid transparent;
+}
+.gf-btn-primary {
+	background: linear-gradient(180deg, #c0463a 0%, $gf-cinnabar 100%);
+	color: #fdf6e6;
+	border-color: $gf-gold;
+	box-shadow: 0 8rpx 20rpx rgba(178, 58, 46, 0.22);
+}
+.gf-btn-ghost {
+	background: rgba(255, 253, 247, 0.92);
+	color: $gf-ink-2;
+	border-color: $gf-line;
+}
+.gf-btn-danger {
+	background: $gf-cinnabar;
+	color: #fdf6e6;
+}
+.gf-btn-sm {
+	height: 58rpx;
+	padding: 0 22rpx;
+	font-size: 22rpx;
+	border-radius: 8rpx;
+	letter-spacing: 1rpx;
+	font-weight: 600;
+}
+.gf-btn-block {
+	width: 100%;
+}
+.gf-btn.disabled {
+	opacity: 0.45;
+}
+.gf-btn-hover {
+	opacity: 0.86;
+}
+
+/* ---------- 底部操作条 ---------- */
+.gf-foot {
+	flex-shrink: 0;
+	display: flex;
+	gap: 14rpx;
+	padding: 14rpx 28rpx;
+	padding-bottom: calc(14rpx + env(safe-area-inset-bottom));
+	background: rgba(244, 236, 219, 0.97);
+	border-top: 1rpx solid $gf-line-soft;
+}
+.gf-foot .gf-btn {
+	flex: 1;
+}
+
+/* ---------- 表单 ---------- */
+.gf-field {
+	margin-bottom: 24rpx;
+}
+.gf-field:last-child {
+	margin-bottom: 0;
+}
+.gf-label {
+	display: block;
+	font-size: 23rpx;
+	color: $gf-ink-3;
+	margin-bottom: 10rpx;
+	letter-spacing: 1rpx;
+}
+.gf-req {
+	color: $gf-cinnabar;
+	margin-right: 4rpx;
+}
+.gf-input {
+	width: 100%;
+	height: 84rpx;
+	background: #fffdf7;
+	border: 1rpx solid $gf-line-soft;
+	border-radius: 10rpx;
+	padding: 0 20rpx;
+	font-size: 26rpx;
+	color: $gf-ink;
+	box-sizing: border-box;
+}
+.gf-textarea {
+	width: 100%;
+	min-height: 150rpx;
+	background: #fffdf7;
+	border: 1rpx solid $gf-line-soft;
+	border-radius: 10rpx;
+	padding: 16rpx 20rpx;
+	font-size: 25rpx;
+	line-height: 1.65;
+	color: $gf-ink;
+	box-sizing: border-box;
+}
+.gf-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12rpx;
+}
+.gf-chip {
+	height: 56rpx;
+	padding: 0 22rpx;
+	border-radius: 28rpx;
+	border: 1rpx solid $gf-line-soft;
+	background: rgba(255, 253, 247, 0.9);
+	color: $gf-ink-2;
+	font-size: 22rpx;
+	display: flex;
+	align-items: center;
+}
+.gf-chip.on {
+	background: rgba(178, 58, 46, 0.08);
+	border-color: $gf-cinnabar;
+	color: $gf-cinnabar;
+	font-weight: 700;
+}
+.gf-chip.disabled {
+	opacity: 0.4;
+}
+
+/* ---------- 提示条 ---------- */
+.gf-notice {
+	display: flex;
+	gap: 12rpx;
+	padding: 16rpx 18rpx;
+	border-radius: 10rpx;
+	font-size: 21rpx;
+	line-height: 1.6;
+	color: #7a5f1c;
+	background: rgba(201, 162, 75, 0.13);
+	border: 1rpx solid rgba(201, 162, 75, 0.26);
+	margin-bottom: 18rpx;
+}
+.gf-notice.red {
+	color: #8f2d24;
+	background: rgba(178, 58, 46, 0.08);
+	border-color: rgba(178, 58, 46, 0.26);
+}
+.gf-notice.ink {
+	color: $gf-indigo;
+	background: rgba(58, 74, 82, 0.07);
+	border-color: rgba(58, 74, 82, 0.2);
+}
+.gf-notice-main {
+	flex: 1;
+	min-width: 0;
+}
+
+/* ---------- 进度条 ---------- */
+.gf-prog {
+	height: 10rpx;
+	border-radius: 5rpx;
+	background: rgba(140, 130, 116, 0.18);
+	overflow: hidden;
+}
+.gf-prog i {
+	display: block;
+	height: 100%;
+	border-radius: 5rpx;
+	background: linear-gradient(90deg, $gf-gold 0%, $gf-cinnabar 100%);
+}
+.gf-prog.ink i {
+	background: linear-gradient(90deg, #7b8b93 0%, $gf-indigo 100%);
+}
+
+/* ---------- 页签 ---------- */
+.gf-tabs {
+	display: flex;
+	background: rgba(255, 253, 247, 0.96);
+	border-bottom: 1rpx solid $gf-line-soft;
+	position: sticky;
+	top: 0;
+	z-index: 3;
+	flex-shrink: 0;
+}
+.gf-tabs-i {
+	flex: 1;
+	height: 80rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 25rpx;
+	color: $gf-ink-2;
+	position: relative;
+	letter-spacing: 1rpx;
+}
+.gf-tabs-i.on {
+	color: $gf-cinnabar;
+	font-weight: 700;
+}
+.gf-tabs-i.on::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 40rpx;
+	height: 5rpx;
+	border-radius: 3rpx;
+	background: $gf-cinnabar;
+}
+
+/* ---------- 弹层 ---------- */
+.gf-mask {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: rgba(18, 14, 10, 0.5);
+	z-index: 90;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	animation: gf-fade 0.18s ease;
+}
+.gf-mask.center {
+	justify-content: center;
+	align-items: center;
+}
+.gf-sheet {
+	width: 100%;
+	max-height: 84vh;
+	background: $gf-paper;
+	border-radius: 26rpx 26rpx 0 0;
+	border-top: 2rpx solid rgba(201, 162, 75, 0.55);
+	display: flex;
+	flex-direction: column;
+	animation: gf-up 0.22s ease;
+}
+.gf-sheet-hd {
+	position: relative;
+	flex-shrink: 0;
+	height: 96rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 31rpx;
+	font-weight: 700;
+	color: $gf-ink;
+	letter-spacing: 2rpx;
+	border-bottom: 1rpx solid $gf-line-soft;
+}
+.gf-sheet-x {
+	position: absolute;
+	right: 20rpx;
+	top: 22rpx;
+	width: 52rpx;
+	height: 52rpx;
+	line-height: 48rpx;
+	text-align: center;
+	border-radius: 50%;
+	font-size: 30rpx;
+	color: $gf-ink-3;
+	background: rgba(140, 130, 116, 0.1);
+}
+.gf-sheet-bd {
+	flex: 1;
+	overflow-y: auto;
+	padding: 24rpx 28rpx;
+}
+.gf-sheet-ft {
+	flex-shrink: 0;
+	display: flex;
+	gap: 14rpx;
+	padding: 14rpx 28rpx;
+	padding-bottom: calc(14rpx + env(safe-area-inset-bottom));
+	border-top: 1rpx solid $gf-line-soft;
+}
+.gf-sheet-ft .gf-btn {
+	flex: 1;
+}
+.gf-dialog {
+	width: 580rpx;
+	background: $gf-paper;
+	border-radius: 20rpx;
+	border: 1rpx solid rgba(201, 162, 75, 0.5);
+	padding: 40rpx 32rpx 30rpx;
+	text-align: center;
+	animation: gf-pop 0.18s ease;
+}
+.gf-dialog-t {
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-size: 33rpx;
+	font-weight: 700;
+	color: $gf-ink;
+	letter-spacing: 1rpx;
+}
+.gf-dialog-c {
+	font-size: 25rpx;
+	color: $gf-ink-2;
+	line-height: 1.7;
+	margin-top: 14rpx;
+}
+.gf-dialog-a {
+	display: flex;
+	gap: 16rpx;
+	margin-top: 30rpx;
+}
+.gf-dialog-a .gf-btn {
+	flex: 1;
+	height: 76rpx;
+	font-size: 26rpx;
+}
+
+/* ---------- 角标 / 悬浮按钮 ---------- */
+.gf-dot {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 32rpx;
+	height: 32rpx;
+	padding: 0 8rpx;
+	border-radius: 16rpx;
+	background: $gf-cinnabar;
+	color: #fdf6e6;
+	font-size: 18rpx;
+	line-height: 1;
+}
+.gf-tab .gf-dot {
+	position: absolute;
+	top: -6rpx;
+	right: 10rpx;
+}
+.gf-tab {
+	position: relative;
+}
+.gf-fab {
+	position: fixed;
+	right: 28rpx;
+	bottom: calc(150rpx + env(safe-area-inset-bottom));
+	height: 84rpx;
+	padding: 0 28rpx;
+	border-radius: 42rpx;
+	display: flex;
+	align-items: center;
+	gap: 10rpx;
+	background: linear-gradient(135deg, #b23a2e 0%, #8f2d24 100%);
+	border: 1rpx solid $gf-gold;
+	color: #fdf6e6;
+	font-size: 24rpx;
+	font-weight: 700;
+	letter-spacing: 1rpx;
+	box-shadow: 0 12rpx 28rpx rgba(178, 58, 46, 0.32);
+	z-index: 30;
+}
+
+/* ---------- 时间轴 / 步骤 ---------- */
+.gf-step {
+	display: flex;
+	align-items: flex-start;
+	gap: 16rpx;
+	padding: 14rpx 0;
+}
+.gf-step-node {
+	width: 44rpx;
+	height: 44rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 22rpx;
+	flex-shrink: 0;
+	border: 1rpx solid $gf-line;
+	color: $gf-ink-3;
+	background: rgba(255, 253, 247, 0.9);
+}
+.gf-step-node.done {
+	background: rgba(58, 106, 82, 0.1);
+	border-color: rgba(58, 106, 82, 0.45);
+	color: #2f6a52;
+	font-weight: 700;
+}
+.gf-step-node.active {
+	background: rgba(178, 58, 46, 0.1);
+	border-color: $gf-cinnabar;
+	color: $gf-cinnabar;
+	font-weight: 700;
+}
+.gf-step-main {
+	flex: 1;
+	min-width: 0;
+	padding-top: 4rpx;
+}
+.gf-step-t {
+	font-size: 24rpx;
+	color: $gf-ink;
+}
+.gf-step-d {
+	font-size: 20rpx;
+	color: $gf-ink-3;
+	margin-top: 4rpx;
+}
+
+/* ---------- 校验行 ---------- */
+.gf-check {
+	display: flex;
+	gap: 14rpx;
+	align-items: flex-start;
+	padding: 20rpx 0;
+	border-bottom: 1rpx solid $gf-line-soft;
+}
+.gf-check:last-child {
+	border-bottom: 0;
+}
+.gf-check-ico {
+	width: 44rpx;
+	height: 44rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 22rpx;
+	font-weight: 700;
+	flex-shrink: 0;
+	background: rgba(58, 106, 82, 0.1);
+	color: #2f6a52;
+	border: 1rpx solid rgba(58, 106, 82, 0.35);
+}
+.gf-check-ico.no {
+	background: rgba(178, 58, 46, 0.1);
+	color: $gf-cinnabar;
+	border-color: rgba(178, 58, 46, 0.35);
+}
+.gf-check-ico.wt {
+	background: rgba(201, 162, 75, 0.14);
+	color: #8a6a1f;
+	border-color: rgba(201, 162, 75, 0.45);
+}
+.gf-check-main {
+	flex: 1;
+	min-width: 0;
+}
+.gf-check-t {
+	font-size: 25rpx;
+	color: $gf-ink;
+	font-weight: 600;
+}
+.gf-check-d {
+	font-size: 21rpx;
+	color: $gf-ink-3;
+	line-height: 1.6;
+	margin-top: 4rpx;
+}
+.gf-check-d.err {
+	color: $gf-cinnabar;
+}
+.gf-check-d.warn {
+	color: #8a6a1f;
+}
+.gf-check-fix {
+	display: flex;
+	gap: 12rpx;
+	margin-top: 12rpx;
+	flex-wrap: wrap;
+}
+
+/* ---------- 上传格 ---------- */
+.gf-upload {
+	width: 140rpx;
+	height: 140rpx;
+	border-radius: 12rpx;
+	border: 1rpx dashed $gf-line;
+	background: rgba(255, 253, 247, 0.8);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6rpx;
+	font-size: 20rpx;
+	color: $gf-ink-3;
+}
+.gf-upload.done {
+	border-style: solid;
+	color: #2f6a52;
+	background: rgba(58, 106, 82, 0.06);
+	border-color: rgba(58, 106, 82, 0.3);
+}
+
+/* ---------- 开关 ---------- */
+.gf-switch {
+	width: 78rpx;
+	height: 44rpx;
+	border-radius: 22rpx;
+	background: rgba(140, 130, 116, 0.35);
+	position: relative;
+	flex-shrink: 0;
+	transition: background 0.18s;
+}
+.gf-switch.on {
+	background: $gf-cinnabar;
+}
+.gf-switch::after {
+	content: '';
+	position: absolute;
+	top: 4rpx;
+	left: 4rpx;
+	width: 36rpx;
+	height: 36rpx;
+	border-radius: 50%;
+	background: #fffdf7;
+	transition: transform 0.18s;
+}
+.gf-switch.on::after {
+	transform: translateX(34rpx);
+}
+
+/* ---------- 其他 ---------- */
+.gf-hint {
+	font-size: 20rpx;
+	color: $gf-ink-3;
+	line-height: 1.6;
+	letter-spacing: 1rpx;
+}
+.gf-hint-c {
+	text-align: center;
+	margin: 22rpx 0 0;
+}
+.gf-divider {
+	height: 1rpx;
+	background: $gf-line-soft;
+	margin: 20rpx 0;
+}
+.gf-big-num {
+	font-family: 'STKaiti', 'Kaiti SC', 'KaiTi', '楷体', serif;
+	font-weight: 700;
+	color: $gf-ink;
+	line-height: 1.1;
+}
+.gf-link {
+	color: $gf-cinnabar;
+	font-size: 21rpx;
+}
+
+@keyframes gf-up {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+@keyframes gf-fade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+@keyframes gf-pop {
+	from {
+		opacity: 0;
+		transform: scale(0.94);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
