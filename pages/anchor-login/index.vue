@@ -1,5 +1,5 @@
 <template>
-  <view class="page">
+  <view class="page" :style="capsuleSafeStyle">
     <view class="hero">
       <view class="hero-badge">
         <text class="hero-badge-dot"></text>

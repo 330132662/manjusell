@@ -1,5 +1,5 @@
 <template>
-  <view class="dashboard-page">
+  <view class="dashboard-page" :style="capsuleSafeStyle">
     <!-- 顶部导航栏 - 手机端显示 -->
     <view class="top-nav-mobile" v-if="isMobile">
       <view class="logo">

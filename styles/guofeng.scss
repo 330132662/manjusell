@@ -3,19 +3,7 @@
  * 只做视觉与布局，不参与任何业务逻辑
  * ============================================================ */
 
-$gf-paper: #f4ecdb;
-$gf-paper-deep: #ece0c8;
-$gf-card: #fffdf7;
-$gf-ink: #1a1815;
-$gf-ink-2: #5b5348;
-$gf-ink-3: #8c8274;
-$gf-cinnabar: #b23a2e;
-$gf-cinnabar-soft: #f3dcd6;
-$gf-gold: #c9a24b;
-$gf-gold-soft: #e8c77a;
-$gf-indigo: #3a4a52;
-$gf-line: rgba(201, 162, 75, 0.42);
-$gf-line-soft: rgba(201, 162, 75, 0.22);
+@import 'guofeng-vars';
 
 /* ---------- 纸底 + 水墨远山 ---------- */
 .gf-page {
@@ -32,9 +20,9 @@ $gf-line-soft: rgba(201, 162, 75, 0.22);
 .gf-topbar {
 	display: flex;
 	align-items: center;
-	/* 顶部预留状态栏：基础值兜底，支持 env 的端再叠加安全区 */
+	/* 小程序胶囊避让：根节点注入 --gf-capsule-safe，其余端用状态栏 + 导航栏兜底 */
 	padding: 22rpx 28rpx 18rpx;
-	padding-top: calc(22rpx + env(safe-area-inset-top));
+	padding-top: var(--gf-capsule-safe, calc(52px + env(safe-area-inset-top)));
 	position: relative;
 	border-bottom: 1rpx solid $gf-line-soft;
 	flex-shrink: 0;
@@ -330,7 +318,7 @@ $gf-line-soft: rgba(201, 162, 75, 0.22);
 /* ---------- 首页头图 ---------- */
 .gf-hero {
 	position: relative;
-	padding: calc(24rpx + env(safe-area-inset-top)) 28rpx 110rpx;
+	padding: var(--gf-capsule-safe, calc(52px + env(safe-area-inset-top))) 28rpx 110rpx;
 	background: linear-gradient(158deg, #26241f 0%, #3a4a52 58%, #4c5c63 100%);
 	color: #fdf6e6;
 	overflow: hidden;

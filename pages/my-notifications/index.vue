@@ -1,5 +1,5 @@
 <template>
-	<view class="page">
+	<view class="page" :style="capsuleSafeStyle">
 		<view class="topbar">
 			<view class="topbar-back" @click="goBack">‹</view>
 			<text class="topbar-title">站内提醒</text>

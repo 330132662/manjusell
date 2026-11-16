@@ -1,5 +1,12 @@
 {
-	"pages": [
+	"pages": [{
+			"path": "pages/anchor-home/index",
+			"style": {
+				"navigationBarTitleText": "主播工作台",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
+			}
+		},
 		{
 			"path": "pages/home/index",
 			"style": {
@@ -122,14 +129,7 @@
 				"enablePullDownRefresh": true
 			}
 		},
-		{
-			"path": "pages/anchor-home/index",
-			"style": {
-				"navigationBarTitleText": "主播工作台",
-				"navigationStyle": "custom",
-				"enablePullDownRefresh": false
-			}
-		},
+
 		{
 			"path": "pages/anchor-scan/index",
 			"style": {

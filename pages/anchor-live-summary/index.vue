@@ -1,5 +1,5 @@
 <template>
-	<view class="page gf-page">
+	<view class="page gf-page" :style="capsuleSafeStyle">
 		<view class="gf-topbar">
 			<view class="gf-back" @click="goHome">‹</view>
 			<view class="gf-topbar-mid">
@@ -115,9 +115,8 @@
 </script>
 
 <style lang="scss" scoped>
-	@import '../../styles/guofeng.scss';
-
-	.page {
+	@import '../../styles/guofeng-vars.scss';
+.page {
 		height: 100vh;
 		display: flex;
 		flex-direction: column;

@@ -1,5 +1,5 @@
 <template>
-	<view class="scan-page">
+	<view class="scan-page" :style="capsuleSafeStyle">
 		<!-- ===== 顶栏 ===== -->
 		<view class="scan-head">
 			<view class="scan-back" @click="goBack">×</view>
@@ -143,9 +143,8 @@
 </script>
 
 <style lang="scss" scoped>
-	@import '../../styles/guofeng.scss';
-
-	.scan-page {
+	@import '../../styles/guofeng-vars.scss';
+.scan-page {
 		position: relative;
 		min-height: 100vh;
 		background: #0d0f0e;

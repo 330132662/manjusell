@@ -1,5 +1,5 @@
 <template>
-	<view class="page gf-page">
+	<view class="page gf-page" :style="capsuleSafeStyle">
 		<!-- ===== 头图：问候 / 身份 / 消息 ===== -->
 		<view class="gf-hero">
 			<view class="gf-hero-hi">
@@ -355,9 +355,8 @@
 </script>
 
 <style lang="scss" scoped>
-	@import '../../styles/guofeng.scss';
-
-	.page {
+	@import '../../styles/guofeng-vars.scss';
+.page {
 		height: 100vh;
 		display: flex;
 		flex-direction: column;

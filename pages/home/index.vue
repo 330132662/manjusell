@@ -395,7 +395,7 @@
 </script>
 
 <template>
-	<view class="shouye_wrapM7nR3">
+	<view class="shouye_wrapM7nR3" :style="capsuleSafeStyle">
 
 		<!-- ===== 顶部那根细黑导航条 ===== -->
 		<view class="daohang_barQ3kR2">

@@ -14,6 +14,8 @@
 
 <style lang="scss">
 	@import '@/uni.scss';
+	/* 国风视觉系统改为全局单份引入：避免每个页面 scoped style 重复编译导致主包膨胀 */
+	@import '@/styles/guofeng.scss';
 	
 	/* 全局基础样式 */
 	page {
@@ -28,6 +30,24 @@
 	uni-page-head {
 		display: none;
 	}
+
+	/* 小程序自定义导航：顶部交互区统一置于胶囊下方。
+	 * 根节点由 main.js 的全局 mixin 注入 --gf-capsule-safe（胶囊底部 + 8px）。 */
+	/* #ifdef MP-WEIXIN */
+	.gf-hero,
+	.gf-topbar,
+	.topbar,
+	.navbar,
+	.nav-bar,
+	.top-nav-mobile,
+	.live-head,
+	.scan-head,
+	.daohang_barQ3kR2,
+	.hero-section,
+	.page > .hero {
+		padding-top: var(--gf-capsule-safe, calc(52px + env(safe-area-inset-top))) !important;
+	}
+	/* #endif */
 	
 	/* 全局容器 */
 	.container {

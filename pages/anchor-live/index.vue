@@ -1,5 +1,5 @@
 <template>
-	<view class="live-page">
+	<view class="live-page" :style="capsuleSafeStyle">
 		<view class="live-head">
 			<view class="live-back" @click="goBack">‹</view>
 			<text class="live-title">直播中</text>

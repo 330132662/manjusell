@@ -1,5 +1,5 @@
 <template>
-	<view class="page">
+	<view class="page" :style="capsuleSafeStyle">
 		<!-- 顶栏 -->
 		<view class="topbar">
 			<view class="topbar-back" @click="goBack">‹</view>

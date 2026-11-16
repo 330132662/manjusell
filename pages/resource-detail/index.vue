@@ -1,5 +1,5 @@
 <template>
-  <view class="detail-page">
+  <view class="detail-page" :style="capsuleSafeStyle">
     <!-- 顶部导航栏 -->
     <view class="nav-bar">
       <view class="nav-content">
