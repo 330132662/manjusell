@@ -1,6 +1,6 @@
 <template>
 	<view class="user-page">
-		<!-- 未登录：微信授权登录 -->
+		<!--弃用 未登录：微信授权登录  -->
 
 	</view>
 </template>
