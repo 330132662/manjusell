@@ -374,3 +374,30 @@ export function readMyNotifications({ ids = '' } = {}) {
   if (USE_LIVE_API_MOCK) return Promise.resolve({ updated: 0 })
   return post('/admin/schedule/me/notifications/read', { ids })
 }
+
+// ===================== 主播端聚合接口（工作台 / 业绩 / 团队 / 我的） =====================
+// 后端已在 schedule 模块提供聚合查询，这里仅薄封装；请求失败时 mp.js 会 fallback 到本地 seed
+
+/** 主播首页工作台（聚合：今日排班 / 直播中 / 本月 GMV / 未读通知）*/
+export function getAnchorWorkbench() {
+  if (USE_LIVE_API_MOCK) return Promise.resolve(null)
+  return get('/admin/schedule/me/workbench')
+}
+
+/** 主播业绩（月视图：概览 / 按天柱状 / 场次列表 / 本组 TOP 5 排行）*/
+export function getAnchorPerformance({ month = '' } = {}) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve(null)
+  return get('/admin/schedule/me/performance', { month })
+}
+
+/** 团队看板（组长视角，返回 forbidden=true 给普通主播）*/
+export function getAnchorTeamBoard({ month = '' } = {}) {
+  if (USE_LIVE_API_MOCK) return Promise.resolve(null)
+  return get('/admin/schedule/me/teamBoard', { month })
+}
+
+/** 主播「我的」页聚合（档案 + 考勤月历 + 设备领用 + 未读数）*/
+export function getAnchorMine() {
+  if (USE_LIVE_API_MOCK) return Promise.resolve(null)
+  return get('/admin/schedule/me/mine')
+}

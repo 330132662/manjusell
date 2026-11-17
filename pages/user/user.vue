@@ -1,72 +1,7 @@
 <template>
 	<view class="user-page">
 		<!-- 未登录：微信授权登录 -->
-		<view v-if="!loggedIn" class="login-wrap">
-			<view class="login-card">
-				<view class="login-logo">
-					<uni-icons type="weixin" size="44" color="#FFFFFF"></uni-icons>
-				</view>
-				<text class="login-title">本页面已停用</text>
-				<text class="login-sub">授权登录后查看你的订单</text>
 
-				<button class="wechat-btn" :disabled="logging" @click="handleLogin">
-					<uni-icons type="weixin" size="20" color="#FFFFFF"></uni-icons>
-					<text class="wechat-btn-text">{{ logging ? '已停用登录中…' : '已停用微信授权登录' }}</text>
-				</button>
-
-				<text v-if="error" class="login-error">{{ error }}</text>
-				<text class="login-tip">登录即表示同意《用户协议》与《隐私政策》</text>
-			</view>
-		</view>
-
-		<!-- 已登录：用户信息 + 订单列表 -->
-		<view v-else class="profile-wrap">
-			<view class="profile-header">
-				<image v-if="userInfo.avatar" class="avatar" :src="userInfo.avatar" mode="aspectFill"></image>
-				<view v-else class="avatar avatar-default">
-					<text class="avatar-char">{{ avatarChar }}</text>
-				</view>
-				<view class="profile-meta">
-					<text class="profile-name">{{ userInfo.nickname || '微信用户' }}</text>
-					<text class="profile-openid">uid: {{ userInfo.uid }} ·
-						{{ userInfo.order_match ? '订单已匹配' : '未匹配订单' }}</text>
-				</view>
-				<view class="logout-btn" @click="handleLogout">退出</view>
-			</view>
-
-			<view class="order-section">
-				<view class="section-bar">
-					<text class="section-title">我的订单</text>
-					<text class="section-count">共 {{ orders.length }} 笔</text>
-				</view>
-
-				<view v-if="loadingOrders" class="state-box">
-					<uni-icons type="refresh" size="22" color="#4ECDC4"></uni-icons>
-					<text class="state-text">订单加载中…</text>
-				</view>
-
-				<view v-else-if="orders.length === 0" class="state-box">
-					<uni-icons type="cart" size="28" color="rgba(26,83,92,0.35)"></uni-icons>
-					<text class="state-text">暂无订单</text>
-				</view>
-
-				<view v-else class="order-list">
-					<view v-for="order in orders" :key="order.order_no" class="order-item" @click="onOrderClick(order)">
-						<view class="order-top">
-							<text class="order-no">订单号 {{ order.order_no }}</text>
-							<text class="order-status" :class="'st-' + order.status">
-								{{ statusText(order.status) }}
-							</text>
-						</view>
-						<text class="order-title text-clamp-2">{{ order.title }}</text>
-						<view class="order-bottom">
-							<text class="order-time">{{ order.create_time }}</text>
-							<text class="order-amount">¥{{ formatAmount(order.amount) }}</text>
-						</view>
-					</view>
-				</view>
-			</view>
-		</view>
 	</view>
 </template>
 
@@ -105,6 +40,9 @@
 	}
 
 	onLoad((options) => {
+		uni.reLaunch({
+			url:"/pages/anchor-home/index"
+		})
 		// H5 OAuth 回调: 后端 302 回来时 URL 上只带一次性 ticket(60秒),
 		// 用它调 /wxapp/wxLoginTicket 换 token/uid/openid/union_id 建立登录态
 		// #ifdef H5

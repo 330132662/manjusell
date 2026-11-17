@@ -3,8 +3,8 @@
  *
  * 设计原则：
  *  1. 页面只依赖本文件导出的函数，不直接读写 storage，便于后续替换为真实接口；
- *  2. 真实接口优先：排班 / 开播 / 下播已在 api/index.js 提供，已接入；
- *     业绩明细、工资、违规、OKR、制度签收等后端未提供，使用本地演示数据（USE_MP_DEMO）；
+ *  2. 真实接口优先：排班 / 开播 / 下播 / 工作台 / 业绩 / 团队 / 我的 已在 api/index.js 提供；
+ *     写操作、工资、违规、OKR、制度签收等后端未提供，使用本地演示数据（USE_MP_DEMO）；
  *  3. 所有写操作立刻落 storage，返回 Promise，页面可以 await 后刷新。
  */
 import {
@@ -14,7 +14,11 @@ import {
 	liveCheckOut,
 	getLiveOffices,
 	getLiveAccounts,
-	getMyNotifications
+	getMyNotifications,
+	getAnchorWorkbench,
+	getAnchorPerformance,
+	getAnchorTeamBoard,
+	getAnchorMine
 } from './index'
 import { createSeed } from './mp-seed'
 import { USE_MP_DEMO } from '@/utils/config'
@@ -193,6 +197,50 @@ function isLeader() {
 /* ============================ M2 首页 ============================ */
 
 export async function getWorkbench() {
+	// 后端聚合接口优先（schedule 模块的 /admin/schedule/me/workbench）
+	try {
+		const r = await getAnchorWorkbench()
+		if (r && typeof r === 'object' && r.profile) {
+			const s = load()
+			const todos = []
+			// 未读通知（后端聚合已返回 unread）
+			// 待办清单：仍按本地 storage 驱动（写操作、审批等后端还没补）
+			if (s.swapInvite && s.swapInvite.st === '待处理' && s.swapInvite.to === me().id) {
+				todos.push({ icon: '换', title: '换班邀请', desc: s.swapInvite.fromName + ' 想与你换班', url: '/pages/swap-invite/index', type: 'purple' })
+			}
+			if (s.payroll.st === '待确认') {
+				todos.push({ icon: '薪', title: '工资条待确认', desc: s.payroll.period + ' 月 · 实发 ' + money(s.payroll.net), url: '/pages/anchor-payslip/index', type: 'gold' })
+			}
+			if (unsignedDocs().length) {
+				todos.push({ icon: '制', title: '制度待签收', desc: unsignedDocs().map((d) => d.name).join('、'), url: '/pages/anchor-rules/index', type: 'gray' })
+			}
+			const localProfile = me()
+			return {
+				profile: { ...r.profile, posText: localProfile.posText },
+				greet: new Date().getHours(),
+				todayPlans: r.todayPlans || [],
+				live: r.live || null,
+				nextPlan: r.nextPlan || null,
+				stats: {
+					todayOrders: r.stats?.todayOrders ?? 0,
+					todayGmv: r.stats?.todayGmv ?? 0,
+					monthGmv: r.stats?.monthGmv ?? 0,
+					validGmv: r.stats?.monthGmv ?? 0,
+					tierRate: 0,
+					nextTier: null,
+					tierGap: 0
+				},
+				todos,
+				unread: r.unread ?? 0,
+				leader: !!r.leader,
+				badges: {
+					schedule: (s.swapInvite && s.swapInvite.st === '待处理' ? 1 : 0) + (me().pos === '组长' ? (r.todayPlans || []).length : 0),
+					mine: r.unread ?? 0
+				}
+			}
+		}
+	} catch (e) { /* 后端失败 → 走本地 seed */ }
+
 	const s = load()
 	const live = liveSession()
 	const pend = pendingDataSession()
@@ -204,7 +252,6 @@ export async function getWorkbench() {
 	const nextTier = nextTierOf(gmv, me().pos)
 
 	const todos = []
-	// 换班邀请
 	if (s.swapInvite && s.swapInvite.st === '待处理' && s.swapInvite.to === me().id) {
 		todos.push({
 			icon: '换',
@@ -214,80 +261,29 @@ export async function getWorkbench() {
 			type: 'purple'
 		})
 	}
-	// 组长待确认
 	if (me().pos === '组长') {
 		const pendCount = s.team.plans.filter((p) => p.status === '待确认' && !p.obj).length
 		if (pendCount) {
-			todos.push({
-				icon: '排',
-				title: '本组排班待确认',
-				desc: pendCount + ' 个班次 · 周六 18:00 截止',
-				url: '/pages/team-schedule/index',
-				type: 'ink'
-			})
+			todos.push({ icon: '排', title: '本组排班待确认', desc: pendCount + ' 个班次 · 周六 18:00 截止', url: '/pages/team-schedule/index', type: 'ink' })
 		}
 	}
-	// 待录入数据
-	if (pend) {
-		todos.push({
-			icon: '录',
-			title: '录入本场数据',
-			desc: 'UV / 峰值 / 下播前在线 + 截图',
-			url: '/pages/anchor-live-data/index?id=' + pend.id,
-			type: 'gold'
-		})
-	}
-	// 日报
+	if (pend) todos.push({ icon: '录', title: '录入本场数据', desc: 'UV / 峰值 / 下播前在线 + 截图', url: '/pages/anchor-live-data/index?id=' + pend.id, type: 'gold' })
 	const hasEndedToday = s.sessions.some((x) => x.endAt >= todayStart() && x.anchorId === me().id)
 	if (hasEndedToday && !s.reports[dayText(todayStart())]) {
-		todos.push({
-			icon: '报',
-			title: '写今日日报',
-			desc: '下播后 24h 内提交',
-			url: '/pages/anchor-daily-report/index',
-			type: 'ink'
-		})
+		todos.push({ icon: '报', title: '写今日日报', desc: '下播后 24h 内提交', url: '/pages/anchor-daily-report/index', type: 'ink' })
 	}
-	// 工资条待确认
 	if (s.payroll.st === '待确认') {
-		todos.push({
-			icon: '薪',
-			title: '工资条待确认',
-			desc: s.payroll.period + ' 月 · 实发 ' + money(s.payroll.net),
-			url: '/pages/anchor-payslip/index',
-			type: 'gold'
-		})
+		todos.push({ icon: '薪', title: '工资条待确认', desc: s.payroll.period + ' 月 · 实发 ' + money(s.payroll.net), url: '/pages/anchor-payslip/index', type: 'gold' })
 	}
-	// 违规可申诉
 	appealableViolations().forEach((v) => {
-		todos.push({
-			icon: '诉',
-			title: '违规可申诉',
-			desc: v.level + ' · 剩 ' + Math.ceil((DAY - (nowTs() - v.at)) / HOUR) + ' 小时',
-			url: '/pages/anchor-violations/index',
-			type: 'red'
-		})
+		todos.push({ icon: '诉', title: '违规可申诉', desc: v.level + ' · 剩 ' + Math.ceil((DAY - (nowTs() - v.at)) / HOUR) + ' 小时', url: '/pages/anchor-violations/index', type: 'red' })
 	})
-	// OKR
 	if (s.okr && s.okr.st === '待签收') {
-		todos.push({
-			icon: '标',
-			title: 'OKR 待签收',
-			desc: s.okr.o,
-			url: '/pages/anchor-okr/index',
-			type: 'ink'
-		})
+		todos.push({ icon: '标', title: 'OKR 待签收', desc: s.okr.o, url: '/pages/anchor-okr/index', type: 'ink' })
 	}
-	// 制度
 	const uns = unsignedDocs()
 	if (uns.length) {
-		todos.push({
-			icon: '制',
-			title: '制度待签收',
-			desc: uns.map((d) => d.name).join('、'),
-			url: '/pages/anchor-rules/index',
-			type: 'gray'
-		})
+		todos.push({ icon: '制', title: '制度待签收', desc: uns.map((d) => d.name).join('、'), url: '/pages/anchor-rules/index', type: 'gray' })
 	}
 
 	return {
@@ -795,6 +791,32 @@ export async function confirmAllTeamPlans() {
 /* ============================ M4 业绩 ============================ */
 
 export async function getPerformance(tab) {
+	// 后端聚合优先
+	try {
+		const r = await getAnchorPerformance()
+		if (r && r.overview) {
+			const localProfile = me()
+			return {
+				tab,
+				profile: { ...r.profile, posText: localProfile.posText },
+				overview: r.overview,
+				sessions: r.sessions || [],
+				days: r.days || [],
+				month: {
+					period: r.month,
+					validGmv: r.overview.validGmv,
+					validOrders: r.overview.orders,
+					orders: r.overview.orders,
+					kpi: 0,
+					coef: 1.0,
+					tier: null
+				},
+				rank: r.rank || [],
+				myRank: (r.rank || []).findIndex((x) => String(x.id) === String(me().id)) + 1
+			}
+		}
+	} catch (e) { /* 后端失败 → 走本地 */ }
+
 	const s = load()
 	const all = myOrders(monthStart() - 30 * DAY)
 	const month = myOrders(monthStart())
@@ -893,6 +915,28 @@ export async function claimOrder({ orderId, reason }) {
 /* ============================ M4.3 本组看板 ============================ */
 
 export async function getTeamBoard() {
+	// 后端聚合优先（组长视角）
+	try {
+		const r = await getAnchorTeamBoard()
+		if (r && typeof r === 'object') {
+			if (r.forbidden) return r
+			const gmv = (r.members || []).reduce((a, m) => a + (Number(m.gmv) || 0), 0)
+			const den = r.den || (r.members || []).filter((m) => String(m.id) !== String(me().id)).length
+			const eff = Number(r.eff) || (den ? (gmv / (den || 1)) : 0)
+			const effK = eff >= 70000 ? 1.2 : eff >= 50000 ? 1.0 : eff >= 30000 ? 0.7 : 0
+			return {
+				forbidden: false,
+				gmv,
+				eff,
+				effK,
+				den,
+				leaderSessions: 11,
+				leaderTarget: 15,
+				members: r.members || []
+			}
+		}
+	} catch (e) { /* 后端失败 → 走本地 */ }
+
 	if (!isLeader()) return { forbidden: true }
 	const s = load()
 	const members = s.team.members
@@ -1049,6 +1093,35 @@ export async function applyAdvance(amt, reason) {
 /* ============================ M6 我的 ============================ */
 
 export async function getMine() {
+	// 后端聚合优先：profile + attendance + assets + unread
+	try {
+		const r = await getAnchorMine()
+		if (r && r.profile) {
+			const s = load()
+			const p = s.payroll
+			const localProfile = me()
+			return {
+				profile: { ...r.profile, posText: localProfile.posText },
+				attendance: r.attendance || null,
+				assets: r.assets || [],
+				growth: {
+					onboard: null,
+					text: localProfile.posText,
+					progress: 0
+				},
+				kpi: { scored: true, score: 86, coef: kpiCoef(86) },
+				salary: { st: p.st, period: p.period },
+				badges: {
+					salary: p.st === '待确认' ? '待确认' : '',
+					okr: s.okr && s.okr.st === '待签收' ? '待签收' : '',
+					violation: appealableViolations().length ? appealableViolations().length + ' 条可申诉' : '',
+					rules: unsignedDocs().length ? unsignedDocs().length + ' 项待签' : '',
+					message: r.unread || ''
+				}
+			}
+		}
+	} catch (e) { /* 后端失败 → 走本地 */ }
+
 	const s = load()
 	const p = s.payroll
 	const ob = s.growth.onboard
