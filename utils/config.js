@@ -21,3 +21,12 @@ export const API_SECRET = 'gofly@888'
 // 动态 token 的 AES-CBC 密钥与偏移量（后端 cryptojs/cryptojs.go 与 web CryptoJS.ts 一致）
 export const AES_KEY = 'eI2lI3zL0qD0hY7m'
 export const AES_IV = '6289984834922396'
+
+// ===== 未登录页底部视频播放器（COS 视频） =====
+// 填入腾讯云 COS 的视频文件地址（需为 https，且小程序端需把该域名加入 downloadFile 合法域名）
+// 留空时页面显示「视频地址未配置」占位，填好后自动渲染播放器
+export const COS_VIDEO_URL = 'https://dywww-1258673263.cos.ap-guangzhou.myqcloud.com/uploads/20260903/4d24f6cb5c13fc2877b76e8c653927f6.mp4'
+// 可选：视频封面图地址（COS 图片），留空则不显示封面
+export const COS_VIDEO_POSTER = '鼎耀AI'
+// 视频标题（显示在播放器卡片顶部）
+export const COS_VIDEO_TITLE = '鼎耀AI'

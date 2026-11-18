@@ -1,12 +1,12 @@
 <template>
   <view class="page" :style="capsuleSafeStyle">
     <view class="hero">
-      <view class="hero-badge">
+      <!-- <view class="hero-badge">
         <text class="hero-badge-dot"></text>
         <text class="hero-badge-text">主播工作台</text>
-      </view>
+      </view> -->
       <text class="hero-title">账号登录</text>
-      <text class="hero-sub">使用账号密码登录后进行签到开播</text>
+      <!-- <text class="hero-sub">使用账号密码登录后进行签到开播</text> -->
     </view>
 
     <view class="form">
@@ -66,7 +66,7 @@
       </button>
 
       <text v-if="error" class="error">{{ error }}</text>
-      <text class="tip">登录即代表同意主播工作台相关约定</text>
+      <!-- <text class="tip">登录即代表同意主播工作台相关约定</text> -->
     </view>
   </view>
 </template>
@@ -211,15 +211,15 @@ function goCheckin() {
 .hero {
   padding: 120rpx 8rpx 64rpx;
 }
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10rpx;
-  background: rgba(78, 205, 196, 0.14);
-  border: 1rpx solid rgba(78, 205, 196, 0.4);
-  border-radius: 999rpx;
-  padding: 8rpx 22rpx;
-}
+// .hero-badge {
+//   display: inline-flex;
+//   align-items: center;
+//   gap: 10rpx;
+//   background: rgba(78, 205, 196, 0.14);
+//   border: 1rpx solid rgba(78, 205, 196, 0.4);
+//   border-radius: 999rpx;
+//   padding: 8rpx 22rpx;
+// }
 .hero-badge-dot {
   width: 14rpx;
   height: 14rpx;

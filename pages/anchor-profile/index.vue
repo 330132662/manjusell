@@ -229,7 +229,7 @@
 		const token = uni.getStorageSync('token')
 		if (!token) {
 			uni.reLaunch({
-				url: '/pages/anchor-login/index'
+				url: '/pages/not-logged/index'
 			})
 			return
 		}

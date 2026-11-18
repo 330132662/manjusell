@@ -228,7 +228,7 @@
 							uni.removeStorageSync('token')
 							uni.removeStorageSync('mp_session_ctx')
 						} catch (e) {}
-						uni.reLaunch({ url: '/pages/anchor-login/index' })
+						uni.reLaunch({ url: '/pages/not-logged/index' })
 					}
 				})
 			}

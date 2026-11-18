@@ -89,7 +89,7 @@ const hasMore = computed(() => items.value.length < total.value)
 onMounted(() => {
 	const token = uni.getStorageSync('token')
 	if (!token) {
-		uni.reLaunch({ url: '/pages/anchor-login/index' })
+		uni.reLaunch({ url: '/pages/not-logged/index' })
 		return
 	}
 	loadData()

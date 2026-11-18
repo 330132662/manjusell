@@ -1,10 +1,16 @@
 <script>
+	import { guardCurrentPage } from '@/utils/auth'
+
 	export default {
 		onLaunch: function() {
 			console.log('AI短剧影院启动成功')
+			// 冷启动兜底：未登录直达需登录页时跳未登录页
+			guardCurrentPage()
 		},
 		onShow: function() {
 			console.log('应用显示')
+			// 后台切回 / H5 刷新兜底
+			guardCurrentPage()
 		},
 		onHide: function() {
 			console.log('应用隐藏')

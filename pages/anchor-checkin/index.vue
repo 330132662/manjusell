@@ -256,7 +256,7 @@
 		console.log("token检测 ", token);
 		if (!token) {
 			uni.reLaunch({
-				url: '/pages/anchor-login/index'
+				url: '/pages/not-logged/index'
 			})
 			return
 		}

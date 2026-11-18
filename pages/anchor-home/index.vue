@@ -204,6 +204,7 @@
 	import GfTabbar from '@/components/gf-tabbar/gf-tabbar.vue'
 	import { getWorkbench, getCommission, getTeamBoard } from '@/api/mp'
 	import { wan, pct, money, clock as clockFmt, greetText, hmText } from '@/utils/mp-format'
+	import { isLogged } from '@/utils/auth'
 
 	export default {
 		components: { GfTabbar },
@@ -277,9 +278,15 @@
 			}
 		},
 		onLoad() {
+			// 未登录一律跳未登录页（冷启动直达工作台的兜底）
+			if (!isLogged()) {
+				uni.reLaunch({ url: '/pages/not-logged/index' })
+				return
+			}
 			this.load()
 		},
 		onShow() {
+			if (!isLogged()) return
 			this.load()
 			if (this.timer) clearInterval(this.timer)
 			this.timer = setInterval(() => {

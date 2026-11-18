@@ -1,5 +1,13 @@
 {
 	"pages": [{
+			"path": "pages/not-logged/index",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
 			"path": "pages/anchor-home/index",
 			"style": {
 				"navigationBarTitleText": "主播工作台",
