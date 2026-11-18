@@ -3,14 +3,36 @@
 		<!-- 聊天头 -->
 		<view class="chat-head">
 			<view class="gf-back" @click="goBack">‹</view>
+			<view class="ch-avatar">
+				<image v-if="avatar" class="ch-avatar-img" :src="avatarUrl(avatar)" mode="aspectFill"></image>
+				<text v-else class="ch-avatar-txt">{{ avatarText }}</text>
+			</view>
 			<view class="ch-mid">
-				<text class="ch-name">{{ nickname }}</text>
+				<view class="ch-name-row">
+					<text class="ch-name">{{ displayName }}</text>
+					<text v-if="!autoReply" class="ch-off-tag">自动回复已关</text>
+				</view>
 				<text class="ch-id">ID {{ shortId }}</text>
 			</view>
 			<view class="ch-acts">
+				<view class="ch-act" @click="openRemark">备</view>
 				<view class="ch-act" @click="openOrders">单</view>
 				<view class="ch-act" @click="openProfile">析</view>
 				<view class="ch-act" @click="openTakeover">接</view>
+			</view>
+		</view>
+
+		<!-- 客户状态栏：自动回复开关 + 备注 -->
+		<view class="cust-bar">
+			<view class="cust-bar-item">
+				<text class="cust-bar-label">自动回复</text>
+				<switch class="cust-switch" :checked="autoReply" :disabled="autoReplyPending" color="#b23a2e" @change="toggleAutoReply" />
+			</view>
+			<view class="cust-bar-sep"></view>
+			<view class="cust-bar-item grow" @click="openRemark">
+				<text class="cust-bar-label">用户备注</text>
+				<text class="cust-bar-value">{{ remark || '未设置，点击添加' }}</text>
+				<text class="cust-bar-go">›</text>
 			</view>
 		</view>
 
@@ -261,16 +283,31 @@
 				<view class="ctx-item" @click="copyText(msgMenuText)">复制文本</view>
 			</view>
 		</view>
+
+		<!-- 用户备注弹窗 -->
+		<view v-if="remarkVisible" class="gf-mask" @click="remarkVisible = false">
+			<view class="gf-sheet" @click.stop>
+				<view class="gf-sheet-hd"><text>用户备注</text><text class="gf-sheet-x" @click="remarkVisible = false">✕</text></view>
+				<view class="gf-sheet-bd">
+					<text class="remark-tip">备注会优先显示在会话列表与聊天头部；留空保存可清除备注。</text>
+					<textarea class="gf-textarea" v-model="remarkText" placeholder="例如：已付款待发货 / 老客户优先处理" placeholder-class="ph" maxlength="512" />
+				</view>
+				<view class="gf-sheet-ft">
+					<view class="gf-btn gf-btn-ghost" @click="remarkVisible = false">取消</view>
+					<view class="gf-btn gf-btn-main" :class="{ disabled: remarkSaving }" @click="saveRemark">{{ remarkSaving ? '保存中…' : '保存' }}</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script>
 	import {
-		getSessionMessages, sendSessionMessage, sendSessionFile, sendSessionLink,
+		getSessionList, getSessionMessages, sendSessionMessage, sendSessionFile, sendSessionLink,
 		sendSessionMenu, sendSessionMiniprogram, sendSessionLocation, recallSessionMessage,
 		readSession, takeoverSession, getServicerList, getSessionOrders, manualSync,
 		getQuickReplyList, getCustomerProfile, analyzeCustomerProfile, analyzeVoice, mediaGetUrl,
-		saveKnowledge
+		saveKnowledge, setAutoReply, setCustomerRemark
 	} from '@/api/wxkf'
 	import { goBack } from '@/utils/nav'
 	import { kfOrderStatusGfClass } from '@/utils/wxkf-order'
@@ -285,6 +322,13 @@
 				ALL_KEY,
 				externalUserId: '',
 				nickname: '访客',
+				avatar: '',
+				remark: '',
+				autoReply: true,
+				autoReplyPending: false,
+				remarkVisible: false,
+				remarkText: '',
+				remarkSaving: false,
 				customers: [],
 				activeKey: ALL_KEY,
 				loading: false,
@@ -319,7 +363,11 @@
 			this.externalUserId = decodeURIComponent(options.external_userid || '')
 			this.nickname = decodeURIComponent(options.nickname || '访客')
 			this.loadMessages()
-			this.timer = setInterval(() => this.loadMessages(true), 10000)
+			this.loadCustomer()
+			this.timer = setInterval(() => {
+				this.loadMessages(true)
+				this.loadCustomer(true)
+			}, 10000)
 		},
 		onUnload() {
 			if (this.timer) clearInterval(this.timer)
@@ -328,6 +376,17 @@
 			shortId() {
 				const id = this.externalUserId || ''
 				return id.length > 8 ? id.slice(0, 4) + '…' + id.slice(-4) : id
+			},
+			/** 头部名字：备注在前，微信昵称跟后；两者一致或缺失时取其一 */
+			displayName() {
+				const r = (this.remark || '').trim()
+				const n = (this.nickname || '').trim()
+				if (r && n && r !== n) return r + '（' + n + '）'
+				return r || n || '访客'
+			},
+			avatarText() {
+				const n = this.remark || this.nickname || this.externalUserId || '客'
+				return String(n).slice(-2)
 			},
 			sessions() {
 				const set = {}
@@ -632,6 +691,65 @@
 				uni.setClipboardData({ data: text, success: () => uni.showToast({ title: '已复制', icon: 'none' }) })
 			},
 
+			/** 微信头像 http 升级 https，避免混合内容拦截 */
+			avatarUrl(url) {
+				const s = url ? String(url).trim() : ''
+				return s.indexOf('http://') === 0 ? 'https://' + s.slice(7) : s
+			},
+
+			// ---- 客户状态：头像/备注/自动回复（复用 session/list，避免新增接口）----
+			async loadCustomer(silent = false) {
+				try {
+					const res = await getSessionList()
+					const items = (res && res.items) || []
+					const c = items.find((it) => it.external_userid === this.externalUserId)
+					if (!c) return
+					this.avatar = c.avatar || ''
+					this.remark = c.remark || ''
+					// 备注存在时头部优先展示备注，昵称作为补充
+					if (c.nickname) this.nickname = c.nickname
+					// 轮询时保留用户正在操作/乐观更新的开关值
+					if (!this.autoReplyPending) this.autoReply = c.auto_reply !== false
+				} catch (e) {
+				}
+			},
+			/** 自动回复开关：乐观更新 + 失败回滚 */
+			async toggleAutoReply(e) {
+				if (this.autoReplyPending) return
+				const prev = this.autoReply
+				// 取 switch 的真实值，避免各端受控行为差异；无事件时回退为取反
+				const next = e && e.detail && typeof e.detail.value === 'boolean' ? e.detail.value : !prev
+				this.autoReply = next
+				this.autoReplyPending = true
+				try {
+					await setAutoReply({ external_userid: this.externalUserId, enabled: next })
+					uni.showToast({ title: next ? '已开启自动回复' : '已关闭自动回复', icon: 'none' })
+				} catch (e) {
+					this.autoReply = prev // 失败回滚
+				} finally {
+					setTimeout(() => { this.autoReplyPending = false }, 2000)
+				}
+			},
+			openRemark() {
+				this.remarkText = this.remark || ''
+				this.remarkVisible = true
+			},
+			/** 用户备注：保存后同步本地显示 */
+			async saveRemark() {
+				if (this.remarkSaving) return
+				this.remarkSaving = true
+				try {
+					const text = (this.remarkText || '').trim()
+					await setCustomerRemark({ external_userid: this.externalUserId, remark: text })
+					this.remark = text
+					this.remarkVisible = false
+					uni.showToast({ title: text ? '备注已保存' : '已清除备注', icon: 'success' })
+				} catch (e) {
+				} finally {
+					this.remarkSaving = false
+				}
+			},
+
 			// ---- 订单 ----
 			async openOrders() {
 				this.orderVisible = true
@@ -712,14 +830,43 @@
 		padding: var(--gf-capsule-safe, calc(52px + env(safe-area-inset-top))) 24rpx 18rpx;
 		border-bottom: 1rpx solid $gf-line-soft;
 	}
-	.ch-mid { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-	.ch-name { font-size: 30rpx; font-weight: 700; color: $gf-ink; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.ch-avatar {
+		flex-shrink: 0; width: 72rpx; height: 72rpx; border-radius: 10rpx; overflow: hidden;
+		background: $gf-indigo; display: flex; align-items: center; justify-content: center;
+	}
+	.ch-avatar-img { width: 100%; height: 100%; display: block; }
+	.ch-avatar-txt { color: #fdf6e6; font-size: 24rpx; font-weight: 700; }
+	.ch-mid { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4rpx; }
+	.ch-name-row { display: flex; align-items: center; gap: 10rpx; min-width: 0; }
+	.ch-name { min-width: 0; font-size: 28rpx; font-weight: 700; color: $gf-ink; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.ch-off-tag {
+		flex-shrink: 0; font-size: 18rpx; color: #c97a1e;
+		padding: 2rpx 8rpx; border: 1rpx solid rgba(201, 122, 30, 0.5); border-radius: 6rpx;
+		background: rgba(201, 122, 30, 0.08);
+	}
 	.ch-id { font-size: 19rpx; color: $gf-ink-3; }
 	.ch-acts { display: flex; gap: 8rpx; }
 	.ch-act {
-		width: 60rpx; height: 60rpx; line-height: 60rpx; text-align: center;
+		width: 56rpx; height: 60rpx; line-height: 58rpx; text-align: center;
 		font-size: 24rpx; color: $gf-ink-2; border: 1rpx solid $gf-line; border-radius: 10rpx;
 	}
+
+	/* 客户状态栏 */
+	.cust-bar {
+		flex-shrink: 0; display: flex; align-items: center;
+		margin: 0 24rpx; padding: 14rpx 20rpx;
+		background: $gf-card; border: 1rpx solid $gf-line-soft; border-radius: 10rpx;
+	}
+	.cust-bar-item { display: flex; align-items: center; gap: 12rpx; }
+	.cust-bar-item.grow { flex: 1; min-width: 0; }
+	.cust-bar-label { flex-shrink: 0; font-size: 23rpx; color: $gf-ink-2; }
+	.cust-switch { transform: scale(0.82); transform-origin: left center; }
+	.cust-bar-sep { width: 1rpx; height: 36rpx; background: $gf-line-soft; margin: 0 20rpx; }
+	.cust-bar-value { flex: 1; min-width: 0; font-size: 22rpx; color: $gf-ink; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.cust-bar-go { font-size: 32rpx; color: $gf-ink-3; }
+
+	/* 备注弹窗 */
+	.remark-tip { display: block; margin-bottom: 16rpx; font-size: 22rpx; line-height: 1.6; color: $gf-ink-3; }
 
 	/* 会话条 */
 	.session-bar { flex-shrink: 0; white-space: nowrap; padding: 12rpx 24rpx; border-bottom: 1rpx solid $gf-line-soft; }
@@ -793,8 +940,13 @@
 	.quick-content { display: block; margin-top: 6rpx; font-size: 21rpx; color: $gf-ink-3; }
 
 	/* 弹层 */
-	.gf-sheet { width: 88vw; max-height: 76vh; }
-	.sheet-wide { width: 92vw; }
+	/* 底部弹框：两侧留白 + 居中，不撑满屏宽 */
+	.gf-mask { align-items: center; }
+	.gf-sheet {
+		width: calc(100% - 64rpx);
+		max-height: 76vh;
+	}
+	.sheet-wide { width: calc(100% - 40rpx); }
 	.gf-sheet-bd { max-height: 56vh; }
 	.order-item { padding: 16rpx 0; border-bottom: 1rpx solid $gf-line-soft; }
 	.order-line { display: flex; justify-content: space-between; align-items: center; }

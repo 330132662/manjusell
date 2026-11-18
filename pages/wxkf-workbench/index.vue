@@ -88,10 +88,16 @@
 				<view v-else class="gf-card customer-card" v-for="c in filteredCustomers" :key="c.external_userid"
 					@click="openChat(c)" @longpress="openCustomerMenu(c)">
 					<view class="c-head">
-						<view class="c-avatar" :style="{ background: avatarColor(c) }">{{ avatarText(c) }}</view>
+						<view class="c-avatar" :style="{ background: avatarUrl(c) ? 'transparent' : avatarColor(c) }">
+							<image v-if="avatarUrl(c)" class="c-avatar-img" :src="avatarUrl(c)" mode="aspectFill"></image>
+							<text v-else>{{ avatarText(c) }}</text>
+						</view>
 						<view class="c-mid">
 							<view class="c-name-row">
-								<text class="c-name">{{ c.remark || c.nickname || '访客' }}</text>
+								<view class="c-name">
+									<text class="c-name-remark">{{ c.remark || c.nickname || '访客' }}</text>
+									<text v-if="showNick(c)" class="c-name-nick">（{{ c.nickname }}）</text>
+								</view>
 								<text v-if="c.unread > 0" class="c-unread">{{ c.unread > 99 ? '99+' : c.unread }}</text>
 							</view>
 							<text class="c-preview">{{ c.last_msg_content || '暂无消息' }}</text>
@@ -254,6 +260,16 @@
 			avatarText(c) {
 				const n = c.remark || c.nickname || c.external_userid || '客'
 				return String(n).slice(-2)
+			},
+			/** 微信头像：http 升级为 https，避免混合内容被拦截；无头像返回空串走文字兜底 */
+			avatarUrl(c) {
+				const s = c && c.avatar ? String(c.avatar).trim() : ''
+				if (!s) return ''
+				return s.indexOf('http://') === 0 ? 'https://' + s.slice(7) : s
+			},
+			/** 备注后是否仍需展示微信昵称：两者都存在且不一致时展示，避免重复 */
+			showNick(c) {
+				return !!(c && c.remark && c.nickname && c.remark !== c.nickname)
 			},
 			avatarColor(c) {
 				const id = c.external_userid || ''
@@ -471,10 +487,14 @@
 		flex-shrink: 0; width: 76rpx; height: 76rpx; border-radius: 12rpx;
 		display: flex; align-items: center; justify-content: center;
 		color: #fdf6e6; font-size: 24rpx; font-weight: 700;
+		overflow: hidden;
 	}
+	.c-avatar-img { width: 100%; height: 100%; display: block; }
 	.c-mid { flex: 1; min-width: 0; }
 	.c-name-row { display: flex; align-items: center; gap: 12rpx; }
-	.c-name { flex: 1; font-size: 27rpx; font-weight: 600; color: $gf-ink; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.c-name { flex: 1; min-width: 0; font-size: 27rpx; font-weight: 600; color: $gf-ink; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.c-name-remark { color: $gf-ink; }
+	.c-name-nick { margin-left: 6rpx; font-size: 22rpx; font-weight: 400; color: $gf-ink-3; }
 	.c-unread {
 		flex-shrink: 0; min-width: 34rpx; height: 34rpx; line-height: 34rpx; text-align: center;
 		padding: 0 8rpx; font-size: 20rpx; color: #fdf6e6; background: $gf-cinnabar; border-radius: 999rpx;
