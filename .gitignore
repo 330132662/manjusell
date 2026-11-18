@@ -2,3 +2,7 @@
 .hbuilderx/
 .idea
 unpackage
+# 单测工程依赖与覆盖率产物（npm install / npm run coverage 生成）
+tests/node_modules/
+coverage/
+.vite/

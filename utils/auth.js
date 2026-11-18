@@ -104,7 +104,8 @@ export function backToEntry() {
 		uni.navigateBack({ delta: list.length - 1 - idx })
 		return
 	}
-	if (idx === list.length - 1) return // 已在中转页，不重复跳转
+	// 空栈时 idx === -1 且 length-1 === -1，必须排除，否则会误判为"已在中转页"而不重建
+	if (idx >= 0 && idx === list.length - 1) return
 	uni.reLaunch({ url: ENTRY_PAGE })
 }
 

@@ -96,6 +96,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { anchorLogin, getCaptcha } from '@/api'
 import { goBack as navBack } from '@/utils/nav'
 import { HOME_PAGE } from '@/utils/auth'
+import { resetUnauthorized } from '@/utils/request'
 
 const REMEMBER_KEY = 'anchor_remember'
 
@@ -191,6 +192,8 @@ async function handleLogin() {
     })
     // 登录成功：保存 token，供签到页请求带 Bearer 头
     uni.setStorageSync('token', token)
+    // 解除 401 熔断（mock 登录不走 request，需在此显式解除，避免登录后请求仍被拦截）
+    resetUnauthorized()
 
     // 记住 / 清除 用户名密码
     if (remember.value) {

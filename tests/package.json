@@ -1,0 +1,16 @@
+{
+  "name": "sddy-unit-tests",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "sddy uni-app 纯逻辑单测（独立工程，不污染 HBuilderX 主工程）",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.9",
+    "@vitest/coverage-v8": "^2.1.9"
+  }
+}
