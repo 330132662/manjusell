@@ -46,6 +46,28 @@
 					</view>
 				</view>
 
+				<!-- 功能切换 -->
+				<view class="gf-card">
+					<view class="gf-card-title"><text>功能切换1</text><text class="gf-card-title-sub">选择工作台</text></view>
+					<view class="gf-li" @click="goAnchor">
+						<view class="gf-li-ico red"></view>
+						<view class="gf-li-main">
+							<text class="gf-li-t">切换</text>
+							<text class="gf-li-d"></text>
+						</view>
+						<text class="gf-tag gf-tag-red"></text>
+						<text class="gf-li-go">›</text>
+					</view>
+					<!-- <view class="gf-li" @click="goService">
+						<view class="gf-li-ico ink">客</view>
+						<view class="gf-li-main">
+							<text class="gf-li-t">客服工作台</text>
+							<text class="gf-li-d">客户会话 · 消息处理 · 数据看板</text>
+						</view>
+						<text class="gf-li-go">›</text>
+					</view> -->
+				</view>
+
 				<!-- 工作 -->
 				<view class="gf-card">
 					<view class="gf-card-title"><text>我的工作</text></view>
@@ -154,18 +176,37 @@
 </template>
 
 <script>
-	import { getMine, switchDemoRole, resetDemo } from '@/api/mp'
-	import { money } from '@/utils/mp-format'
+	import {
+		getMine,
+		switchDemoRole,
+		resetDemo
+	} from '@/api/mp'
+	import {
+		money
+	} from '@/utils/mp-format'
+	import {
+		switchWorkspace,
+		ANCHOR_PAGE,
+		SERVICE_PAGE
+	} from '@/utils/auth'
 	import GfTabbar from '@/components/gf-tabbar/gf-tabbar.vue'
 
 	export default {
-		components: { GfTabbar },
+		components: {
+			GfTabbar
+		},
 		data() {
 			return {
 				profile: {},
 				growth: {},
-				kpi: { score: 0, coef: 1 },
-				salary: { st: '', period: '' },
+				kpi: {
+					score: 0,
+					coef: 1
+				},
+				salary: {
+					st: '',
+					period: ''
+				},
 				badges: {}
 			}
 		},
@@ -178,7 +219,13 @@
 				return Math.round((Number(this.growth.progress) || 0) * 100)
 			},
 			salaryText() {
-				const map = { 待核算: '待核算', 待确认: '待确认', 异议中: '异议中', 已确认: '已确认', 已发放: '已发放' }
+				const map = {
+					待核算: '待核算',
+					待确认: '待确认',
+					异议中: '异议中',
+					已确认: '已确认',
+					已发放: '已发放'
+				}
 				return map[this.salary.st] || '查看'
 			}
 		},
@@ -194,12 +241,32 @@
 				const d = await getMine()
 				this.profile = d.profile || {}
 				this.growth = d.growth || {}
-				this.kpi = d.kpi || { score: 0, coef: 1 }
-				this.salary = d.salary || { st: '', period: '' }
+				this.kpi = d.kpi || {
+					score: 0,
+					coef: 1
+				}
+				this.salary = d.salary || {
+					st: '',
+					period: ''
+				}
 				this.badges = d.badges || {}
 			},
 			go(url) {
-				uni.navigateTo({ url, fail: () => uni.reLaunch({ url }) })
+				uni.navigateTo({
+					url,
+					fail: () => uni.reLaunch({
+						url
+					})
+				})
+			},
+			/** 切换工作台：经中转页清栈后进入目标，避免返回键串到其他身份主页 */
+			goAnchor() {
+				uni.reLaunch({
+					url: "/pages/entry/index"
+				})
+			},
+			goService() {
+				switchWorkspace(SERVICE_PAGE)
 			},
 			/** 长按版本号：演示身份切换 / 重置演示数据（仅演示模式） */
 			demoMenu() {
@@ -208,11 +275,17 @@
 					success: (r) => {
 						if (r.tapIndex === 0) {
 							const p = switchDemoRole()
-							uni.showToast({ title: p ? '当前：' + p.posText : '演示模式未开启', icon: 'none' })
+							uni.showToast({
+								title: p ? '当前：' + p.posText : '演示模式未开启',
+								icon: 'none'
+							})
 							this.load()
 						} else if (r.tapIndex === 1) {
 							resetDemo()
-							uni.showToast({ title: '演示数据已重置', icon: 'success' })
+							uni.showToast({
+								title: '演示数据已重置',
+								icon: 'success'
+							})
 							this.load()
 						}
 					}
@@ -228,7 +301,9 @@
 							uni.removeStorageSync('token')
 							uni.removeStorageSync('mp_session_ctx')
 						} catch (e) {}
-						uni.reLaunch({ url: '/pages/not-logged/index' })
+						uni.reLaunch({
+							url: '/pages/not-logged/index'
+						})
 					}
 				})
 			}
@@ -238,7 +313,8 @@
 
 <style lang="scss" scoped>
 	@import '../../styles/guofeng-vars.scss';
-.page {
+
+	.page {
 		height: 100vh;
 		display: flex;
 		flex-direction: column;

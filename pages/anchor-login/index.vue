@@ -1,79 +1,101 @@
 <template>
-  <view class="page" :style="capsuleSafeStyle">
-    <view class="hero">
-      <!-- <view class="hero-badge">
-        <text class="hero-badge-dot"></text>
-        <text class="hero-badge-text">主播工作台</text>
-      </view> -->
-      <text class="hero-title">账号登录</text>
-      <!-- <text class="hero-sub">使用账号密码登录后进行签到开播</text> -->
-    </view>
+	<view class="page gf-page" :style="capsuleSafeStyle">
+		<!-- ===== 顶栏 ===== -->
+		<view class="gf-topbar">
+			<view class="gf-back" @click="goBack">‹</view>
+			<view class="gf-topbar-mid">
+				<text class="gf-title">账号登录</text>
+				<text class="gf-subtitle">工作台 · 账号密码登录</text>
+			</view>
+			<view class="topbar-holder"></view>
+		</view>
 
-    <view class="form">
-      <view class="input-row">
-        <text class="input-label">用户名</text>
-        <input
-          class="input"
-          v-model="username"
-          placeholder="请输入用户名"
-          placeholder-class="ph"
-          :maxlength="32"
-        />
-      </view>
+		<scroll-view scroll-y class="gf-scroll">
+			<view class="gf-pad">
+				<view class="gf-notice">
+					<text class="gf-notice-main">请使用账号登录，登录后即可签到开播、查看排班与业绩工资。</text>
+				</view>
 
-      <view class="input-row">
-        <text class="input-label">密码</text>
-        <view class="pwd-wrap">
-          <input
-            class="input"
-            :password="!showPwd"
-            v-model="password"
-            placeholder="请输入密码"
-            placeholder-class="ph"
-            :maxlength="64"
-          />
-          <text class="pwd-eye" @click="showPwd = !showPwd">{{ showPwd ? '🙈' : '👁' }}</text>
-        </view>
-      </view>
+				<view class="gf-card form-card">
+					<view class="gf-card-title">
+						<text>登录信息</text>
+						<text class="gf-seal">登</text>
+					</view>
 
-      <!-- 图形验证码 -->
-      <view class="input-row" v-if="captchaShow">
-        <text class="input-label">验证码</text>
-        <view class="captcha-row">
-          <input
-            class="input captcha-input"
-            v-model="captchaText"
-            :maxlength="6"
-            placeholder="请输入验证码"
-            placeholder-class="ph"
-          />
-          <view class="captcha-box" @click="fetchCaptcha">
-            <image v-if="captchaImg" class="captcha-img" :src="captchaImg" mode="aspectFit" />
-            <text v-if="captchaExpired" class="captcha-exp">已过期 · 点击刷新</text>
-          </view>
-        </view>
-      </view>
+					<view class="gf-field">
+						<text class="gf-label"><text class="gf-req">*</text>用户名</text>
+						<input
+							class="gf-input"
+							v-model="username"
+							placeholder="请输入用户名"
+							placeholder-class="ph"
+							:maxlength="32"
+						/>
+					</view>
 
-      <view class="remember-row" @click="remember = !remember">
-        <view class="check" :class="{ on: remember }">
-          <text v-if="remember" class="check-mark">✓</text>
-        </view>
-        <text class="remember-text">记住用户名和密码</text>
-      </view>
+					<view class="gf-field">
+						<text class="gf-label"><text class="gf-req">*</text>密码</text>
+						<view class="pwd-wrap">
+							<input
+								class="gf-input"
+								:password="!showPwd"
+								v-model="password"
+								placeholder="请输入密码"
+								placeholder-class="ph"
+								:maxlength="64"
+							/>
+							<text class="pwd-eye" @click="showPwd = !showPwd">{{ showPwd ? '🙈' : '👁' }}</text>
+						</view>
+					</view>
 
-      <button class="btn-login" :class="{ disabled: submitting }" :disabled="submitting" @click="handleLogin">
-        {{ submitting ? '登录中…' : '登　录' }}
-      </button>
+					<!-- 图形验证码 -->
+					<view class="gf-field" v-if="captchaShow">
+						<text class="gf-label"><text class="gf-req">*</text>验证码</text>
+						<view class="captcha-row">
+							<input
+								class="gf-input captcha-input"
+								v-model="captchaText"
+								:maxlength="6"
+								placeholder="请输入验证码"
+								placeholder-class="ph"
+							/>
+							<view class="captcha-box" @click="fetchCaptcha">
+								<image v-if="captchaImg" class="captcha-img" :src="captchaImg" mode="aspectFit" />
+								<text v-if="captchaExpired" class="captcha-exp">已过期 · 点击刷新</text>
+							</view>
+						</view>
+					</view>
 
-      <text v-if="error" class="error">{{ error }}</text>
-      <!-- <text class="tip">登录即代表同意主播工作台相关约定</text> -->
-    </view>
-  </view>
+					<view class="remember-row" @click="remember = !remember">
+						<view class="check" :class="{ on: remember }">
+							<text v-if="remember" class="check-mark">✓</text>
+						</view>
+						<text class="remember-text">记住用户名和密码</text>
+					</view>
+
+					<button
+						class="gf-btn gf-btn-primary gf-btn-block btn-login"
+						:class="{ disabled: submitting }"
+						:disabled="submitting"
+						@click="handleLogin"
+					>
+						{{ submitting ? '登录中…' : '登　录' }}
+					</button>
+
+					<text v-if="error" class="error">{{ error }}</text>
+				</view>
+
+				<!-- <text class="gf-hint gf-hint-c">登录即代表同意工作台相关约定</text> -->
+			</view>
+		</scroll-view>
+	</view>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { anchorLogin, getCaptcha } from '@/api'
+import { goBack as navBack } from '@/utils/nav'
+import { HOME_PAGE } from '@/utils/auth'
 
 const REMEMBER_KEY = 'anchor_remember'
 
@@ -93,11 +115,6 @@ const captchaExpired = ref(false)
 let captchaTimer = null
 
 onMounted(() => {
-  // 已登录(token 有效状态)直接进签到页
-  // if (uni.getStorageSync('token')) {
-  //   goCheckin()
-  //   return
-  // }
   // 回填记住的用户名密码
   const saved = uni.getStorageSync(REMEMBER_KEY)
   if (saved) {
@@ -183,7 +200,7 @@ async function handleLogin() {
     }
 
     uni.showToast({ title: '登录成功', icon: 'success' })
-    goCheckin()
+    goEntry()
   } catch (e) {
     error.value = (e && e.message) || '登录失败，请检查账号密码'
     // 失败后刷新验证码并清空输入
@@ -193,198 +210,132 @@ async function handleLogin() {
   }
 }
 
-function goCheckin() {
-  // 登录后进入主播工作台（M2 首页），由首页按排班状态引导扫码 / 录数据 / 下播
-  uni.reLaunch({ url: '/pages/anchor-home/index' })
+function goEntry() {
+  // 登录后先进入功能切换页，由用户选择主播 / 客服工作台
+  uni.reLaunch({ url: HOME_PAGE })
+}
+
+function goBack() {
+  // 能退栈则退回来源页，否则回未登录落地页
+  navBack('/pages/not-logged/index')
 }
 </script>
 
 <style lang="scss" scoped>
-.page {
-  min-height: 100vh;
-  background: #f4f7f5;
-  box-sizing: border-box;
-  padding: 0 48rpx;
-}
+	@import '../../styles/guofeng-vars.scss';
 
-/* ===== 顶部区 ===== */
-.hero {
-  padding: 120rpx 8rpx 64rpx;
-}
-// .hero-badge {
-//   display: inline-flex;
-//   align-items: center;
-//   gap: 10rpx;
-//   background: rgba(78, 205, 196, 0.14);
-//   border: 1rpx solid rgba(78, 205, 196, 0.4);
-//   border-radius: 999rpx;
-//   padding: 8rpx 22rpx;
-// }
-.hero-badge-dot {
-  width: 14rpx;
-  height: 14rpx;
-  border-radius: 50%;
-  background: #16a69a;
-}
-.hero-badge-text {
-  font-size: 24rpx;
-  color: #16a69a;
-  font-weight: 600;
-}
-.hero-title {
-  display: block;
-  margin-top: 28rpx;
-  font-size: 52rpx;
-  font-weight: 800;
-  color: #1a535c;
-}
-.hero-sub {
-  display: block;
-  margin-top: 14rpx;
-  font-size: 26rpx;
-  color: rgba(26, 83, 92, 0.55);
-}
+	.page {
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
 
-/* ===== 表单 ===== */
-.form {
-  background: #ffffff;
-  border-radius: 24rpx;
-  padding: 40rpx 36rpx 48rpx;
-  box-shadow: 0 12rpx 40rpx rgba(26, 83, 92, 0.06);
-}
-.input-row {
-  margin-bottom: 32rpx;
-}
-.input-label {
-  display: block;
-  font-size: 26rpx;
-  color: rgba(26, 83, 92, 0.6);
-  margin-bottom: 12rpx;
-}
-.input {
-  width: 100%;
-  height: 92rpx;
-  background: #f4f7f5;
-  border: 1rpx solid #e6ece9;
-  border-radius: 16rpx;
-  padding: 0 28rpx;
-  font-size: 30rpx;
-  color: #1a535c;
-  box-sizing: border-box;
-}
-.ph {
-  color: rgba(26, 83, 92, 0.35);
-}
-.pwd-wrap {
-  position: relative;
-}
-.pwd-eye {
-  position: absolute;
-  right: 24rpx;
-  top: 0;
-  height: 92rpx;
-  line-height: 92rpx;
-  font-size: 32rpx;
-}
+	.topbar-holder {
+		width: 64rpx;
+	}
 
-/* ===== 验证码 ===== */
-.captcha-row {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-.captcha-input {
-  flex: 1;
-}
-.captcha-box {
-  position: relative;
-  width: 210rpx;
-  height: 92rpx;
-  border-radius: 16rpx;
-  overflow: hidden;
-  border: 1rpx solid #e6ece9;
-  background: #eef3f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  cursor: pointer;
-}
-.captcha-img {
-  width: 100%;
-  height: 100%;
-}
-.captcha-exp {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22rpx;
-  color: #ffffff;
-  background: rgba(10, 20, 18, 0.55);
-}
+	.form-card {
+		padding-top: 28rpx;
+	}
 
-.remember-row {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  margin: 8rpx 0 40rpx;
-}
-.check {
-  width: 36rpx;
-  height: 36rpx;
-  border-radius: 8rpx;
-  border: 2rpx solid #c4cfca;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s, border-color 0.15s;
-}
-.check.on {
-  background: #16a69a;
-  border-color: #16a69a;
-}
-.check-mark {
-  color: #ffffff;
-  font-size: 24rpx;
-  font-weight: 700;
-}
-.remember-text {
-  font-size: 26rpx;
-  color: rgba(26, 83, 92, 0.7);
-}
+	/* 占位符颜色（国风墨色） */
+	.ph {
+		color: $gf-ink-3;
+	}
 
-.btn-login {
-  width: 100%;
-  height: 100rpx;
-  line-height: 100rpx;
-  border-radius: 20rpx;
-  background: linear-gradient(135deg, #1a535c 0%, #4ecdc4 100%);
-  color: #ffffff;
-  font-size: 34rpx;
-  font-weight: 700;
-  border: none;
-  &::after {
-    border: none;
-  }
-}
-.btn-login.disabled {
-  opacity: 0.55;
-}
+	/* 密码显隐 */
+	.pwd-wrap {
+		position: relative;
+	}
+	.pwd-eye {
+		position: absolute;
+		right: 20rpx;
+		top: 0;
+		height: 84rpx;
+		line-height: 84rpx;
+		font-size: 32rpx;
+	}
 
-.error {
-  display: block;
-  margin-top: 24rpx;
-  text-align: center;
-  font-size: 26rpx;
-  color: #ff6b6b;
-}
-.tip {
-  display: block;
-  margin-top: 32rpx;
-  text-align: center;
-  font-size: 22rpx;
-  color: rgba(26, 83, 92, 0.4);
-}
+	/* 验证码 */
+	.captcha-row {
+		display: flex;
+		align-items: center;
+		gap: 16rpx;
+	}
+	.captcha-input {
+		flex: 1;
+	}
+	.captcha-box {
+		position: relative;
+		width: 210rpx;
+		height: 84rpx;
+		border-radius: 10rpx;
+		overflow: hidden;
+		border: 1rpx solid $gf-line-soft;
+		background: #fffdf7;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		cursor: pointer;
+	}
+	.captcha-img {
+		width: 100%;
+		height: 100%;
+	}
+	.captcha-exp {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 20rpx;
+		color: #fdf6e6;
+		background: rgba(26, 24, 21, 0.65);
+	}
+
+	/* 记住账号 */
+	.remember-row {
+		display: flex;
+		align-items: center;
+		gap: 12rpx;
+		margin: 4rpx 0 36rpx;
+	}
+	.check {
+		width: 36rpx;
+		height: 36rpx;
+		border-radius: 8rpx;
+		border: 2rpx solid $gf-line;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background 0.15s, border-color 0.15s;
+	}
+	.check.on {
+		background: $gf-cinnabar;
+		border-color: $gf-cinnabar;
+	}
+	.check-mark {
+		color: #fdf6e6;
+		font-size: 24rpx;
+		font-weight: 700;
+	}
+	.remember-text {
+		font-size: 24rpx;
+		color: $gf-ink-2;
+	}
+
+	/* 登录按钮沿用 gf-btn-main，仅微调高度 */
+	.btn-login {
+		height: 96rpx;
+	}
+
+	.error {
+		display: block;
+		margin-top: 20rpx;
+		text-align: center;
+		font-size: 24rpx;
+		color: $gf-cinnabar;
+	}
 </style>

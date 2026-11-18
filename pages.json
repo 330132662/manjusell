@@ -8,6 +8,36 @@
 			}
 		},
 		{
+			"path": "pages/entry/index",
+			"style": {
+				"navigationBarTitleText": "功能选择",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/wxkf-workbench/index",
+			"style": {
+				"navigationBarTitleText": "客服工作台",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/wxkf-chat/index",
+			"style": {
+				"navigationBarTitleText": "会话详情",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/wxkf-dashboard/index",
+			"style": {
+				"navigationBarTitleText": "客服数据看板",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
 			"path": "pages/anchor-home/index",
 			"style": {
 				"navigationBarTitleText": "主播工作台",

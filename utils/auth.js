@@ -16,8 +16,16 @@
 
 // 未登录落地页
 export const LOGIN_GATE_PAGE = '/pages/not-logged/index'
-// 登录成功后落地页（主播工作台）
-export const HOME_PAGE = '/pages/anchor-home/index'
+// 登录成功后的首页：功能切换页（主播 / 客服）
+export const ENTRY_PAGE = '/pages/entry/index'
+// 兼容旧引用：登录后首页统一指向功能切换页
+export const HOME_PAGE = ENTRY_PAGE
+// 主播工作台
+export const ANCHOR_PAGE = '/pages/anchor-home/index'
+// 客服工作台（客户会话列表）
+export const SERVICE_PAGE = '/pages/wxkf-workbench/index'
+// 客服数据看板
+export const SERVICE_DASHBOARD_PAGE = '/pages/wxkf-dashboard/index'
 // 主播登录页
 export const LOGIN_PAGE = '/pages/anchor-login/index'
 
@@ -58,6 +66,49 @@ export function goLoginPage() {
 }
 
 /**
+ * 进入工作台：用 navigateTo 保留中转页在栈底。
+ * 这样工作台按返回键只会回到中转页，而不会落到其他身份的主页。
+ * 注意：本项目未配置原生 tabBar，navigateTo 可正常跳转。
+ */
+export function enterWorkspace(target) {
+	const url = typeof target === 'string' ? target : target && target.url
+	if (!url) return
+	// 已在目标页则不重复入栈
+	if (currentPath() === normalizePath(url)) return
+	uni.navigateTo({ url })
+}
+
+/**
+ * 身份切换：先清栈回中转页，再从中转页进入目标工作台。
+ * 通过 next 参数让中转页在 onLoad 自动进入目标，最终栈恒为 [entry, target]，
+ * 避免栈内残留其他身份页面导致返回键串台。
+ */
+export function switchWorkspace(target) {
+	const url = typeof target === 'string' ? target : target && target.url
+	if (!url) return
+	uni.reLaunch({
+		url: `${ENTRY_PAGE}?next=${encodeURIComponent(url)}`
+	})
+}
+
+/**
+ * 回到中转页：用于工作台左上角返回与"切换身份"入口。
+ * 栈内已有中转页（正常从 entry navigateTo 进入）则回退到它，保留栈底；
+ * 否则（H5 刷新直达、栈被 tabbar reLaunch 清空）重建栈到中转页。
+ */
+export function backToEntry() {
+	const pages = typeof getCurrentPages === 'function' ? getCurrentPages() : []
+	const list = pages || []
+	const idx = list.findIndex((p) => '/' + ((p && p.route) || '') === ENTRY_PAGE)
+	if (idx >= 0 && idx < list.length - 1) {
+		uni.navigateBack({ delta: list.length - 1 - idx })
+		return
+	}
+	if (idx === list.length - 1) return // 已在中转页，不重复跳转
+	uni.reLaunch({ url: ENTRY_PAGE })
+}
+
+/**
  * 判断一次跳转是否应被拦截：未登录 且 目标页需登录
  * @param {string} url 目标地址
  * @returns {boolean}
@@ -78,7 +129,7 @@ export function guardCurrentPage() {
 	const path = currentPath()
 	if (!path) return
 
-	// 已登录停留在落地页 -> 回工作台（避免登录后看到未登录页）
+	// 已登录停留在落地页 -> 回功能切换页（避免登录后看到未登录页）
 	if (isLogged() && path === LOGIN_GATE_PAGE) {
 		uni.reLaunch({ url: HOME_PAGE })
 		return
@@ -121,12 +172,18 @@ export function installAuthGuard() {
 
 export default {
 	LOGIN_GATE_PAGE,
+	ENTRY_PAGE,
 	HOME_PAGE,
+	ANCHOR_PAGE,
+	SERVICE_PAGE,
 	LOGIN_PAGE,
 	isLogged,
 	currentPath,
 	isAuthFree,
 	goLoginPage,
+	enterWorkspace,
+	switchWorkspace,
+	backToEntry,
 	shouldBlock,
 	guardCurrentPage,
 	installAuthGuard

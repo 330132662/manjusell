@@ -1,5 +1,7 @@
 // 通用请求封装
 import { BASE_URL, API_SECRET } from '@/utils/config'
+// 命名导出：api 层需要拼接完整 URL 时使用（如 wxkf 媒体地址）；default 导出中仍保留，向后兼容
+export { BASE_URL }
 import aesEncrypt from '@/utils/aes'
 import { utf8ToBase64 } from '@/utils/aes'
 import { md5 } from '@/utils/md5'
@@ -57,9 +59,10 @@ export const post = (url, data, header) => request({ url, method: 'POST', data, 
  * @param {String} url 相对路径，如 /admin/datacenter/upfile/upload
  * @param {String} filePath 本地临时文件路径
  * @param {Object} formData 附加表单字段
+ * @param {String} fileKey 文件字段名，默认 file（发送小程序封面需传 thumb）
  * @returns {Promise<any>} 后端 data
  */
-export function upload(url, filePath, formData = {}) {
+export function upload(url, filePath, formData = {}, fileKey = 'file') {
   const header = {}
   const token = uni.getStorageSync('token')
   if (token) {
@@ -72,7 +75,7 @@ export function upload(url, filePath, formData = {}) {
     uni.uploadFile({
       url: BASE_URL + url,
       filePath,
-      name: 'file',
+      name: fileKey,
       formData,
       header,
       success: (res) => {
