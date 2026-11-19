@@ -151,8 +151,9 @@
 	export default {
 		data() {
 			return {
-				days: 7,
+				days: 1,
 				dayOptions: [
+					{ label: '今日', value: 1 },
 					{ label: '近7天', value: 7 },
 					{ label: '近30天', value: 30 },
 					{ label: '近90天', value: 90 },
@@ -241,8 +242,9 @@
 				try {
 					let d = await getDashboardStat({ days: this.days })
 					this.data = d
-					// 近 N 天无日志且后端为新版时，自动回退全部时间（仅一次）
-					if (!this.autoAllTried && this.days !== 3650 && Array.isArray(d.visitor_rank) && ((d.summary && d.summary.total_messages) ?? 0) === 0) {
+					// 近 N 天(N>1)无日志且后端为新版时，自动回退全部时间（仅一次）
+					// "今日"(days=1) 不回退: 当天暂无消息属正常, 切到全部时间反而不符合用户选择
+					if (!this.autoAllTried && this.days > 1 && this.days !== 3650 && Array.isArray(d.visitor_rank) && ((d.summary && d.summary.total_messages) ?? 0) === 0) {
 						this.autoAllTried = true
 						this.days = 3650
 						d = await getDashboardStat({ days: 3650 })
@@ -258,10 +260,12 @@
 			switchDays(v) {
 				if (this.days === v || this.loading) return
 				this.days = v
+				this.autoAllTried = false
 				this.fetchData()
 			},
 			switchAllTime() {
 				this.days = 3650
+				this.autoAllTried = false
 				this.fetchData()
 			},
 			onPullRefresh() {

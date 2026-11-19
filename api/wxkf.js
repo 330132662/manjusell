@@ -100,7 +100,7 @@ export const saveKnowledge = (params) => post('/admin/knowledge/save', params)
 // ===================== 数据看板 =====================
 
 // 一次拿到概览 + 趋势 + 管理员回复排行 + 访客消息排行
-// days: 7/30/90/3650（>90 视为全部时间）
+// days: 1=今日 / 7/30/90=近N天 / 3650=全部时间（>90 视为全部时间）
 export const getDashboardStat = (params) => get(`${P}/dashboard/stat`, params)
 
 export default {

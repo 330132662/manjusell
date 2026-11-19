@@ -2,8 +2,8 @@
     "name" : "鼎耀企业工作台",
     "appid" : "__UNI__0EDDF07",
     "description" : "核心小程序,用于客户的售前售后引导,员工控制台等",
-    "versionName" : "1.0.3",
-    "versionCode" : 5,
+    "versionName" : "1.0.4",
+    "versionCode" : 6,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
