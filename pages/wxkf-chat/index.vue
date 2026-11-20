@@ -566,7 +566,7 @@
 			},
 			showSensitive(alert) {
 				if (!alert) return
-				uni.showModal({ title: '敏感词拦截', content: `已拦截未发送：${alert.category || ''}（命中 ${alert.hit_count || 0} 条，${alert.action || ''}）`, showCancel: false })
+				uni.showModal({ title: '敏感词已打码', content: `${alert.category || ''}（命中 ${alert.hit_count || 0} 条，${alert.action || ''}）。敏感词已用 * 代替，其余内容照常发送，无需重发。`, showCancel: false })
 			},
 
 			// ---- 表情 ----
