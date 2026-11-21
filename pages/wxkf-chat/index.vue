@@ -69,6 +69,11 @@
 					<view v-if="showDivider(m, i)" class="session-divider">{{ dividerText(m) }}</view>
 
 					<view class="msg-bubble" :class="{ mine: m.direction == 2 }" @longpress="onMsgLongPress(m)">
+						<!-- 引用回复: 后端落库 reply_to_id; 客户在微信里看到的是服务端拼的纯文本引用前缀 -->
+						<view v-if="m.reply_to_id" class="msg-quote" @click.stop="jumpToQuote(m)">
+							<text class="msg-quote-who">{{ quoteWhoOf(quotedMessageOf(m)) }}</text>
+							<text class="msg-quote-text">{{ quoteSummaryOf(quotedMessageOf(m)) }}</text>
+						</view>
 						<!-- 文本 -->
 						<view v-if="isText(m)" class="msg-text" v-html="renderText(m)"></view>
 						<!-- 图片 -->
@@ -154,6 +159,12 @@
 					<text class="quick-content">{{ q.content }}</text>
 				</view>
 			</scroll-view>
+			<!-- 引用回复条: 长按消息选「引用回复」后出现, 发送成功/取消后清空 -->
+			<view v-if="replyingTo" class="replying-bar">
+				<text class="replying-tag">引用{{ quoteWhoOf(replyingTo) }}</text>
+				<text class="replying-text">{{ quoteSummaryOf(replyingTo) }}</text>
+				<text class="replying-cancel" @click="cancelReply">✕</text>
+			</view>
 			<!-- 输入框 -->
 			<view class="input-row">
 				<textarea class="msg-input" v-model="inputText" placeholder="输入消息…" placeholder-class="ph" :auto-height="true" />
@@ -278,6 +289,7 @@
 		<!-- 消息长按菜单 -->
 		<view v-if="msgMenuVisible" class="ctx-mask" @click="msgMenuVisible = false">
 			<view class="ctx-menu" @click.stop>
+				<view v-if="msgMenuCanQuote" class="ctx-item" @click="quoteMsg">引用回复</view>
 				<view v-if="msgMenuCanRecall" class="ctx-item" @click="recallMsg">撤回</view>
 				<view v-if="msgMenuCanKb" class="ctx-item" @click="injectKb">注入知识库</view>
 				<view class="ctx-item" @click="copyText(msgMenuText)">复制文本</view>
@@ -355,6 +367,8 @@
 				outbox: [], sendChainRunning: false,
 				// 消息长按
 				msgMenuVisible: false, msgMenuMsg: null,
+				// 引用回复(临时状态, 不落库)
+				replyingTo: null,
 				// 媒体本地缓存 media_id -> 本地临时路径
 				mediaCache: {}
 			}
@@ -440,6 +454,10 @@
 					label: labels[k],
 					value: typeof obj[k] === 'string' ? obj[k] : JSON.stringify(obj[k])
 				}))
+			},
+			msgMenuCanQuote() {
+				const m = this.msgMenuMsg
+				return !!(m && !m.recalled)
 			},
 			msgMenuCanRecall() {
 				const m = this.msgMenuMsg
@@ -553,11 +571,14 @@
 			},
 			async doSendText(content) {
 				this.sending = true
+				const replyToId = (this.replyingTo && this.replyingTo.id) ? Number(this.replyingTo.id) : 0
 				try {
 					const res = await sendSessionMessage({
-						open_kfid: this.sendTargetKfid, external_userid: this.externalUserId, content
+						open_kfid: this.sendTargetKfid, external_userid: this.externalUserId, content,
+						reply_to_id: replyToId
 					})
 					this.inputText = ''
+					this.replyingTo = null
 					this.showSensitive(res && res.sensitive_alert)
 					await this.loadMessages(true)
 					this.scrollToBottom()
@@ -657,8 +678,44 @@
 				} catch (e) {}
 			},
 
-			// ---- 消息长按 ----
+			// ---- 消息长按 / 引用回复 ----
 			onMsgLongPress(m) { this.msgMenuMsg = m; this.msgMenuVisible = true },
+			quoteMsg() {
+				const m = this.msgMenuMsg
+				this.msgMenuVisible = false
+				if (!m || m.recalled) return
+				this.replyingTo = m
+			},
+			cancelReply() { this.replyingTo = null },
+			// 被引用的原消息是否还在当前会话里
+			quotedMessageOf(m) {
+				const id = m && m.reply_to_id
+				if (!id) return null
+				return this.messages.find((x) => String(x.id) === String(id)) || null
+			},
+			quoteWhoOf(m) {
+				if (m && m.direction == 2) return '客服'
+				// 只用微信昵称(this.nickname); 不能用 this.remark / displayName —— 那是含运营备注的
+				const n = String(this.nickname || '').replace(/\s+/g, ' ').trim()
+				if (!n) return '客户'
+				return n.length > 20 ? n.slice(0, 20) + '…' : n
+			},
+			// 与后端 KfQuoteSummary 同口径: 一行摘要, 最多 60 字
+			quoteSummaryOf(m) {
+				if (!m) return '原消息不在当前会话中'
+				const labels = { image: '[图片]', voice: '[语音]', video: '[视频]', file: '[文件]', link: '[链接]', miniprogram: '[小程序]', location: '[位置]', msgmenu: '[菜单消息]' }
+				if (m.msg_type && m.msg_type !== 'text') return labels[m.msg_type] || '[' + m.msg_type + ']'
+				const text = String(m.content || m.raw_content || '').replace(/\s+/g, ' ').trim()
+				if (!text) return '[空消息]'
+				return text.length > 60 ? text.slice(0, 60) + '…' : text
+			},
+			// 点引用卡片跳回原消息
+			jumpToQuote(m) {
+				const q = this.quotedMessageOf(m)
+				if (!q) { uni.showToast({ title: '原消息不在当前会话中', icon: 'none' }); return }
+				const idx = this.displayMessages.findIndex((x) => String(x.id || x.msgid) === String(q.id || q.msgid))
+				if (idx >= 0) this.scrollAnchor = 'msg-' + idx
+			},
 			async recallMsg() {
 				const m = this.msgMenuMsg
 				this.msgMenuVisible = false
@@ -903,6 +960,23 @@
 	.msg-bubble.mine { background: rgba(178, 58, 46, 0.08); border-color: rgba(178, 58, 46, 0.2); border-radius: 16rpx 4rpx 16rpx 16rpx; }
 	.msg-row.hit .msg-bubble { border-color: $gf-cinnabar; box-shadow: 0 0 0 2rpx rgba(178, 58, 46, 0.2); }
 	.msg-text { font-size: 26rpx; line-height: 1.6; color: $gf-ink; word-break: break-all; }
+	/* 引用回复: 气泡内引用卡片 + 输入框引用条 */
+	.msg-quote {
+		display: flex; flex-direction: column; gap: 4rpx;
+		margin-bottom: 12rpx; padding: 10rpx 14rpx;
+		border-left: 6rpx solid $gf-cinnabar;
+		background: rgba(26, 24, 21, 0.04); border-radius: 4rpx;
+	}
+	.msg-quote-who { font-size: 20rpx; color: $gf-cinnabar; font-weight: 600; }
+	.msg-quote-text { font-size: 22rpx; color: $gf-ink-3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.replying-bar {
+		display: flex; align-items: center; gap: 12rpx;
+		margin-bottom: 12rpx; padding: 12rpx 16rpx;
+		background: rgba(178, 58, 46, 0.06); border-left: 6rpx solid $gf-cinnabar; border-radius: 6rpx;
+	}
+	.replying-tag { flex-shrink: 0; font-size: 22rpx; color: $gf-cinnabar; font-weight: 600; }
+	.replying-text { flex: 1; min-width: 0; font-size: 22rpx; color: $gf-ink-2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.replying-cancel { flex-shrink: 0; font-size: 24rpx; color: $gf-ink-3; padding: 0 6rpx; }
 	.msg-meta { margin-top: 8rpx; font-size: 18rpx; color: $gf-ink-3; }
 	.msg-recalled { margin-top: 6rpx; font-size: 18rpx; color: $gf-ink-3; font-style: italic; }
 	.msg-media, .msg-file, .msg-link, .msg-menu { display: flex; flex-direction: column; gap: 6rpx; }
