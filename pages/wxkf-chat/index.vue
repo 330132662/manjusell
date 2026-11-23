@@ -69,8 +69,9 @@
 					<view v-if="showDivider(m, i)" class="session-divider">{{ dividerText(m) }}</view>
 
 					<view class="msg-bubble" :class="{ mine: m.direction == 2 }" @longpress="onMsgLongPress(m)">
-						<!-- 引用回复: 后端落库 reply_to_id; 客户在微信里看到的是服务端拼的纯文本引用前缀 -->
-						<view v-if="m.reply_to_id" class="msg-quote" @click.stop="jumpToQuote(m)">
+						<!-- 引用回复: 只认后端下发的 manual_quote(客服手动点「引用」发出的消息);
+							reply_to_id 还被 AI/系统回复借用作轮次关联, 不能拿它判断是不是引用 -->
+						<view v-if="m.manual_quote" class="msg-quote" @click.stop="jumpToQuote(m)">
 							<text class="msg-quote-who">{{ quoteWhoOf(quotedMessageOf(m)) }}</text>
 							<text class="msg-quote-text">{{ quoteSummaryOf(quotedMessageOf(m)) }}</text>
 						</view>
