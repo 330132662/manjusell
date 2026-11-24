@@ -268,7 +268,10 @@
 			"path": "pages/contact-teacher/index",
 			"style": {
 				"navigationBarTitleText": "联系技术老师",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"usingComponents": {
+					"contact-cell": "plugin://contactPlugin/cell"
+				}
 			}
 		},
 		{

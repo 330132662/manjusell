@@ -6,6 +6,7 @@
 			console.log('AI短剧影院启动成功')
 			// 冷启动兜底：未登录直达需登录页时跳未登录页
 			guardCurrentPage()
+			this.setupUpdateManager()
 		},
 		onShow: function() {
 			console.log('应用显示')
@@ -14,6 +15,30 @@
 		},
 		onHide: function() {
 			console.log('应用隐藏')
+		},
+		methods: {
+			/** 微信小程序版本更新：新包下载完成后弹窗询问重启，立即用上新版 */
+			setupUpdateManager() {
+				// #ifdef MP-WEIXIN
+				const um = uni.getUpdateManager()
+				um.onUpdateReady(() => {
+					uni.showModal({
+						title: '更新提示',
+						content: '新版本已经准备好，是否重启应用？',
+						success: (res) => {
+							if (res.confirm) um.applyUpdate()
+						}
+					})
+				})
+				um.onUpdateFailed(() => {
+					uni.showModal({
+						title: '更新提示',
+						content: '新版本下载失败，请删除当前小程序后重新搜索打开',
+						showCancel: false
+					})
+				})
+				// #endif
+			}
 		}
 	}
 </script>

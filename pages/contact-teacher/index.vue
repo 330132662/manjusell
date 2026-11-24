@@ -35,31 +35,31 @@
 						</view>
 					</view>
 				</view>
+				<!-- #ifdef MP-WEIXIN -->
+				<view v-if="contactPlugId" class="contact-card gf-card">
+					<view class="gf-card-title">
+						<text>联系技术老师</text>
+						<text class="gf-card-title-sub">点击添加企业微信</text>
+					</view>
+					<contact-cell :plugid="contactPlugId" @startmessage="onContactStart"
+						@completemessage="onContactComplete"></contact-cell>
+				</view>
+				<!-- #endif -->
 
+				<!-- #ifndef MP-WEIXIN -->
+				<view class="gf-li" @click="go('/pages/contact-teacher/index')">
+					<view class="gf-li-ico red">师</view>
+					<view class="gf-li-main">
+						<text class="gf-li-t">联系技术老师</text>
+						<text class="gf-li-d">开播 / 设备 / 账号问题一对一解答</text>
+					</view>
+					<text class="gf-li-go">›</text>
+				</view>
+				<!-- #endif -->
 
 			</view>
 		</scroll-view>
-		<!-- #ifdef MP-WEIXIN -->
-		<view v-if="contactPlugId" class="contact-card gf-card">
-			<view class="gf-card-title">
-				<text>联系技术老师</text>
-				<text class="gf-card-title-sub">点击添加企业微信</text>
-			</view>
-			<contact-cell :plugid="contactPlugId" @startmessage="onContactStart"
-				@completemessage="onContactComplete"></contact-cell>
-		</view>
-		<!-- #endif -->
 
-		<!-- #ifndef MP-WEIXIN -->
-		<view class="gf-li" @click="go('/pages/contact-teacher/index')">
-			<view class="gf-li-ico red">师</view>
-			<view class="gf-li-main">
-				<text class="gf-li-t">联系技术老师</text>
-				<text class="gf-li-d">开播 / 设备 / 账号问题一对一解答</text>
-			</view>
-			<text class="gf-li-go">›</text>
-		</view>
-		<!-- #endif -->
 	</view>
 </template>
 
@@ -74,6 +74,21 @@
 	} from '@/utils/nav'
 
 	export default {
+		// 微信小程序：声明分享回调后，胶囊「…→复制链接」才可用（uni-app 不会自动注入）
+		// 注意：短链仅正式版有效，体验版/开发版该菜单项仍为灰态
+		onShareAppMessage() {
+			return {
+				title: '联系技术老师 · 鼎耀工作台',
+				path: '/pages/contact-teacher/index'
+			}
+		},
+		// 朋友圈分享（H5/小程序按需）
+		onShareTimeline() {
+			return {
+				title: '联系技术老师 · 鼎耀工作台',
+				query: ''
+			}
+		},
 		data() {
 			return {
 				contactPlugId: WECOM_CONTACT_PLUGID || '',

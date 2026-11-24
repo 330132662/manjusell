@@ -6,39 +6,14 @@
         <view class="logo">
           <TopTitle />
         </view>
-        <scroll-view class="nav-links" scroll-x v-if="!isMobile">
-          <view class="nav-link">课程体系</view>
-          <view class="nav-link active">资源库</view>
-          <view class="nav-link">AI工具</view>
-          <view class="nav-link">课程定价</view>
-        </scroll-view>
+
         <view class="nav-action">
           <button class="enroll-btn">立即报名</button>
         </view>
       </view>
     </view>
 
-    <!-- Hero区域 -->
-    <view class="hero-section">
-      <text class="hero-title gradient-text">AI短剧资源库</text>
-      <text class="hero-subtitle">剧本 / 素材 / 模板,一键获取创作弹药</text>
 
-      <!-- 搜索栏 -->
-      <view class="search-bar">
-        <uni-icons type="search" size="20" color="rgba(26, 83, 92, 0.4)"></uni-icons>
-        <input class="search-input" placeholder="搜索资源..." v-model="searchKeyword" @confirm="handleSearch" />
-      </view>
-
-      <!-- 筛选标签 -->
-      <scroll-view class="filter-chips" scroll-x>
-        <button class="filter-chip active" @click="changeFilter('all')">全部</button>
-        <button class="filter-chip" @click="changeFilter('script')">AI剧本</button>
-        <button class="filter-chip" @click="changeFilter('avatar')">数字人形象</button>
-        <button class="filter-chip" @click="changeFilter('music')">背景音乐</button>
-        <button class="filter-chip" @click="changeFilter('video')">视频模板</button>
-        <button class="filter-chip" @click="changeFilter('subtitle')">字幕模板</button>
-      </scroll-view>
-    </view>
 
     <!-- 资源网格 -->
     <scroll-view class="resource-grid-section" scroll-y>
