@@ -81,10 +81,13 @@
 						<view v-else-if="m.msg_type === 'image'" class="msg-media" @click="previewImage(m)">
 							<image class="msg-img" :src="mediaSrc(m)" mode="widthFix" />
 						</view>
-						<!-- 语音 -->
-						<view v-else-if="m.msg_type === 'voice'" class="msg-voice" @click="analyzeVoiceMsg(m)">
-							<text class="voice-ico">▶</text>
-							<text>语音 · 点击转文字</text>
+						<!-- 语音：点击播放，旁边保留转文字入口 -->
+						<view v-else-if="m.msg_type === 'voice'" class="msg-voice">
+							<view class="voice-play" @click="toggleVoice(m)">
+								<text class="voice-ico">{{ voiceLoadingKey === mediaKeyOf(m) ? '…' : (voicePlayingKey === mediaKeyOf(m) ? '⏸' : '▶') }}</text>
+								<text>{{ voiceLoadingKey === mediaKeyOf(m) ? '加载中…' : (voicePlayingKey === mediaKeyOf(m) ? '播放中' : '语音 · 点击播放') }}</text>
+							</view>
+							<text class="voice-asr" @click.stop="analyzeVoiceMsg(m)">转文字</text>
 						</view>
 						<!-- 视频 -->
 						<view v-else-if="m.msg_type === 'video'" class="msg-media" @click="previewVideo(m)">
@@ -248,6 +251,16 @@
 			</view>
 		</view>
 
+		<!-- ===== 弹层：视频播放 ===== -->
+		<view v-if="videoVisible" class="video-mask" @click="closeVideo">
+			<view class="video-box" @click.stop>
+				<video v-if="videoSrc" class="video-player" :src="videoSrc" :autoplay="true" :controls="true"
+					:show-fullscreen-btn="true" object-fit="contain"></video>
+				<view v-else class="video-tip"><text>{{ videoLoading ? '视频加载中…' : '视频加载失败' }}</text></view>
+			</view>
+			<view class="video-close" @click.stop="closeVideo">✕</view>
+		</view>
+
 		<!-- ===== 弹层：发送链接/菜单/小程序/位置（通用表单） ===== -->
 		<view v-if="sendModal" class="gf-mask" @click="sendModal = ''">
 			<view class="gf-sheet sheet-wide" @click.stop>
@@ -323,6 +336,7 @@
 		saveKnowledge, setAutoReply, setCustomerRemark
 	} from '@/api/wxkf'
 	import { goBack } from '@/utils/nav'
+	import { authHeader } from '@/utils/request'
 	import { kfOrderStatusGfClass } from '@/utils/wxkf-order'
 
 	const ALL_KEY = '__all__'
@@ -357,6 +371,9 @@
 				profileVisible: false, profileLoading: false, profile: {},
 				takeoverVisible: false, servicers: [], selectedServicer: '',
 				voiceVisible: false, voiceLoading: false, voiceResult: {}, voiceMsg: null,
+				// 语音播放 / 视频播放
+				voicePlayingKey: '', voiceLoadingKey: '',
+				videoVisible: false, videoLoading: false, videoSrc: '',
 				sendModal: '',
 				linkForm: { title: '', desc: '', url: '' },
 				menuForm: { head_content: '', items: [{ type: 'click', content: '' }], tail_content: '' },
@@ -386,6 +403,7 @@
 		},
 		onUnload() {
 			if (this.timer) clearInterval(this.timer)
+			this.stopVoice()
 		},
 		computed: {
 			shortId() {
@@ -540,18 +558,89 @@
 				const mid = m.media_id || (this.contentObj(m).media_id)
 				return (mid && this.mediaCache[mid]) || m.media_url || ''
 			},
-			fileNameOf(m) { const c = this.contentObj(m); return c.filename || c.file_name || m.media_url?.split('/').pop() || '文件' },
-			fileSizeOf(m) { const s = (this.contentObj(m).filesize || this.contentObj(m).file_size || 0); return s ? (s / 1024).toFixed(1) + ' KB' : '' },
+			mediaKeyOf(m) { return m.media_id || this.contentObj(m).media_id || m.msgid || String(m.id || '') },
+			/**
+			 * 取可播放的本地/公网地址：
+			 * 1. 已有地址(自己发出的消息 media_url / 已转码 MP3 / 已下载缓存)直接用；
+			 * 2. 客户发来的语音/视频只有 media_id，带鉴权头下载到临时文件后再播放。
+			 */
+			async ensurePlayableSrc(m) {
+				const cached = this.mediaSrc(m)
+				if (cached) return cached
+				const mid = m.media_id || this.contentObj(m).media_id
+				if (!mid) return ''
+				const tempFilePath = await new Promise((resolve, reject) => {
+					uni.downloadFile({
+						url: mediaGetUrl({ media_id: mid, msg_type: m.msg_type }),
+						header: authHeader(),
+						success: (res) => {
+							if (res.statusCode === 200 && res.tempFilePath) resolve(res.tempFilePath)
+							else reject(new Error('媒体下载失败 (' + res.statusCode + ')'))
+						},
+						fail: reject
+					})
+				})
+				this.mediaCache[mid] = tempFilePath
+				return tempFilePath
+			},
 			previewImage(m) {
 				const src = this.mediaSrc(m)
 				if (src) uni.previewImage({ urls: [src], current: src })
 			},
-			previewVideo(m) {
-				const src = this.mediaSrc(m)
-				if (!src) { uni.showToast({ title: '视频地址不可用', icon: 'none' }); return }
-				// 移动端以复制到剪贴板提示（不确定项，见迁移规格）
-				uni.setClipboardData({ data: src, success: () => uni.showToast({ title: '视频地址已复制', icon: 'none' }) })
+			async previewVideo(m) {
+				this.videoVisible = true
+				this.videoSrc = ''
+				this.videoLoading = true
+				try {
+					const src = await this.ensurePlayableSrc(m)
+					if (!src) { uni.showToast({ title: '视频地址不可用', icon: 'none' }); this.videoVisible = false; return }
+					this.videoSrc = src
+				} catch (e) {
+					uni.showToast({ title: '视频加载失败', icon: 'none' })
+					this.videoVisible = false
+				} finally {
+					this.videoLoading = false
+				}
 			},
+			closeVideo() { this.videoVisible = false; this.videoSrc = ''; this.videoLoading = false },
+			// ---- 语音播放 ----
+			async toggleVoice(m) {
+				const key = this.mediaKeyOf(m)
+				if (this.voicePlayingKey === key) { this.stopVoice(); return }
+				if (this.voiceLoadingKey) return
+				this.voiceLoadingKey = key
+				try {
+					const src = await this.ensurePlayableSrc(m)
+					if (!src) { uni.showToast({ title: '语音地址不可用', icon: 'none' }); return }
+					this.stopVoice()
+					// 音频实例放在非响应式属性上，避免被 Vue 代理后调用原生方法异常
+					const ctx = uni.createInnerAudioContext()
+					ctx.src = src
+					ctx.onEnded(() => { this.voicePlayingKey = ''; this._audioCtx = null })
+					ctx.onError(() => {
+						this.voicePlayingKey = ''
+						this._audioCtx = null
+						uni.showToast({ title: '语音播放失败', icon: 'none' })
+					})
+					ctx.play()
+					this._audioCtx = ctx
+					this.voicePlayingKey = key
+				} catch (e) {
+					uni.showToast({ title: '语音加载失败', icon: 'none' })
+				} finally {
+					this.voiceLoadingKey = ''
+				}
+			},
+			stopVoice() {
+				if (this._audioCtx) {
+					try { this._audioCtx.stop() } catch (e) {}
+					try { this._audioCtx.destroy() } catch (e) {}
+					this._audioCtx = null
+				}
+				this.voicePlayingKey = ''
+			},
+			fileNameOf(m) { const c = this.contentObj(m); return c.filename || c.file_name || m.media_url?.split('/').pop() || '文件' },
+			fileSizeOf(m) { const s = (this.contentObj(m).filesize || this.contentObj(m).file_size || 0); return s ? (s / 1024).toFixed(1) + ' KB' : '' },
 			openFile(m) {
 				const src = this.mediaSrc(m)
 				if (!src) return
@@ -860,6 +949,8 @@
 				this.voiceLoading = true
 				try {
 					this.voiceResult = (await analyzeVoice({ media_id: mid, mode: 'asr', open_kfid: m.open_kfid, external_userid: this.externalUserId, msgid: m.msgid })) || {}
+					// 转文字顺带产出了 MP3 公网地址，缓存下来供点击播放（原始 AMR 部分端播不了）
+					if (this.voiceResult.media_url) this.mediaCache[mid] = this.voiceResult.media_url
 				} catch (e) { this.voiceResult = {} } finally { this.voiceLoading = false }
 			},
 			fillVoiceReply() {
@@ -994,6 +1085,23 @@
 	.link-url { font-size: 19rpx; color: $gf-ink-3; word-break: break-all; }
 	.menu-head, .menu-tail { font-size: 23rpx; color: $gf-ink-2; }
 	.menu-item { display: block; padding: 10rpx 16rpx; margin-top: 6rpx; font-size: 23rpx; color: $gf-cinnabar; border: 1rpx solid $gf-line; border-radius: 8rpx; }
+	.voice-play { display: flex; align-items: center; gap: 10rpx; }
+	.voice-asr { margin-left: 8rpx; padding-left: 14rpx; border-left: 1rpx solid $gf-line; font-size: 20rpx; color: $gf-cinnabar; }
+
+	/* 视频播放弹层 */
+	.video-mask {
+		position: fixed; left: 0; right: 0; top: 0; bottom: 0; z-index: 95;
+		background: rgba(0, 0, 0, 0.86);
+		display: flex; flex-direction: column; align-items: center; justify-content: center;
+	}
+	.video-box { width: 100%; }
+	.video-player { width: 100%; height: 56vh; }
+	.video-tip { padding: 60rpx 0; text-align: center; font-size: 24rpx; color: #fff; }
+	.video-close {
+		position: absolute; top: calc(40rpx + env(safe-area-inset-top)); right: 32rpx;
+		width: 64rpx; height: 64rpx; line-height: 64rpx; text-align: center;
+		border-radius: 50%; background: rgba(255, 255, 255, 0.18); color: #fff; font-size: 30rpx;
+	}
 
 	/* 输入区 */
 	.chat-foot { flex-shrink: 0; background: $gf-card; border-top: 1rpx solid $gf-line; padding: 12rpx 20rpx calc(12rpx + env(safe-area-inset-bottom)); }

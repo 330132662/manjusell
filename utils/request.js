@@ -65,6 +65,21 @@ function makeAuthError() {
 }
 
 /**
+ * 构造鉴权请求头（Authorization + apiverify）
+ * 供 uni.downloadFile / uni.request 等无法走 request 封装的场景复用（如带鉴权下载媒体文件）
+ */
+export function authHeader() {
+  const header = {}
+  const token = uni.getStorageSync('token')
+  if (token) {
+    const ts = Math.floor(Date.now() / 1000)
+    header['Authorization'] = aesEncrypt(token + '#' + ts)
+    header['apiverify'] = utf8ToBase64(md5(API_SECRET + ts) + '#' + ts)
+  }
+  return header
+}
+
+/**
  * @param {Object} options { url, method, data, header }
  * @returns {Promise<any>} 约定后端返回结构: { code: 0, data: ..., message: '' }
  */
