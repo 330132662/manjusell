@@ -10,8 +10,8 @@
 
 		<scroll-view scroll-y class="gf-scroll">
 			<view class="gf-pad">
-				<!-- ===== 上：公告板 ===== -->
-				<view class="gf-card board">
+				<!-- ===== 上：公告板（暂时隐藏） ===== -->
+				<view v-if="false" class="gf-card board">
 					<view class="gf-card-title">
 						<text>公告板</text>
 						<text class="gf-card-title-sub">{{ notices.length }} 则公告</text>
@@ -41,6 +41,19 @@
 					</view>
 				</view>
 
+				<!-- ===== 学员中心入口（暂时跳转 anchor-mine） ===== -->
+				<view class="student-card" @click="go('/pages/anchor-mine/index')">
+					<view class="login-card-hd">
+						<view class="gf-seal student-seal">学</view>
+						<view class="login-card-hd-txt">
+							<text class="login-card-title">学员中心</text>
+							<text class="login-card-sub">课程学习 · 学习进度</text>
+						</view>
+					</view>
+					<text class="login-card-desc">查看课程 · 跟进学习进度</text>
+					<button class="gf-btn-main student-btn">进入学员中心</button>
+				</view>
+
 				<!-- ===== 下：登录入口 ===== -->
 				<view class="login-card">
 					<view class="login-card-hd">
@@ -68,25 +81,41 @@
 						<text v-if="videoUrl" class="gf-card-title-sub">点击播放</text>
 					</view>
 
-					<video
-						v-if="videoUrl"
-						class="video-player"
-						:src="videoUrl"
-						:poster="videoPoster"
-						:autoplay="false"
-						:controls="true"
-						:show-play-btn="true"
-						:show-fullscreen-btn="true"
-						:enable-progress-gesture="true"
-						object-fit="contain"
-						@error="onVideoError"
-					></video>
+					<video v-if="videoUrl" class="video-player" :src="videoUrl" :poster="videoPoster" :autoplay="false"
+						:controls="true" :show-play-btn="true" :show-fullscreen-btn="true"
+						:enable-progress-gesture="true" object-fit="contain" @error="onVideoError"></video>
 					<view v-else class="video-placeholder">
 						<text class="video-placeholder-ico">▶</text>
 						<text class="video-placeholder-text">视频地址未配置</text>
 						<text class="video-placeholder-sub">请在 utils/config.js 填写 COS_VIDEO_URL</text>
 					</view>
+
 				</view>
+				<!-- 联系技术老师：小程序端用企业微信官方「联系我」插件，点击展示企微二维码 -->
+			<!-- #ifdef MP-WEIXIN -->
+			<view v-if="contactPlugId" class="contact-card gf-card">
+				<view class="gf-card-title">
+					<text>联系技术老师</text>
+					<text class="gf-card-title-sub">点击添加企业微信</text>
+				</view>
+				<contact-cell
+					:plugid="contactPlugId"
+					@startmessage="onContactStart"
+					@completemessage="onContactComplete"
+				></contact-cell>
+			</view>
+			<!-- #endif -->
+
+			<!-- #ifndef MP-WEIXIN -->
+			<view class="gf-li" @click="go('/pages/contact-teacher/index')">
+				<view class="gf-li-ico red">师</view>
+				<view class="gf-li-main">
+					<text class="gf-li-t">联系技术老师</text>
+					<text class="gf-li-d">开播 / 设备 / 账号问题一对一解答</text>
+				</view>
+				<text class="gf-li-go">›</text>
+			</view>
+			<!-- #endif -->
 			</view>
 		</scroll-view>
 	</view>
@@ -101,7 +130,8 @@
 	import {
 		COS_VIDEO_URL,
 		COS_VIDEO_POSTER,
-		COS_VIDEO_TITLE
+		COS_VIDEO_TITLE,
+		WECOM_CONTACT_PLUGID
 	} from '@/utils/config'
 
 	export default {
@@ -119,6 +149,8 @@
 				videoUrl: COS_VIDEO_URL,
 				videoPoster: COS_VIDEO_POSTER,
 				videoTitle: COS_VIDEO_TITLE || '视频介绍',
+				// 企业微信「联系我」插件 plugid（utils/config.js），为空时小程序端不渲染插件入口
+				contactPlugId: WECOM_CONTACT_PLUGID || '',
 				notices: [
 
 					{
@@ -141,8 +173,28 @@
 				goLoginPage()
 			},
 			onVideoError() {
-				uni.showToast({ title: '视频加载失败，请稍后重试', icon: 'none' })
-			}
+				uni.showToast({
+					title: '视频加载失败，请稍后重试',
+					icon: 'none'
+				})
+			},
+			go(url) {
+				uni.navigateTo({
+					url
+				})
+			},
+			/** 「联系我」插件：点击开始 */
+			onContactStart() {},
+			/** 「联系我」插件：点击完成回调，非 0 为异常（-3002 配置获取失败 / -3006 已是好友走二维码展示 等） */
+			onContactComplete(e) {
+				const r = (e && e.detail) || {}
+				if (r.errcode !== 0) {
+					uni.showToast({
+						title: '拉起添加失败(' + (r.errcode || '?') + ')，请稍后重试',
+						icon: 'none'
+					})
+				}
+			},
 		}
 	}
 </script>
@@ -253,6 +305,39 @@
 		color: $gf-ink-2;
 	}
 
+	/* 学员中心入口 */
+	.student-card {
+		position: relative;
+		background: $gf-card;
+		border: 1rpx solid $gf-line;
+		border-radius: 18rpx;
+		padding: 30rpx 28rpx 28rpx;
+		margin-bottom: 22rpx;
+		box-shadow: 0 8rpx 24rpx rgba(58, 74, 82, 0.08);
+		overflow: hidden;
+	}
+
+	.student-card::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 6rpx;
+		background: linear-gradient(90deg, $gf-ink 0%, $gf-gold 60%, rgba(201, 162, 75, 0.2) 100%);
+	}
+
+	.student-seal {
+		background: rgba(58, 74, 82, 0.08);
+		border-color: $gf-ink;
+		color: $gf-ink;
+	}
+
+	.student-btn {
+		width: 100%;
+		background: linear-gradient(90deg, $gf-ink 0%, #2e3a41 100%);
+	}
+
 	/* 登录入口 */
 	.login-card {
 		position: relative;
@@ -324,6 +409,7 @@
 	.video-card {
 		padding-bottom: 20rpx;
 	}
+
 	.video-player {
 		display: block;
 		width: 100%;
@@ -332,6 +418,7 @@
 		background: #000;
 		border-radius: 10rpx;
 	}
+
 	.video-placeholder {
 		display: flex;
 		flex-direction: column;
@@ -342,6 +429,7 @@
 		border: 1rpx dashed $gf-line;
 		border-radius: 10rpx;
 	}
+
 	.video-placeholder-ico {
 		width: 80rpx;
 		height: 80rpx;
@@ -353,11 +441,13 @@
 		color: $gf-cinnabar;
 		padding-left: 4rpx;
 	}
+
 	.video-placeholder-text {
 		margin-top: 18rpx;
 		font-size: 26rpx;
 		color: $gf-ink-2;
 	}
+
 	.video-placeholder-sub {
 		margin-top: 8rpx;
 		font-size: 20rpx;

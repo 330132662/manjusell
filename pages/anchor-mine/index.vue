@@ -156,6 +156,14 @@
 						<text class="gf-row-k">带教组长</text>
 						<text class="gf-row-v">{{ profile.mentor }}</text>
 					</view>
+					<view class="gf-li" @click="go('/pages/contact-teacher/index')">
+						<view class="gf-li-ico red">师</view>
+						<view class="gf-li-main">
+							<text class="gf-li-t">联系技术老师</text>
+							<text class="gf-li-d">开播 / 设备 / 账号问题一对一解答</text>
+						</view>
+						<text class="gf-li-go">›</text>
+					</view>
 					<view class="gf-li" @click="go('/pages/anchor-profile/index')">
 						<view class="gf-li-ico ink">档</view>
 						<view class="gf-li-main">

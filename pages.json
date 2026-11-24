@@ -4,7 +4,10 @@
 			"style": {
 				"navigationBarTitleText": "登录",
 				"navigationStyle": "custom",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"usingComponents": {
+					"contact-cell": "plugin://contactPlugin/cell"
+				}
 			}
 		},
 		{
@@ -262,6 +265,13 @@
 			}
 		},
 		{
+			"path": "pages/contact-teacher/index",
+			"style": {
+				"navigationBarTitleText": "联系技术老师",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/anchor-mine/index",
 			"style": {
 				"navigationBarTitleText": "我的",
@@ -340,6 +350,15 @@
 			}
 		}
 	],
+	// 企业微信「联系我」插件（contactPlugin）：微信小程序插件声明必须写在 pages.json 根级，
+	// 写在 manifest.json 的 mp-weixin 下编译器不会输出到 dist 的 app.json，导致
+	// "Component is not found in path plugin://contactPlugin/cell"
+	"plugins": {
+		"contactPlugin": {
+			"version": "1.4.3",
+			"provider": "wx104a1a20c3f81ec2"
+		}
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "AI短剧影院",

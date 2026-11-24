@@ -22,6 +22,19 @@ export const API_SECRET = 'gofly@888'
 export const AES_KEY = 'eI2lI3zL0qD0hY7m'
 export const AES_IV = '6289984834922396'
 
+// ===== 联系技术老师（微信客服） =====
+// 微信客服「客服链接」（企业微信管理后台-微信客服-客服账号-客服链接）
+export const TECH_TEACHER_KF_URL = 'https://work.weixin.qq.com/ca/cawcde33e0cd000110'
+// 企业 ID：企业微信管理后台「我的企业-企业信息」处复制。
+// 注意：必须先在小程序管理后台「功能-客服-微信客服」填写同一主体的企业 ID 完成绑定，
+// 否则 wx.openCustomerServiceChat 会报错（corpId 为空时页面会自动降级为"复制链接"）。
+export const WXKF_CORP_ID = 'wwbc693dcd005ee5b9'
+
+// 企业微信「联系我」插件 plugid（首页"联系技术老师"入口，点击展示企微二维码）。
+// 来源：企业微信管理后台「客户联系-加客户-联系我」的联系方式 ID（即 /ca/ 链接尾段）。
+// 前提：小程序管理后台「设置-第三方设置-插件管理」添加「联系我」插件(wx104a1a20c3f81ec2)并开通使用。
+export const WECOM_CONTACT_PLUGID = '43bf9a55b275c5efd5971fb9fbb5ba08'
+
 // ===== 未登录页底部视频播放器（COS 视频） =====
 // 填入腾讯云 COS 的视频文件地址（需为 https，且小程序端需把该域名加入 downloadFile 合法域名）
 // 留空时页面显示「视频地址未配置」占位，填好后自动渲染播放器
