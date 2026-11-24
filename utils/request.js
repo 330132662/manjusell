@@ -84,10 +84,10 @@ export function authHeader() {
  * @returns {Promise<any>} 约定后端返回结构: { code: 0, data: ..., message: '' }
  */
 function request(options) {
-  const { url, method = 'GET', data = {}, header = {} } = options
+  const { url, method = 'GET', data = {}, header = {}, silent401 = false } = options
   const authFree = isApiMatch(url, AUTH_FREE_APIS)
-  // 熔断态：拦截后续业务请求，不再发起网络请求（登录链路除外）
-  if (unauthorized && !authFree) return Promise.reject(makeAuthError())
+  // 熔断态：拦截后续业务请求，不再发起网络请求（登录链路 / 静默鉴权页除外）
+  if (unauthorized && !authFree && !silent401) return Promise.reject(makeAuthError())
   const token = uni.getStorageSync('token')
   if (token) {
     const ts = Math.floor(Date.now() / 1000)
@@ -109,8 +109,9 @@ function request(options) {
       success: (res) => {
         const body = res.data
         // 401：触发熔断（登录链路自身返回 401 不触发，避免登录页被反复踢出）
+        // silent401：免登录页的业务请求，401 静默降级，不清登录态、不跳转
         if (is401(res, body) && !authFree) {
-          triggerUnauthorized((body && body.message) || '')
+          if (!silent401) triggerUnauthorized((body && body.message) || '')
           reject(makeAuthError())
           return
         }
@@ -137,6 +138,9 @@ function request(options) {
 
 export const get = (url, data, header) => request({ url, method: 'GET', data, header })
 export const post = (url, data, header) => request({ url, method: 'POST', data, header })
+/** 静默鉴权请求：401 不触发全局熔断（免登录白名单页用） */
+export const getSilent = (url, data, header) => request({ url, method: 'GET', data, header, silent401: true })
+export const postSilent = (url, data, header) => request({ url, method: 'POST', data, header, silent401: true })
 
 /**
  * 文件上传（multipart/form-data）

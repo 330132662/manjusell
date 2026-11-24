@@ -1,5 +1,5 @@
 // 业务接口层
-import { post, get, upload } from '@/utils/request'
+import { post, get, getSilent, upload } from '@/utils/request'
 import { BASE_URL, USE_MOCK, USE_LIVE_API_MOCK } from '@/utils/config'
 import { md5 } from '@/utils/md5'
 import { aesDecrypt } from '@/utils/aes'
@@ -396,8 +396,9 @@ export function getAnchorTeamBoard({ month = '' } = {}) {
   return get('/admin/schedule/me/teamBoard', { month })
 }
 
-/** 主播「我的」页聚合（档案 + 考勤月历 + 设备领用 + 未读数）*/
+/** 主播「我的」页聚合（档案 + 考勤月历 + 设备领用 + 未读数）
+ *  使用 silent401：学员中心免登录进入该页时，401 静默降级走本地 mock，不触发熔断踢回 */
 export function getAnchorMine() {
   if (USE_LIVE_API_MOCK) return Promise.resolve(null)
-  return get('/admin/schedule/me/mine')
+  return getSilent('/admin/schedule/me/mine')
 }

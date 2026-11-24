@@ -36,47 +36,89 @@
 					</view>
 				</view>
 
-				<!-- 添加入口 -->
-				<view class="gf-card action-card">
-					<button class="gf-btn gf-btn-primary" :class="{ disabled: adding }" @click="addTeacher">
-						{{ adding ? '正在打开…' : '添加技术老师' }}
-					</button>
-					<text class="gf-hint gf-hint-c">
-						点击后将打开微信客服会话，添加企业微信技术老师后可随时留言咨询。
-					</text>
-					<!-- 企业 ID 未配置 / 调用失败时的降级入口 -->
-					<view v-if="fallback" class="link-box" @click="copyLink">
-						<text class="link-text">{{ TECH_TEACHER_KF_URL }}</text>
-						<text class="link-copy">复制</text>
-					</view>
-					<text v-if="fallbackTip" class="gf-hint gf-hint-c warn">{{ fallbackTip }}</text>
-				</view>
+
 			</view>
 		</scroll-view>
+		<!-- #ifdef MP-WEIXIN -->
+		<view v-if="contactPlugId" class="contact-card gf-card">
+			<view class="gf-card-title">
+				<text>联系技术老师</text>
+				<text class="gf-card-title-sub">点击添加企业微信</text>
+			</view>
+			<contact-cell :plugid="contactPlugId" @startmessage="onContactStart"
+				@completemessage="onContactComplete"></contact-cell>
+		</view>
+		<!-- #endif -->
+
+		<!-- #ifndef MP-WEIXIN -->
+		<view class="gf-li" @click="go('/pages/contact-teacher/index')">
+			<view class="gf-li-ico red">师</view>
+			<view class="gf-li-main">
+				<text class="gf-li-t">联系技术老师</text>
+				<text class="gf-li-d">开播 / 设备 / 账号问题一对一解答</text>
+			</view>
+			<text class="gf-li-go">›</text>
+		</view>
+		<!-- #endif -->
 	</view>
 </template>
 
 <script>
-	import { TECH_TEACHER_KF_URL, WXKF_CORP_ID } from '@/utils/config'
-	import { goBack } from '@/utils/nav'
+	import {
+		TECH_TEACHER_KF_URL,
+		WXKF_CORP_ID,
+		WECOM_CONTACT_PLUGID
+	} from '@/utils/config'
+	import {
+		goBack
+	} from '@/utils/nav'
 
 	export default {
 		data() {
 			return {
+				contactPlugId: WECOM_CONTACT_PLUGID || '',
 				TECH_TEACHER_KF_URL,
 				adding: false,
 				// 降级开关：企业ID未配置 或 openCustomerServiceChat 调用失败时展示复制链接
 				fallback: false,
 				fallbackTip: '',
-				topics: [
-					{ ico: '播', t: '开播异常', d: '推流失败 · 画面卡顿 · 掉线重连', red: true },
-					{ ico: '备', t: '设备问题', d: '手机设置 · 麦克风摄像头 · 网络诊断' },
-					{ ico: '号', t: '账号绑定', d: '视频号绑定 · 登录异常 · 资产借用' },
-					{ ico: '他', t: '其他技术问题', d: '小程序使用 · 工资系统故障反馈' }
+				topics: [{
+						ico: '播',
+						t: '开播异常',
+						d: '推流失败 · 画面卡顿 · 掉线重连',
+						red: true
+					},
+					{
+						ico: '备',
+						t: '设备问题',
+						d: '手机设置 · 麦克风摄像头 · 网络诊断'
+					},
+					{
+						ico: '号',
+						t: '账号绑定',
+						d: '视频号绑定 · 登录异常 · 资产借用'
+					},
+					{
+						ico: '他',
+						t: '其他技术问题',
+						d: '小程序使用 · 工资系统故障反馈'
+					}
 				]
 			}
 		},
 		methods: {
+			/** 「联系我」插件：点击开始 */
+			onContactStart() {},
+			/** 「联系我」插件：点击完成回调，非 0 为异常（-3002 配置获取失败 / -3006 已是好友走二维码展示 等） */
+			onContactComplete(e) {
+				const r = (e && e.detail) || {}
+				if (r.errcode !== 0) {
+					uni.showToast({
+						title: '拉起添加失败(' + (r.errcode || '?') + ')，请稍后重试',
+						icon: 'none'
+					})
+				}
+			},
 			/** 点击添加：调官方「小程序打开微信客服」接口（wx.openCustomerServiceChat） */
 			addTeacher() {
 				if (this.adding) return
@@ -93,7 +135,9 @@
 				// 该接口要求必须在点击行为中调用（此处即点击事件回调内）
 				uni.openCustomerServiceChat()
 				wx.openCustomerServiceChat({
-					extInfo: { url: TECH_TEACHER_KF_URL },
+					extInfo: {
+						url: TECH_TEACHER_KF_URL
+					},
 					corpId: WXKF_CORP_ID,
 					showToast: true,
 					success: () => {
@@ -117,7 +161,10 @@
 			copyLink() {
 				uni.setClipboardData({
 					data: TECH_TEACHER_KF_URL,
-					success: () => uni.showToast({ title: '链接已复制', icon: 'none' })
+					success: () => uni.showToast({
+						title: '链接已复制',
+						icon: 'none'
+					})
 				})
 			},
 			goBack() {

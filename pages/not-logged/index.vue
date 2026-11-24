@@ -42,7 +42,7 @@
 				</view>
 
 				<!-- ===== 学员中心入口（暂时跳转 anchor-mine） ===== -->
-				<view class="student-card" @click="go('/pages/anchor-mine/index')">
+				<view class="student-card" @click="go('/pages/contact-teacher/index')">
 					<view class="login-card-hd">
 						<view class="gf-seal student-seal">学</view>
 						<view class="login-card-hd-txt">

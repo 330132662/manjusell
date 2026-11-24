@@ -30,7 +30,7 @@ export const SERVICE_DASHBOARD_PAGE = '/pages/wxkf-dashboard/index'
 export const LOGIN_PAGE = '/pages/anchor-login/index'
 
 // 无需登录即可访问的页面（算法按完整路径匹配）
-const AUTH_FREE_PAGES = [LOGIN_GATE_PAGE, LOGIN_PAGE, '/pages/contact-teacher/index']
+const AUTH_FREE_PAGES = [LOGIN_GATE_PAGE, LOGIN_PAGE, '/pages/contact-teacher/index', '/pages/anchor-mine/index']
 
 /** 是否已登录 */
 export function isLogged() {
