@@ -51,7 +51,7 @@
 		{
 			"path": "pages/home/index",
 			"style": {
-				"navigationBarTitleText": "AI短剧影院",
+				"navigationBarTitleText": "鼎耀服务平台",
 				"navigationStyle": "custom"
 			}
 		},
@@ -364,7 +364,7 @@
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "AI短剧影院",
+		"navigationBarTitleText": "鼎耀服务平台",
 		"navigationBarBackgroundColor": "#1A535C",
 		"backgroundColor": "#F7FFF7"
 	},

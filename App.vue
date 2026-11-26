@@ -3,7 +3,7 @@
 
 	export default {
 		onLaunch: function() {
-			console.log('AI短剧影院启动成功')
+			console.log('鼎耀服务平台启动成功')
 			// 冷启动兜底：未登录直达需登录页时跳未登录页
 			guardCurrentPage()
 			this.setupUpdateManager()

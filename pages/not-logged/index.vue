@@ -42,7 +42,7 @@
 				</view>
 
 				<!-- ===== 学员中心入口（暂时跳转 anchor-mine） ===== -->
-				<view class="student-card" @click="go('/pages/contact-teacher/index')">
+				<!-- <view class="student-card" @click="go('/pages/contact-teacher/index')">
 					<view class="login-card-hd">
 						<view class="gf-seal student-seal">学</view>
 						<view class="login-card-hd-txt">
@@ -52,7 +52,7 @@
 					</view>
 					<text class="login-card-desc">查看课程 · 跟进学习进度</text>
 					<button class="gf-btn-main student-btn">进入学员中心</button>
-				</view>
+				</view> -->
 
 				<!-- ===== 下：登录入口 ===== -->
 				<view class="login-card">

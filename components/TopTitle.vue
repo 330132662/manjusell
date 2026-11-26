@@ -6,7 +6,7 @@
 defineProps({
   title: {
     type: String,
-    default: 'AI短剧影院'
+    default: '鼎耀服务平台'
   }
 })
 

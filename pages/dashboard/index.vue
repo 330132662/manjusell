@@ -3,7 +3,7 @@
     <!-- 顶部导航栏 - 手机端显示 -->
     <view class="top-nav-mobile" v-if="isMobile">
       <view class="logo">
-        <TopTitle title="AI短剧" />
+        <TopTitle title="鼎耀服务平台" />
       </view>
       <uni-icons type="bars" size="24" color="#1A535C" @click="toggleSidebar"></uni-icons>
     </view>
@@ -12,7 +12,7 @@
     <view class="sidebar" :class="{ 'sidebar-open': sidebarOpen }">
       <!-- Logo -->
       <view class="sidebar-logo">
-        <TopTitle title="AI短剧" />
+        <TopTitle title="鼎耀服务平台" />
       </view>
 
       <!-- 导航项 -->

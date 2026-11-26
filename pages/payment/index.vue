@@ -24,7 +24,7 @@
 						<uni-icons type="play-filled" size="24" color="#4ECDC4"></uni-icons>
 					</view>
 					<view class="course-info">
-						<text class="course-name">从0到1万粉 — AI短剧大师课</text>
+						<text class="course-name">从0到1万粉 — 鼎耀服务平台大师课</text>
 						<text class="course-desc">完整课程 · 终身访问</text>
 					</view>
 				</view>

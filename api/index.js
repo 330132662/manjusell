@@ -120,7 +120,7 @@ export function getLiveAccounts() {
     return Promise.resolve({
       items: [
         { id: 1, source_name: '鼎耀优选 · 主号' },
-        { id: 2, source_name: 'AI短剧好物馆' },
+        { id: 2, source_name: '鼎耀服务平台好物馆' },
         { id: 3, source_name: '鼎耀百货' }
       ]
     })
